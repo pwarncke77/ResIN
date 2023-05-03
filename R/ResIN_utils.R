@@ -1,4 +1,4 @@
-ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
+ResIN_utils <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
                   method_wCorr = "Polychoric", remove_negative = TRUE,
                   EBICglasso = FALSE, EBICglasso_arglist = NULL) {
 
