@@ -16,9 +16,10 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 if(!require("pacman")) install.packages('pacman')
-
-p_load(ResIN)
+library(pacman)
+library(ResIN)
 p_load(tidyverse)
+
 
 ```
 
@@ -59,6 +60,7 @@ The first argument supplied to the \code{ResIN} function is simply the data-fram
 
 ```{r run ResIN, echo=FALSE, message=FALSE, warning=FALSE}
  # Apply the ResIN function to toy Likert data:
+
  output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE)
 ```
 
