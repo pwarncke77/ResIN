@@ -17,10 +17,12 @@ knitr::opts_chunk$set(
 ```{r setup}
 if(!require("pacman")) install.packages('pacman')
 library(pacman)
-library(ResIN)
 p_load(tidyverse)
+p_load(devtools)
+
 
 install_github("pwarncke77/ResIN")
+
 
 ```
 
