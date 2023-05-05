@@ -16,7 +16,7 @@ Imports:
     qgraph >= (1.9.4)
     igraph >= (1.4.2)
     wCorr >= (1.9.6)
-    Matrix >= (1.4)
+    Matrix
     DirectedClustering <= (0.1.1)
 Encoding: UTF-8
 LazyData: true
