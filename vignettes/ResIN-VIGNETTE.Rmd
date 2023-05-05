@@ -20,6 +20,7 @@ library(pacman)
 library(ResIN)
 p_load(tidyverse)
 
+install_github("pwarncke77/ResIN")
 
 ```
 
@@ -62,6 +63,9 @@ The first argument supplied to the \code{ResIN} function is simply the data-fram
  # Apply the ResIN function to toy Likert data:
 
  output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE)
+
+
+
 ```
 
 ### Visualization
