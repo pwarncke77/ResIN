@@ -11,13 +11,13 @@ BugReports: https://github.com/pwarncke77/ResIN/issues
 Depends:
     R (>= 4.1.0)
 Imports:
-    dplyr >= (1.1.0)
-    fastDummies >= (1.6.3)
-    qgraph >= (1.9.4)
-    igraph >= (1.4.2)
-    wCorr >= (1.9.6)
+    dplyr
+    fastDummies
+    qgraph
+    igraph
+    wCorr
     Matrix
-    DirectedClustering <= (0.1.1)
+    DirectedClustering
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
