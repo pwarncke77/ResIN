@@ -1,8 +1,51 @@
+#' @title ResIN_qgraph
+#'
+#' @description Performs Response Item-Network analysis (ResIN) and exports the results as an \code{qgraph} object.
+#'
+#' @param df A data-frame object containing the raw data.
+#' @param node_vars An optional character string detailing the attitude item columns to be selected for ResIN analysis (i.e. the subset of attitude variables in df).
+#' @param cor_method Which correlation method should be used? Defaults to "auto" which applies the \code{cor_auto} function from the \code{qgraph} package. Possible arguments are \code{"auto"}, \code{"pearson"}, \code{"kendall"}, and \code{"spearman"}.
+#' @param weights An optional continuous vector of survey weights. Should have the same length as number of observations in df. If weights are provided, weighted correlation matrix will be estimated with the \code{weightedCorr} function from the \code{wCorr} package.
+#' @param method_wCorr If weights are supplied, which method for weighted correlations should be used? Defaults to \code{"Polychoric"}. See \code{wCorr::weightedCorr} for all correlation options.
+#' @param remove_negative Should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.
+#' @param plot_graph Optionally, should \code{qgraph} generate print the network upon generation? Defaults to TRUE.
+#' @param plot_title Optionally, assign a title to the \code{qgraph} plot.
+#' @param qgraph_arglist An optional argument list feeding additional instructions to \code{qgraph}. Needs to be specified as an object list containing the arguments to be passed down.
+#' @param EBICglasso Should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.
+#' @param EBICglasso_arglist An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE. Needs to be specified as an object list containing the arguments to be passed down.
+#' @param cluster Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs "cluster_leading_eigen" function from the igraph package and stores results in plotting_frame.
+#' @param seed Random seed for force-directed algorithm.
+#'
+#' @return A list object containing the \code{qgraph} output object, a numeric vector detailing which item responses belong to which item (\code{same_items}), and optionally a matrix detailing community membership of different item nodes (\code{clustering}).
+#'
+#' @examples
+#'
+#' ## Load the 12-item simulated Likert-type ResIN toy dataset
+#' data(lik_data)
+#'
+#' ## Run the function:
+#' ResIN_qgraph <-  ResIN_igraph(likert_toy_data, EBICglasso = TRUE)
+#'
+#' ## Plot and/or investigate as you wish:
+#' igraph::plot.igraph(ResIN_igraph$igraph_obj)
+#'
+#' @export
+#' @importFrom dplyr "%>%" "select" "left_join"
+#' @importFrom fastDummies "dummy_cols"
+#' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso"
+#' @importFrom igraph "graph_from_adjacency_matrix" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership" "plot.igraph"
+#' @importFrom wCorr "weightedCorr"
+#' @importFrom Matrix "nearPD"
+#' @importFrom DirectedClustering "ClustF"
+#'
+#' @references Epskamp S, Cramer AOJ, Waldorp LJ, Schmittmann VD, Borsboom D (2012). “qgraph: Network Visualizations of Relationships in Psychometric Data.” Journal of Statistical Software, 48(4), 1–18.
 
-ResIN_qgraph <- function(df, node_vars = NULL, remove_negative = TRUE,
-                         plot_graph = TRUE, qgraph_arglist = NULL, EBICglasso=TRUE,
-                         EBICglasso_arglist = NULL, plot_title = "ResIN qgraph",
-                         same_item_groups = TRUE, cor_method="auto") {
+
+#'
+
+ResIN_qgraph <- function(df, node_vars = NULL, cor_method="auto", weights = NULL, method_wCorr = "Polychoric",
+                         remove_negative = TRUE, plot_graph = TRUE, plot_title = "ResIN qgraph", qgraph_arglist = NULL,
+                         EBICglasso=TRUE, EBICglasso_arglist = NULL, same_item_groups = TRUE, cluster = FALSE) {
 
   ## Select response node_vars
   if(is.null(node_vars)) {
@@ -136,9 +179,17 @@ ResIN_qgraph <- function(df, node_vars = NULL, remove_negative = TRUE,
     res_in_graph_qgraph <- NA
   }
 
+  ## Perform clustering analysis
+  if(cluster==TRUE) {
+    cluster <- cluster_leading_eigen(ResIN_igraph)
+    communities <- membership(cluster)
+    nodes <- names(communities)
+    outcome <- as.data.frame(cbind(as.numeric(communities), nodes))
+    colnames(outcome) <- c("dimension", "from")
+    outcome$dimension <- as.numeric(outcome$dimension)
+  }
 
   ## Return the objects
-
   output <- list(res_in_graph_qgraph, res_in_cor, same_items)
   names(output) <- c("qgraph_obj", "adj_matrix", "same_items")
   return(output)

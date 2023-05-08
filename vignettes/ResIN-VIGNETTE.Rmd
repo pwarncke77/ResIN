@@ -20,19 +20,18 @@ library(pacman)
 p_load(tidyverse)
 p_load(devtools)
 
+# install_github("pwarncke77/ResIN")
 
-install_github("pwarncke77/ResIN")
-
-
+library(ResIN)
 ```
 
 Welcome to the ResIN R-Package vignette. Here we'll showcase and comment on some of the features available in the ResIN package.
 
 ## A simple example with simmualted data: 
 
-### Let's first simmulate a slightly noisy dataset of 8 Likert-scale items for 1000 hypothetical respondents:
+Let's first simmulate a slightly noisy dataset of 8 Likert-scale items for 1000 hypothetical respondents:
 
-```{r simmulate data, echo=FALSE, message=FALSE, warning=FALSE}
+```{r simmulate data, message=FALSE, warning=FALSE}
  set.seed(42)
  n <- 1000
  k <- 8
@@ -61,12 +60,10 @@ Welcome to the ResIN R-Package vignette. Here we'll showcase and comment on some
 
 The first argument supplied to the \code{ResIN} function is simply the data-frame containing all (survey) items we would like to include in the analysis. Here, we also chose the correlation method that calculates the item-pair associations and specified that we'd like to estimate network descriptive statistics. All this can be done in one line of code.
 
-```{r run ResIN, echo=FALSE, message=FALSE, warning=FALSE}
+```{r run ResIN, message=FALSE, warning=FALSE}
  # Apply the ResIN function to toy Likert data:
 
  output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE)
-
-
 
 ```
 
@@ -74,7 +71,7 @@ The first argument supplied to the \code{ResIN} function is simply the data-fram
 
 We can now freely investigate the ResIN output. Let's make use of the convenient, ggplot-ready edge-list stored in the \code{ResIN} output to visualize the result. Because we want to take advantage of our network statistics, we first re-order the ggplot dataframe 
 
-```{r generate ggplots, echo=FALSE, message=FALSE, warning=FALSE}
+```{r plotting, message=FALSE, warning=FALSE, fig.align='center', fig.width=12, fig.height=9}
 
 # Create a basic outcome plot with ggplot
  output$ggplot_frame <- output$ggplot_frame[order(output$ggplot_frame$Strength,
@@ -99,6 +96,6 @@ We can now freely investigate the ResIN output. Let's make use of the convenient
 
  ResIN_plot
  
- ```
- 
- 
+```
+
+

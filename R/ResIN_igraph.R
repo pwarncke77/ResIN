@@ -1,6 +1,48 @@
+#' @title ResIN_igraph
+#'
+#' @description Performs Response Item-Network analysis (ResIN) and exports the results as an \code{igraph} object.
+#'
+#' @param df A data-frame object containing the raw data.
+#' @param node_vars An optional character string detailing the attitude item columns to be selected for ResIN analysis (i.e. the subset of attitude variables in df).
+#' @param cor_method Which correlation method should be used? Defaults to "auto" which applies the \code{cor_auto} function from the \code{qgraph} package. Possible arguments are \code{"auto"}, \code{"pearson"}, \code{"kendall"}, and \code{"spearman"}.
+#' @param weights An optional continuous vector of survey weights. Should have the same length as number of observations in df. If weights are provided, weighted correlation matrix will be estimated with the \code{weightedCorr} function from the \code{wCorr} package.
+#' @param method_wCorr If weights are supplied, which method for weighted correlations should be used? Defaults to \code{"Polychoric"}. See \code{wCorr::weightedCorr} for all correlation options.
+#' @param remove_negative Should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.
+#' @param igraph_arglist An optional argument list feeding additional instructions to \code{igraph}. Needs to be specified as an object list containing the arguments to be passed down.
+#' @param EBICglasso Should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.
+#' @param EBICglasso_arglist An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE.
+#' @param cluster Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs "cluster_leading_eigen" function from the igraph package and stores results in plotting_frame.
+#' @param seed Random seed for force-directed algorithm.
+#'
+#' @return A list object containing the \code{igraph} output object, a numeric vector detailing which item responses belong to which item (\code{same_items}), and optionally a matrix detailing community membership of different item nodes (\code{clustering}).
+#'
+#' @examples
+#'
+#' ## Load the 12-item simulated Likert-type ResIN toy dataset
+#' data(lik_data)
+#'
+#' ## Run the function:
+#' ResIN_igraph <-  ResIN_igraph(lik_data, EBICglasso = TRUE)
+#'
+#' ## Plot and/or investigate as you wish:
+#' igraph::plot.igraph(ResIN_igraph$igraph_obj)
+#'
+#' @export
+#' @importFrom dplyr "%>%" "select" "left_join"
+#' @importFrom fastDummies "dummy_cols"
+#' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso"
+#' @importFrom igraph "graph_from_adjacency_matrix" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership" "plot.igraph"
+#' @importFrom wCorr "weightedCorr"
+#' @importFrom Matrix "nearPD"
+#' @importFrom DirectedClustering "ClustF"
+#'
+#' @references Csardi G, Nepusz T (2006). “The igraph software package for complex network research.” InterJournal, Complex Systems, 1695. https://igraph.org.
+#'
+
+
 
 ResIN_igraph <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
-                  method_wCorr = "Polychoric", remove_negative = TRUE,
+                  method_wCorr = "Polychoric", remove_negative = TRUE, igraph_arglist = NULL,
                   EBICglasso = FALSE, EBICglasso_arglist = NULL,
                   cluster = TRUE, seed = 42) {
 
@@ -110,7 +152,18 @@ ResIN_igraph <- function(df, node_vars = NULL, cor_method = "auto", weights = NU
   levels(same_items) <- colnames(df_nodes)
 
   ## Generating the igraph object
-  ResIN_igraph <- igraph::graph_from_adjacency_matrix(res_in_cor, mode = "undirected", weighted = TRUE, diag = FALSE)
+  if(is.null(igraph_arglist)) {
+
+    igraph_arglist <- list(mode = "undirected", weighted = TRUE, diag = FALSE)
+  }
+
+  if(same_item_groups==TRUE) {
+    igraph_arglist <- c(igraph_arglist, list(groups = same_items))
+  }
+
+  res_in_graph_igraph <- do.call(igraph::graph_from_adjacency_matrix, c(list(adjmatrix = res_in_cor),
+                                                   igraph_arglist))
+
 
   ## Generating and merging the basic plotting dataframe with network and covariate stats
   if(remove_negative==FALSE) {

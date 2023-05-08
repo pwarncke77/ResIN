@@ -11,6 +11,7 @@ BugReports: https://github.com/pwarncke77/ResIN/issues
 Depends:
     R (>= 4.1.0)
 Imports:
+    tidyverse (>= 2.0.0),
     dplyr (>= 1.0.0),
     fastDummies (>= 1.6.3),
     qgraph (>= 1.9.4),

@@ -60,6 +60,7 @@ Performs Response Item-Network analysis (ResIN)
 
 # Simulate a slightly noisy dataset of 8 Likert-scale items for 1000 respondents:
 set.seed(42)
+library(tidyverse)
 n <- 1000
 k <- 8
 

@@ -21,27 +21,8 @@
 #'
 #' @examples
 #'
-#' # Simulate a slightly noisy dataset of 8 Likert-scale items for 1000 respondents:
-#' set.seed(42)
-#' n <- 1000
-#' k <- 8
-#'
-#' latent_dgp <- rnorm(1000, 0, 1)
-#'
-#' ## Data for k manifest indicators measured with some error
-#' cont_data <- matrix(rep(latent_dgp, k), n, k)
-#' cont_data <- apply(cont_data, 2, function(x) {
-#'   x + rnorm(1000, 0, 0.2)}) ## 20% error
-#'
-#' ## Ordinal, 5-point Likert-scale items
-#' lik_maker <- function(x) {
-#'   sort(runif(x, min = -2, max = 2))}
-#'
-#' lik_data <- matrix(NA, n, k)
-#'
-#' for(i in 1:ncol(lik_data)) {
-#'   lik_data[, i] <- findInterval(cont_data[, i], vec = c(-Inf, lik_maker(4), Inf))
-#' }
+#' ## Load the 12-item simulated Likert-type ResIN toy dataset
+#' data(lik_data)
 #'
 #' # Apply the ResIN function to toy Likert data:
 #' output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE)
