@@ -49,14 +49,17 @@ Performs Response Item-Network analysis (ResIN) and exports the results as an \c
 }
 \examples{
 
-## Load the 12 item ResIN toy likert data-set:
-likert_toy_data <- ResIN::likert_toy_data()
+## Load the 12-item simulated Likert-type ResIN toy dataset
+data(lik_data)
 
 ## Run the function:
-ResIN_igraph <-  ResIN_igraph(likert_toy_data, EBICglasso = TRUE)
+\donttest{
+ResIN_igraph <-  ResIN_igraph(lik_data)
+
 
 ## Plot and/or investigate as you wish:
 igraph::plot.igraph(ResIN_igraph$igraph_obj)
+}
 
 }
 \references{

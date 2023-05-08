@@ -11,7 +11,7 @@
 #' @param EBICglasso Should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.
 #' @param EBICglasso_arglist An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE.
 #'
-#' @return A list object containing the original dataframe, (\code{resin_df}), the dummy-coded dataframe (\code{resin_dummies}), the ResIN correlation and covariance matricies (\code{resin_cor} & \code{resin_vcov}), and a numeric vector detailing which item responses belong to which item (\code{same_items}).
+#' @return A list object containing the original dataframe, (\code{resin_df}), the dummy-coded dataframe (\code{resin_dummies}), the ResIN correlation and covariance matrices (\code{resin_cor} & \code{resin_vcov}), and a numeric vector detailing which item responses belong to which item (\code{same_items}).
 #' @examples
 #'
 #' ## Load the 12-item simulated Likert-type ResIN toy dataset
@@ -21,7 +21,8 @@
 #' output <- ResIN_utils(lik_data)
 #'
 #' @export
-#' @importFrom dplyr "%>%" "select" "left_join"
+#' @importFrom dplyr "%>%" "select" "left_join" "all_of"
+#' @importFrom stats "complete.cases" "cor" "sd" "prcomp" "cov" "princomp"
 #' @importFrom fastDummies "dummy_cols"
 #' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso"
 #' @importFrom igraph "graph_from_adjacency_matrix" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership" "plot.igraph"
@@ -37,13 +38,11 @@ ResIN_utils <- function(df, node_vars = NULL, cor_method = "auto", weights = NUL
                   method_wCorr = "Polychoric", remove_negative = TRUE,
                   EBICglasso = FALSE, EBICglasso_arglist = NULL) {
 
-  set.seed(seed)
-
   ## Select response node_vars
   if(is.null(node_vars)) {
     df_nodes <- df
   } else {
-    df_nodes <- df %>% dplyr::select(all_of(node_vars))
+    df_nodes <- df %>% dplyr::select(dplyr::all_of(node_vars))
   }
 
   ## Make the dummy frame

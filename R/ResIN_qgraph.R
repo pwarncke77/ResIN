@@ -13,26 +13,26 @@
 #' @param qgraph_arglist An optional argument list feeding additional instructions to \code{qgraph}. Needs to be specified as an object list containing the arguments to be passed down.
 #' @param EBICglasso Should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.
 #' @param EBICglasso_arglist An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE. Needs to be specified as an object list containing the arguments to be passed down.
+#' @param same_item_groups Optionally, should the qgraph object automatically incorporate a "group" attribute that groups item response nodes by the items that repose nodes stem from?
 #' @param cluster Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs "cluster_leading_eigen" function from the igraph package and stores results in plotting_frame.
-#' @param seed Random seed for force-directed algorithm.
 #'
 #' @return A list object containing the \code{qgraph} output object, a numeric vector detailing which item responses belong to which item (\code{same_items}), and optionally a matrix detailing community membership of different item nodes (\code{clustering}).
 #'
 #' @examples
 #'
+#' \donttest{
 #' ## Load the 12-item simulated Likert-type ResIN toy dataset
 #' data(lik_data)
 #'
 #' ## Run the function:
-#' ResIN_qgraph <-  ResIN_igraph(likert_toy_data, EBICglasso = TRUE)
-#'
-#' ## Plot and/or investigate as you wish:
-#' igraph::plot.igraph(ResIN_igraph$igraph_obj)
+#' ResIN_qgraph <-  ResIN_qgraph(lik_data, same_item_groups = TRUE)
+#' }
 #'
 #' @export
-#' @importFrom dplyr "%>%" "select" "left_join"
+#' @importFrom dplyr "%>%" "select" "left_join" "all_of"
+#' @importFrom stats "complete.cases" "cor" "sd" "prcomp" "cov" "princomp"
 #' @importFrom fastDummies "dummy_cols"
-#' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso"
+#' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso" "qgraph.layout.fruchtermanreingold"
 #' @importFrom igraph "graph_from_adjacency_matrix" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership" "plot.igraph"
 #' @importFrom wCorr "weightedCorr"
 #' @importFrom Matrix "nearPD"
@@ -45,7 +45,7 @@
 
 ResIN_qgraph <- function(df, node_vars = NULL, cor_method="auto", weights = NULL, method_wCorr = "Polychoric",
                          remove_negative = TRUE, plot_graph = TRUE, plot_title = "ResIN qgraph", qgraph_arglist = NULL,
-                         EBICglasso=TRUE, EBICglasso_arglist = NULL, same_item_groups = TRUE, cluster = FALSE) {
+                         EBICglasso=TRUE, EBICglasso_arglist = NULL, same_item_groups = FALSE, cluster = FALSE) {
 
   ## Select response node_vars
   if(is.null(node_vars)) {
@@ -158,7 +158,7 @@ ResIN_qgraph <- function(df, node_vars = NULL, cor_method="auto", weights = NULL
                         res_in_graph_qgraph$Edgelist$to)
 
     ## Run FR using qgraph-supplied function
-    layout_fr <-  qgraph.layout.fruchtermanreingold(
+    layout_fr <-  qgraph::qgraph.layout.fruchtermanreingold(
       temp_edges, weights = res_in_graph_qgraph$Edgelist$weight,
       vcount = nrow(temp_edges))
 

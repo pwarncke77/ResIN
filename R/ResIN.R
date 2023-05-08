@@ -23,6 +23,7 @@
 #'
 #' ## Load the 12-item simulated Likert-type ResIN toy dataset
 #' data(lik_data)
+#' library(ggplot2)
 #'
 #' # Apply the ResIN function to toy Likert data:
 #' output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE)
@@ -30,15 +31,16 @@
 #' # Create a basic outcome plot with ggplot
 #' output$ggplot_frame <- output$ggplot_frame[order(output$ggplot_frame$Strength,
 #'                                                  decreasing = FALSE), ]
-#' ResIN_plot <- ggplot(output$ggplot_frame) +
+#' ResIN_plot <- ggplot2::ggplot(output$ggplot_frame)+
 #'   geom_curve(data = output$ggplot_frame, aes(x = from.x, xend = to.x, y = from.y,
-#'                                              yend = to.y, linewidth = weight, color = Strength), curvature = 0.2) +
+#'                                              yend = to.y, linewidth = weight,
+#'                                              color = Strength), curvature = 0.2)+
 #'   geom_point(aes(x = from.x, y = from.y, shape = as.factor(cluster)), size = 8)+
 #'   geom_point(aes(x = to.x, y = to.y), size = 8)+
 #'   geom_text(data = output$ggplot_frame, aes(x = from.x, y = from.y, label = from),
-#'             size = 3, color = "white") +
+#'             size = 3, color = "white")+
 #'   geom_text(data = output$ggplot_frame, aes(x = to.x, y = to.y, label = to),
-#'             size = 3, color = "white") +
+#'             size = 3, color = "white")+
 #'   ggtitle("ResIN example  plot")+
 #'   theme_dark()+
 #'   theme(axis.text.x = element_blank(), axis.title.x = element_blank(),
@@ -50,9 +52,11 @@
 #' ResIN_plot
 #'
 #' @export
-#' @importFrom dplyr "%>%" "select" "left_join"
+#' @importFrom ggplot2 "ggplot" "geom_curve"
+#' @importFrom dplyr "%>%" "select" "left_join" "all_of"
+#' @importFrom stats "complete.cases" "cor" "sd" "prcomp" "cov" "princomp"
 #' @importFrom fastDummies "dummy_cols"
-#' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso"
+#' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso" "qgraph.layout.fruchtermanreingold"
 #' @importFrom igraph "graph_from_adjacency_matrix" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership"
 #' @importFrom wCorr "weightedCorr"
 #' @importFrom Matrix "nearPD"
@@ -74,7 +78,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
   if(is.null(node_vars)) {
     df_nodes <- df
   } else {
-    df_nodes <- df %>% dplyr::select(all_of(node_vars))
+    df_nodes <- df %>% dplyr::select(dplyr::all_of(node_vars))
   }
 
   ## Make the dummy frame

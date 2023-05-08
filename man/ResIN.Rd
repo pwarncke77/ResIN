@@ -58,28 +58,9 @@ Performs Response Item-Network analysis (ResIN)
 }
 \examples{
 
-# Simulate a slightly noisy dataset of 8 Likert-scale items for 1000 respondents:
-set.seed(42)
-library(tidyverse)
-n <- 1000
-k <- 8
-
-latent_dgp <- rnorm(1000, 0, 1)
-
-## Data for k manifest indicators measured with some error
-cont_data <- matrix(rep(latent_dgp, k), n, k)
-cont_data <- apply(cont_data, 2, function(x) {
-  x + rnorm(1000, 0, 0.2)}) ## 20\% error
-
-## Ordinal, 5-point Likert-scale items
-lik_maker <- function(x) {
-  sort(runif(x, min = -2, max = 2))}
-
-lik_data <- matrix(NA, n, k)
-
-for(i in 1:ncol(lik_data)) {
-  lik_data[, i] <- findInterval(cont_data[, i], vec = c(-Inf, lik_maker(4), Inf))
-}
+## Load the 12-item simulated Likert-type ResIN toy dataset
+data(lik_data)
+library(ggplot2)
 
 # Apply the ResIN function to toy Likert data:
 output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE)
@@ -87,15 +68,16 @@ output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE)
 # Create a basic outcome plot with ggplot
 output$ggplot_frame <- output$ggplot_frame[order(output$ggplot_frame$Strength,
                                                  decreasing = FALSE), ]
-ResIN_plot <- ggplot(output$ggplot_frame) +
+ResIN_plot <- ggplot2::ggplot(output$ggplot_frame)+
   geom_curve(data = output$ggplot_frame, aes(x = from.x, xend = to.x, y = from.y,
-                                             yend = to.y, linewidth = weight, color = Strength), curvature = 0.2) +
+                                             yend = to.y, linewidth = weight,
+                                             color = Strength), curvature = 0.2)+
   geom_point(aes(x = from.x, y = from.y, shape = as.factor(cluster)), size = 8)+
   geom_point(aes(x = to.x, y = to.y), size = 8)+
   geom_text(data = output$ggplot_frame, aes(x = from.x, y = from.y, label = from),
-            size = 3, color = "white") +
+            size = 3, color = "white")+
   geom_text(data = output$ggplot_frame, aes(x = to.x, y = to.y, label = to),
-            size = 3, color = "white") +
+            size = 3, color = "white")+
   ggtitle("ResIN example  plot")+
   theme_dark()+
   theme(axis.text.x = element_blank(), axis.title.x = element_blank(),

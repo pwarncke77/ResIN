@@ -22,15 +22,19 @@
 #' data(lik_data)
 #'
 #' ## Run the function:
-#' ResIN_igraph <-  ResIN_igraph(lik_data, EBICglasso = TRUE)
+#' \donttest{
+#' ResIN_igraph <-  ResIN_igraph(lik_data)
+#'
 #'
 #' ## Plot and/or investigate as you wish:
 #' igraph::plot.igraph(ResIN_igraph$igraph_obj)
+#' }
 #'
 #' @export
-#' @importFrom dplyr "%>%" "select" "left_join"
+#' @importFrom dplyr "%>%" "select" "left_join" "all_of"
+#' @importFrom stats "complete.cases" "cor" "sd" "prcomp" "cov" "princomp"
 #' @importFrom fastDummies "dummy_cols"
-#' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso"
+#' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso" "qgraph.layout.fruchtermanreingold"
 #' @importFrom igraph "graph_from_adjacency_matrix" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership" "plot.igraph"
 #' @importFrom wCorr "weightedCorr"
 #' @importFrom Matrix "nearPD"
@@ -38,8 +42,6 @@
 #'
 #' @references Csardi G, Nepusz T (2006). “The igraph software package for complex network research.” InterJournal, Complex Systems, 1695. https://igraph.org.
 #'
-
-
 
 ResIN_igraph <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
                   method_wCorr = "Polychoric", remove_negative = TRUE, igraph_arglist = NULL,
@@ -52,7 +54,7 @@ ResIN_igraph <- function(df, node_vars = NULL, cor_method = "auto", weights = NU
   if(is.null(node_vars)) {
     df_nodes <- df
   } else {
-    df_nodes <- df %>% dplyr::select(all_of(node_vars))
+    df_nodes <- df %>% dplyr::select(dplyr::all_of(node_vars))
   }
 
   ## Make the dummy frame
@@ -157,24 +159,20 @@ ResIN_igraph <- function(df, node_vars = NULL, cor_method = "auto", weights = NU
     igraph_arglist <- list(mode = "undirected", weighted = TRUE, diag = FALSE)
   }
 
-  if(same_item_groups==TRUE) {
-    igraph_arglist <- c(igraph_arglist, list(groups = same_items))
-  }
-
   res_in_graph_igraph <- do.call(igraph::graph_from_adjacency_matrix, c(list(adjmatrix = res_in_cor),
                                                    igraph_arglist))
 
 
   ## Generating and merging the basic plotting dataframe with network and covariate stats
   if(remove_negative==FALSE) {
-    graph_layout <- as.data.frame(prcomp(igraph::layout_nicely(ResIN_igraph))$x)
+    graph_layout <- as.data.frame(prcomp(igraph::layout_nicely(res_in_graph_igraph))$x)
   } else {
-    graph_layout <- as.data.frame(prcomp(igraph::layout_with_fr(ResIN_igraph))$x)
+    graph_layout <- as.data.frame(prcomp(igraph::layout_with_fr(res_in_graph_igraph))$x)
   }
 
   ## Perform clustering analysis IMPLEMENT OTHER METHODS AS WELL!
   if(cluster==TRUE) {
-    cluster <- cluster_leading_eigen(ResIN_igraph)
+    cluster <- cluster_leading_eigen(res_in_graph_igraph)
     communities <- membership(cluster)
     nodes <- names(communities)
     outcome <- as.data.frame(cbind(as.numeric(communities), nodes))
@@ -183,7 +181,7 @@ ResIN_igraph <- function(df, node_vars = NULL, cor_method = "auto", weights = NU
     }
 
   ### END FUNCTION
-  output <- list(ResIN_igraph, same_items, outcome)
+  output <- list(res_in_graph_igraph, same_items, outcome)
   names(output) <- c("igraph_obj", "same_items", "clustering")
 
   return(output)

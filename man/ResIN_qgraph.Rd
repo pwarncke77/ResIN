@@ -16,7 +16,7 @@ ResIN_qgraph(
   qgraph_arglist = NULL,
   EBICglasso = TRUE,
   EBICglasso_arglist = NULL,
-  same_item_groups = TRUE,
+  same_item_groups = FALSE,
   cluster = FALSE
 )
 }
@@ -43,9 +43,9 @@ ResIN_qgraph(
 
 \item{EBICglasso_arglist}{An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE. Needs to be specified as an object list containing the arguments to be passed down.}
 
-\item{cluster}{Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs "cluster_leading_eigen" function from the igraph package and stores results in plotting_frame.}
+\item{same_item_groups}{Optionally, should the qgraph object automatically incorporate a "group" attribute that groups item response nodes by the items that repose nodes stem from?}
 
-\item{seed}{Random seed for force-directed algorithm.}
+\item{cluster}{Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs "cluster_leading_eigen" function from the igraph package and stores results in plotting_frame.}
 }
 \value{
 A list object containing the \code{qgraph} output object, a numeric vector detailing which item responses belong to which item (\code{same_items}), and optionally a matrix detailing community membership of different item nodes (\code{clustering}).
@@ -55,14 +55,13 @@ Performs Response Item-Network analysis (ResIN) and exports the results as an \c
 }
 \examples{
 
-## Load the 12 item ResIN toy likert data-set:
-likert_toy_data <- ResIN::likert_toy_data()
+\donttest{
+## Load the 12-item simulated Likert-type ResIN toy dataset
+data(lik_data)
 
 ## Run the function:
-ResIN_qgraph <-  ResIN_igraph(likert_toy_data, EBICglasso = TRUE)
-
-## Plot and/or investigate as you wish:
-igraph::plot.igraph(ResIN_igraph$igraph_obj)
+ResIN_qgraph <-  ResIN_qgraph(lik_data, same_item_groups = TRUE)
+}
 
 }
 \references{

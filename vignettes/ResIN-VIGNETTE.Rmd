@@ -15,23 +15,20 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-if(!require("pacman")) install.packages('pacman')
-library(pacman)
-p_load(tidyverse)
-p_load(devtools)
+# install.packages("ResIN")
 
-# install_github("pwarncke77/ResIN")
-
+library(ggplot2)
 library(ResIN)
+
 ```
 
 Welcome to the ResIN R-Package vignette. Here we'll showcase and comment on some of the features available in the ResIN package.
 
-## A simple example with simmualted data: 
+## A simple example with simulated data: 
 
-Let's first simmulate a slightly noisy dataset of 8 Likert-scale items for 1000 hypothetical respondents:
+Let's first simulate a slightly noisy dataset of 8 Likert-scale items for 1000 hypothetical respondents:
 
-```{r simmulate data, message=FALSE, warning=FALSE}
+```{r simulate data, message=FALSE, warning=FALSE}
  set.seed(42)
  n <- 1000
  k <- 8
@@ -76,7 +73,7 @@ We can now freely investigate the ResIN output. Let's make use of the convenient
 # Create a basic outcome plot with ggplot
  output$ggplot_frame <- output$ggplot_frame[order(output$ggplot_frame$Strength,
                                                   decreasing = FALSE), ]
- ResIN_plot <- ggplot(output$ggplot_frame) +
+ ResIN_plot <- ggplot2::ggplot(output$ggplot_frame) +
    geom_curve(data = output$ggplot_frame, aes(x = from.x, xend = to.x, y = from.y,
                                               yend = to.y, linewidth = weight,
                                               color = Strength), curvature = 0.2) +

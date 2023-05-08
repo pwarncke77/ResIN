@@ -33,8 +33,20 @@ ResIN_utils(
 \item{EBICglasso_arglist}{An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE.}
 }
 \value{
-A list object containing the original dataframe, (\code{resin_df}), the dummy-coded dataframe (\code{resin_dummies}), the ResIN correlation and covariance matricies (\code{resin_cor} & \code{resin_vcov}), and a numeric vector detailing which item responses belong to which item (\code{same_items}).
+A list object containing the original dataframe, (\code{resin_df}), the dummy-coded dataframe (\code{resin_dummies}), the ResIN correlation and covariance matrices (\code{resin_cor} & \code{resin_vcov}), and a numeric vector detailing which item responses belong to which item (\code{same_items}).
 }
 \description{
 Generates auxiliary utensils useful for Response-Item Networks analysis.
+}
+\examples{
+
+## Load the 12-item simulated Likert-type ResIN toy dataset
+data(lik_data)
+
+## Extract the utilities
+output <- ResIN_utils(lik_data)
+
+}
+\references{
+Epskamp S, Cramer AOJ, Waldorp LJ, Schmittmann VD, Borsboom D (2012). “qgraph: Network Visualizations of Relationships in Psychometric Data.” Journal of Statistical Software, 48(4), 1–18.
 }
