@@ -17,7 +17,7 @@ ResIN(
   node_covars = NULL,
   node_costats = NULL,
   network_stats = FALSE,
-  cluster = TRUE,
+  cluster = FALSE,
   seed = 42
 )
 }
@@ -46,15 +46,15 @@ ResIN(
 
 \item{network_stats}{Should common network structuration and centralization metrics be extracted? Calls \code{qgraph::centrality_auto} and \code{DirectedClustering::ClustF} to the ResIN graph object to extract network average betweenness, closeness, strength centrality (mean) and centralization scores (sd). Also estimates network expected influence, average path length, and global clustering coefficients.}
 
-\item{cluster}{Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs "cluster_leading_eigen" function from the igraph package and stores results in plotting_frame.}
+\item{cluster}{Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs "cluster_leading_eigen" function from the igraph package and stores results in node_frame.}
 
 \item{seed}{Random seed for force-directed algorithm.}
 }
 \value{
-A list object containing the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), a ggplot-ready edge-list type dataframe (\code{ggplot_frame}), a node-level dataframe (\code{plotting_frame}), a vector with the optional graph structuration (\code{graph_structuration}) and centralization (\code{graph_centralization}) statistics, as well as the dummy-coded item-response dataframe (\code{df_dummies}).
+A list object containing the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), a ggplot-ready edge-list type dataframe (\code{edgelist_frame}), a node-level dataframe (\code{node_frame}), a vector with the optional graph structuration (\code{graph_structuration}) and centralization (\code{graph_centralization}) statistics, as well as the dummy-coded item-response dataframe (\code{df_dummies}).
 }
 \description{
-Performs Response Item-Network analysis (ResIN)
+Performs Response Item-Network (ResIN) analysis
 }
 \examples{
 
@@ -63,20 +63,20 @@ data(lik_data)
 library(ggplot2)
 
 # Apply the ResIN function to toy Likert data:
-output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE)
+output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, cluster = TRUE)
 
 # Create a basic outcome plot with ggplot
-output$ggplot_frame <- output$ggplot_frame[order(output$ggplot_frame$Strength,
+output$edgelist_frame <- output$edgelist_frame[order(output$edgelist_frame$Strength,
                                                  decreasing = FALSE), ]
-ResIN_plot <- ggplot2::ggplot(output$ggplot_frame)+
-  geom_curve(data = output$ggplot_frame, aes(x = from.x, xend = to.x, y = from.y,
+ResIN_plot <- ggplot2::ggplot(output$edgelist_frame)+
+  geom_curve(data = output$edgelist_frame, aes(x = from.x, xend = to.x, y = from.y,
                                              yend = to.y, linewidth = weight,
                                              color = Strength), curvature = 0.2)+
   geom_point(aes(x = from.x, y = from.y, shape = as.factor(cluster)), size = 8)+
   geom_point(aes(x = to.x, y = to.y), size = 8)+
-  geom_text(data = output$ggplot_frame, aes(x = from.x, y = from.y, label = from),
+  geom_text(data = output$edgelist_frame, aes(x = from.x, y = from.y, label = from),
             size = 3, color = "white")+
-  geom_text(data = output$ggplot_frame, aes(x = to.x, y = to.y, label = to),
+  geom_text(data = output$edgelist_frame, aes(x = to.x, y = to.y, label = to),
             size = 3, color = "white")+
   ggtitle("ResIN example  plot")+
   theme_dark()+

@@ -14,7 +14,7 @@ ResIN_qgraph(
   plot_graph = TRUE,
   plot_title = "ResIN qgraph",
   qgraph_arglist = NULL,
-  EBICglasso = TRUE,
+  EBICglasso = FALSE,
   EBICglasso_arglist = NULL,
   same_item_groups = FALSE,
   cluster = FALSE

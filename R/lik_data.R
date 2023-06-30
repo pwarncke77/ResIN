@@ -1,6 +1,6 @@
-#' Likert-type simulated toy data for ResIN package examples
+#' Likert-type simulated data for "ResIN" package examples
 #'
-#' An artificially created data-set (n=1000) of 12, 5-point Likert type ordinal data. Modeled on the basis of a standard normal data-generating process. Likert scales constain 20 percent uncorrelated, homoskedastic measurement error. This data-set is used for the examples in the ResIN package vingette.
+#' An artificially created data-set (n=1000) of 12, 5-point Likert data. Modeled on the basis of a standard normal data-generating process. Likert scales contain 20 percent uncorrelated, homoscedastic measurement error. This data-set is used for the examples in the "ResIN" package vignette.
 #'
 #' @docType data
 #'

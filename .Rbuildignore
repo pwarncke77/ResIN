@@ -8,3 +8,5 @@
 ^rstudio\.
 
 
+^CRAN-SUBMISSION$
+^cran-comments\.md$

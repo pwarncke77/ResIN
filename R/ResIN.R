@@ -1,6 +1,6 @@
 #' @title ResIN
 #'
-#' @description Performs Response Item-Network analysis (ResIN)
+#' @description Performs Response Item-Network (ResIN) analysis
 #'
 #' @param df A data-frame object containing the raw data.
 #' @param node_vars An optional character string detailing the attitude item columns to be selected for ResIN analysis (i.e. the subset of attitude variables in df).
@@ -26,7 +26,7 @@
 #' library(ggplot2)
 #'
 #' # Apply the ResIN function to toy Likert data:
-#' output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE)
+#' output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, cluster = TRUE)
 #'
 #' # Create a basic outcome plot with ggplot
 #' output$edgelist_frame <- output$edgelist_frame[order(output$edgelist_frame$Strength,
