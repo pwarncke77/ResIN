@@ -14,10 +14,10 @@
 #' @param node_covars An optional character string selecting quantitative covariates that can be used to enhance ResIN analysis. Typically, these covariates provide grouped summary statistics for item response nodes. (E.g.: What is the average age or income level of respondents who selected a particular item response?) Variable names specified here should match existing columns in \code{df}.
 #' @param node_costats If any \code{node_covars} are selected, what summary statistics should be estimated from them? Argument should be a character vector of the same length of \code{node_covars}and call a base-R function. (E.g. \code{"mean"}, \code{"median"}, \code{"sd"}). The first element in \code{node_costats} specifies the summary statistic extracted from the first element in \code{node_covars}, and so on.
 #' @param network_stats Should common network structuration and centralization metrics be extracted? Calls \code{qgraph::centrality_auto} and \code{DirectedClustering::ClustF} to the ResIN graph object to extract network average betweenness, closeness, strength centrality (mean) and centralization scores (sd). Also estimates network expected influence, average path length, and global clustering coefficients.
-#' @param cluster Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs "cluster_leading_eigen" function from the igraph package and stores results in plotting_frame.
+#' @param cluster Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs "cluster_leading_eigen" function from the igraph package and stores results in node_frame.
 #' @param seed Random seed for force-directed algorithm.
 #'
-#' @return A list object containing the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), a ggplot-ready edge-list type dataframe (\code{ggplot_frame}), a node-level dataframe (\code{plotting_frame}), a vector with the optional graph structuration (\code{graph_structuration}) and centralization (\code{graph_centralization}) statistics, as well as the dummy-coded item-response dataframe (\code{df_dummies}).
+#' @return A list object containing the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), a ggplot-ready edge-list type dataframe (\code{edgelist_frame}), a node-level dataframe (\code{node_frame}), a vector with the optional graph structuration (\code{graph_structuration}) and centralization (\code{graph_centralization}) statistics, as well as the dummy-coded item-response dataframe (\code{df_dummies}).
 #'
 #' @examples
 #'
@@ -29,17 +29,17 @@
 #' output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE)
 #'
 #' # Create a basic outcome plot with ggplot
-#' output$ggplot_frame <- output$ggplot_frame[order(output$ggplot_frame$Strength,
+#' output$edgelist_frame <- output$edgelist_frame[order(output$edgelist_frame$Strength,
 #'                                                  decreasing = FALSE), ]
-#' ResIN_plot <- ggplot2::ggplot(output$ggplot_frame)+
-#'   geom_curve(data = output$ggplot_frame, aes(x = from.x, xend = to.x, y = from.y,
+#' ResIN_plot <- ggplot2::ggplot(output$edgelist_frame)+
+#'   geom_curve(data = output$edgelist_frame, aes(x = from.x, xend = to.x, y = from.y,
 #'                                              yend = to.y, linewidth = weight,
 #'                                              color = Strength), curvature = 0.2)+
 #'   geom_point(aes(x = from.x, y = from.y, shape = as.factor(cluster)), size = 8)+
 #'   geom_point(aes(x = to.x, y = to.y), size = 8)+
-#'   geom_text(data = output$ggplot_frame, aes(x = from.x, y = from.y, label = from),
+#'   geom_text(data = output$edgelist_frame, aes(x = from.x, y = from.y, label = from),
 #'             size = 3, color = "white")+
-#'   geom_text(data = output$ggplot_frame, aes(x = to.x, y = to.y, label = to),
+#'   geom_text(data = output$edgelist_frame, aes(x = to.x, y = to.y, label = to),
 #'             size = 3, color = "white")+
 #'   ggtitle("ResIN example  plot")+
 #'   theme_dark()+
@@ -70,7 +70,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
                       EBICglasso = FALSE, EBICglasso_arglist = NULL,
                       node_covars = NULL, node_costats = NULL,
                       network_stats = FALSE,
-                      cluster = TRUE, seed = 42) {
+                      cluster = FALSE, seed = 42) {
 
   set.seed(seed)
 
@@ -223,14 +223,14 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
   graph_layout$node_names <- colnames(res_in_cor)
   colnames(graph_layout) <- c("x", "y", "node_names")
 
-  plotting_frame <- graph_layout
-  plotting_frame$from <- plotting_frame$node_names
+  node_frame <- graph_layout
+  node_frame$from <- node_frame$node_names
 
   if(network_stats==TRUE) {
-    plotting_frame <- cbind(plotting_frame, node_net_stats$node.centrality)}
+    node_frame <- cbind(node_frame, node_net_stats$node.centrality)}
 
   if(!(is.null(node_covars)) & !(is.null(node_costats))) {
-    plotting_frame <- cbind(plotting_frame, cov_stats)
+    node_frame <- cbind(node_frame, cov_stats)
   }
 
   ## Perform clustering analysis
@@ -254,20 +254,20 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
     outcome$cluster[outcome$cluster=="NA"] <- NA
     outcome$cluster <- as.numeric(outcome$cluster)
 
-    plotting_frame <- dplyr::left_join(plotting_frame, outcome, by = "from")}
+    node_frame <- dplyr::left_join(node_frame, outcome, by = "from")}
 
   ## Preparing plotting data for ggplot graph format
   g <- igraph::as_data_frame(ResIN_igraph)
-  g$from.x <- plotting_frame$x[match(g$from, plotting_frame$node_names)]
-  g$from.y <- plotting_frame$y[match(g$from, plotting_frame$node_names)]
-  g$to.x <- plotting_frame$x[match(g$to, plotting_frame$node_names)]
-  g$to.y <- plotting_frame$y[match(g$to, plotting_frame$node_names)]
+  g$from.x <- node_frame$x[match(g$from, node_frame$node_names)]
+  g$from.y <- node_frame$y[match(g$from, node_frame$node_names)]
+  g$to.x <- node_frame$x[match(g$to, node_frame$node_names)]
+  g$to.y <- node_frame$y[match(g$to, node_frame$node_names)]
 
-  g_plus <- dplyr::left_join(g, plotting_frame, by = "from")
+  edgelist_frame <- dplyr::left_join(g, node_frame, by = "from")
 
   ### END FUNCTION
-  output <- list(res_in_cor, same_items, g_plus, plotting_frame, structuration, centralization, df_dummies)
-  names(output) <- c("adj_matrix", "same_items", "ggplot_frame", "plotting_frame", "graph_structuration", "graph_centralization", "df_dummies")
+  output <- list(res_in_cor, same_items, edgelist_frame, node_frame, structuration, centralization, df_dummies)
+  names(output) <- c("adj_matrix", "same_items", "edgelist_frame", "node_frame", "graph_structuration", "graph_centralization", "df_dummies")
 
   return(output)
 }

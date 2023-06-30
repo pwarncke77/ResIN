@@ -45,7 +45,7 @@
 
 ResIN_qgraph <- function(df, node_vars = NULL, cor_method="auto", weights = NULL, method_wCorr = "Polychoric",
                          remove_negative = TRUE, plot_graph = TRUE, plot_title = "ResIN qgraph", qgraph_arglist = NULL,
-                         EBICglasso=TRUE, EBICglasso_arglist = NULL, same_item_groups = FALSE, cluster = FALSE) {
+                         EBICglasso=FALSE, EBICglasso_arglist = NULL, same_item_groups = FALSE, cluster = FALSE) {
 
   ## Select response node_vars
   if(is.null(node_vars)) {
@@ -109,6 +109,8 @@ ResIN_qgraph <- function(df, node_vars = NULL, cor_method="auto", weights = NULL
 
     res_in_cor <- do.call(qgraph::EBICglasso, c(list(S = as.matrix(res_in_cor)),
                                                 EBICglasso_arglist))
+
+  }
 
   ## Set all inner-variable correlations to 0
   j <- 1 ; i <- 1
@@ -174,10 +176,6 @@ ResIN_qgraph <- function(df, node_vars = NULL, cor_method="auto", weights = NULL
     if(plot_graph==TRUE) {
       plot(res_in_graph_qgraph)
     }
-
-  } else {
-    res_in_graph_qgraph <- NA
-  }
 
   ## Perform clustering analysis
   if(cluster==TRUE) {
