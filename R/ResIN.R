@@ -130,7 +130,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
                                  nlambda = 100,
                                  returnAllResults = FALSE, checkPD = FALSE,
                                  countDiagonal = FALSE, refit = FALSE,
-                                 threshold = FALSE, verbose = TRUE)
+                                 threshold = FALSE, verbose = FALSE)
     }
 
     res_in_cor <- do.call(qgraph::EBICglasso, c(list(S = as.matrix(res_in_cor)),
