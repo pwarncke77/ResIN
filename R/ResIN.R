@@ -371,6 +371,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
   }
 
   ### Coloring by clusters:
+  if(! is.null(plot_whichstat)){
   if(plot_whichstat=="cluster") {
     if(detect_clusters==FALSE) {
       stop("You must set detect_clusters to TRUE in order to visualize node clusters")
@@ -381,6 +382,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
       ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
                     color = as.factor(node_frame$cluster)), size = 4.5)+
       ggplot2::scale_color_discrete(name = "Network communities")
+  }
   }
 
   ### Coloring by co-stats:
