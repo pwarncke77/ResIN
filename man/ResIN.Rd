@@ -11,14 +11,25 @@ ResIN(
   weights = NULL,
   method_wCorr = "Polychoric",
   poly_ncor = 2,
+  ResIN_scores = TRUE,
   remove_negative = TRUE,
   EBICglasso = FALSE,
   EBICglasso_arglist = NULL,
+  remove_nonsignificant = FALSE,
+  sign_threshold = 0.05,
   node_covars = NULL,
   node_costats = NULL,
   network_stats = FALSE,
-  cluster = FALSE,
-  seed = 42
+  detect_clusters = FALSE,
+  cluster_method = NULL,
+  cluster_arglist = NULL,
+  cluster_assignment = FALSE,
+  seed = 42,
+  generate_ggplot = TRUE,
+  plot_ggplot = TRUE,
+  plot_whichstat = NULL,
+  plot_title = NULL,
+  save_input = TRUE
 )
 }
 \arguments{
@@ -34,24 +45,46 @@ ResIN(
 
 \item{poly_ncor}{How many CPU cores should be used to estimate polychoric correlation matrix? Only used if \code{cor_method = "polychoric"}.}
 
+\item{ResIN_scores}{Should spatial scores be calculated for every individual. Defaults to TURE. Function obtains the mean positional score on the major (x-axis) and minor (y-axsis). Further versions of this package will indlude more sophisticated scoring techniques.}
+
 \item{remove_negative}{Should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.}
 
 \item{EBICglasso}{Should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.}
 
 \item{EBICglasso_arglist}{An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE.}
 
+\item{remove_nonsignificant}{Optionally, should non-significant edges be removed from the ResIN network? Defaults to FALSE. Note that this option is incompatible with EBICglasso and weighted correlations.}
+
+\item{sign_threshold}{At what p-value threshold should non-significant edges be removed? Defaults to 0.05.}
+
 \item{node_covars}{An optional character string selecting quantitative covariates that can be used to enhance ResIN analysis. Typically, these covariates provide grouped summary statistics for item response nodes. (E.g.: What is the average age or income level of respondents who selected a particular item response?) Variable names specified here should match existing columns in \code{df}.}
 
 \item{node_costats}{If any \code{node_covars} are selected, what summary statistics should be estimated from them? Argument should be a character vector of the same length of \code{node_covars}and call a base-R function. (E.g. \code{"mean"}, \code{"median"}, \code{"sd"}). The first element in \code{node_costats} specifies the summary statistic extracted from the first element in \code{node_covars}, and so on.}
 
-\item{network_stats}{Should common network structuration and centralization metrics be extracted? Calls \code{qgraph::centrality_auto} and \code{DirectedClustering::ClustF} to the ResIN graph object to extract network average betweenness, closeness, strength centrality (mean) and centralization scores (sd). Also estimates network expected influence, average path length, and global clustering coefficients.}
+\item{network_stats}{Should common node- and graph level network statistics be extracted? Calls \code{qgraph::centrality_auto} and \code{DirectedClustering::ClustF} to the ResIN graph object to extract node-level betweenness, closeness, strength centrality, as well as the mean and standard deviation of these scores at the network level. Also estimates network expected influence, average path length, and global clustering coefficients.}
 
-\item{cluster}{Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs "cluster_leading_eigen" function from the igraph package and stores results in node_frame.}
+\item{detect_clusters}{Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs a clustering method from the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) library and stores the results in the \code{ResIN_nodeframe} output.}
+
+\item{cluster_method}{A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function.}
+
+\item{cluster_arglist}{An optional list specifying additional arguments to the selected [igraph](https://igraph.org/r/doc/communities.html) clustering method.}
+
+\item{cluster_assignment}{Should individual (survey) respondents be assigned to different clusters? If set to TRUE, function will generate an n*c matrix of probabilities for each respondent to be assigned to one of c clusters. Furthermore, a vector of length n is generated displaying the most likely cluster respondents belong to. In case of a tie between one or more clusters, a very small amount of random noise determines assignment. Both matrix and vectors are added to the \code{aux_objects} list. Defaults to FALSE and will be ignored if \code{detect_clusters} is set to FALSE.}
 
 \item{seed}{Random seed for force-directed algorithm.}
+
+\item{generate_ggplot}{Should a ggplot-based visualization of the ResIN network be generated? Defaults to TRUE.}
+
+\item{plot_ggplot}{Should a basic ggplot of the ResIN network be plotted? Defaults to TRUE.}
+
+\item{plot_whichstat}{Should a particular node-level metric be color-visualized in the ggplot output? For node clusters, specify "clusters". For a particular node-level co-variate please specify the name of the particular element in \code{node_covars} followed by a "_" and the specific \code{node_costats} you would like to visualize. For instance if you want the visualize average age at the node-level, you should specify "age_mean". To colorize by node centrality statistics, possible choices are "Strength", "Betweenness", "Closeness", and "ExpectedInfluence". Defaults to NULL. Make sure to supply appropriate choices to \code{node_covars}, \code{node_costats}, \code{detect_clusters}, and/or \code{network_stats} prior to setting this argument.}
+
+\item{plot_title}{Optionally, a character scalar specifying the title of the ggplot output.}
+
+\item{save_input}{Optionally, should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.}
 }
 \value{
-A list object containing the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), a ggplot-ready edge-list type dataframe (\code{edgelist_frame}), a node-level dataframe (\code{node_frame}), a vector with the optional graph structuration (\code{graph_structuration}) and centralization (\code{graph_centralization}) statistics, as well as the dummy-coded item-response dataframe (\code{df_dummies}).
+An edge-list type dataframe, \code{ResIN_edgelist}, a node-level dataframe, \code{ResIN_nodeframe}, an n*2 dataframe of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}) and centralization (\code{graph_centralization}), as well as a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response dataframe (\code{df_dummies}).
 }
 \description{
 Performs Response Item-Network (ResIN) analysis
@@ -60,32 +93,9 @@ Performs Response Item-Network (ResIN) analysis
 
 ## Load the 12-item simulated Likert-type ResIN toy dataset
 data(lik_data)
-library(ggplot2)
 
 # Apply the ResIN function to toy Likert data:
-output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, cluster = TRUE)
+ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, cluster = TRUE)
 
-# Create a basic outcome plot with ggplot
-output$edgelist_frame <- output$edgelist_frame[order(output$edgelist_frame$Strength,
-                                                 decreasing = FALSE), ]
-ResIN_plot <- ggplot2::ggplot(output$edgelist_frame)+
-  geom_curve(data = output$edgelist_frame, aes(x = from.x, xend = to.x, y = from.y,
-                                             yend = to.y, linewidth = weight,
-                                             color = Strength), curvature = 0.2)+
-  geom_point(aes(x = from.x, y = from.y, shape = as.factor(cluster)), size = 8)+
-  geom_point(aes(x = to.x, y = to.y), size = 8)+
-  geom_text(data = output$edgelist_frame, aes(x = from.x, y = from.y, label = from),
-            size = 3, color = "white")+
-  geom_text(data = output$edgelist_frame, aes(x = to.x, y = to.y, label = to),
-            size = 3, color = "white")+
-  ggtitle("ResIN example  plot")+
-  theme_dark()+
-  theme(axis.text.x = element_blank(), axis.title.x = element_blank(),
-        axis.text.y = element_blank(), axis.title.y = element_blank(),
-        axis.ticks = element_blank(), panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(), legend.position = "none",
-        legend.text = element_blank(), plot.title = element_text(hjust = 0.5))
-
-ResIN_plot
 
 }
