@@ -386,8 +386,9 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
   }
 
   ### Coloring by co-stats:
-  if(!(is.null(plot_whichstat)) & !(plot_whichstat %in% c("cluster", "Strength", "Betweenness", "Closeness", "ExpectedInfluence"))){
-    if(is.null(node_covars) | is.null(node_costats)) {
+  if(!(is.null(plot_whichstat))){
+    if( !(plot_whichstat %in% c("cluster", "Strength", "Betweenness", "Closeness", "ExpectedInfluence"))){
+      if(is.null(node_covars) | is.null(node_costats)) {
       stop("You must select at least one node level covariate (node_covars) and specify at least one summary statistic (node_costats) to be able to visualize the latter.")
     }
     ResIN_ggplot <- remove_layer(ResIN_ggplot, c(2,3))
@@ -396,7 +397,8 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
       ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
                     color = node_frame[, plot_whichstat]), size = 4.5)+
       ggplot2::scale_color_continuous(name = plot_whichstat)
-  }
+    }
+
 
   ### Coloring by node-level centrality stats:
   if(plot_whichstat %in% c("Strength", "Betweenness", "Closeness", "ExpectedInfluence")){
@@ -409,7 +411,8 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
       ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
                                color = node_frame[, plot_whichstat]), size = 4.5)+
                            scale_color_continuous(name = plot_whichstat)
-                           }
+    }
+  }
 
   ## Plotting ggplot graph:
   if(plot_ggplot==TRUE) {
