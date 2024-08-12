@@ -31,7 +31,7 @@ ResIN_to_qgraph <- function(ResIN_object, qgraph_arglist = NULL) {
   if(is.null(qgraph_arglist)) {
     qgraph_arglist <- list(layout = "spring", maximum = 1, vsize = 6,
                            DoNotPlot = TRUE, sampleSize = nrow(ResIN_object$aux_objects$df_dummies),
-                           title = "ResIN Graph", mar = c(3,3,3,3),
+                           title = "ResIN graph in qgraph", mar = c(2,2,2,2),
                            normalize = FALSE)
     }
   res_in_graph_qgraph <- do.call(qgraph::qgraph, c(list(input = ResIN_object$aux_objects$adj_matrix), qgraph_arglist))

@@ -4,27 +4,27 @@
 \alias{ResIN_to_gephi}
 \title{ResIN_to_gephi}
 \usage{
-ResIN_to_gephi(ResIN_object, file, from = "from", to = "to")
+ResIN_to_gephi(ResIN_object, file = "ResIN_gephi.csv")
 }
 \arguments{
 \item{ResIN_object}{the output of the ResIN function (a list with class ResIN).}
 
-\item{path}{the path with a file name and csv extension for the Gephi readable file to be output at.}
+\item{file}{the name with .csv extension for the Gephi readable file to be output at. Defaults to "ResIN_gephi.csv".}
 }
 \value{
-A series of csv files readablbe by Gephi
+A series of csv files readable by Gephi
 }
 \description{
 Saves a ResIN graph as a series of csv files readable by Gephi. Source code taken from RMHogervorst / gephi
 }
 \examples{
 
-\donttest{
+\dontrun{
 ## Load the 12-item simulated Likert-type ResIN toy dataset
 data(lik_data)
 
 ## Run the function:
-ResIN_to_gephi(ResIN(lik_data))
+ResIN_to_gephi(ResIN(lik_data), file = "ResIN_gephi.csv")
 }
 
 }

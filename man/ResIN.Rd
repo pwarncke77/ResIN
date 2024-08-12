@@ -45,7 +45,7 @@ ResIN(
 
 \item{poly_ncor}{How many CPU cores should be used to estimate polychoric correlation matrix? Only used if \code{cor_method = "polychoric"}.}
 
-\item{ResIN_scores}{Should spatial scores be calculated for every individual. Defaults to TURE. Function obtains the mean positional score on the major (x-axis) and minor (y-axsis). Further versions of this package will indlude more sophisticated scoring techniques.}
+\item{ResIN_scores}{Should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Further versions of this package will include more sophisticated scoring techniques.}
 
 \item{remove_negative}{Should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.}
 
@@ -59,7 +59,7 @@ ResIN(
 
 \item{node_covars}{An optional character string selecting quantitative covariates that can be used to enhance ResIN analysis. Typically, these covariates provide grouped summary statistics for item response nodes. (E.g.: What is the average age or income level of respondents who selected a particular item response?) Variable names specified here should match existing columns in \code{df}.}
 
-\item{node_costats}{If any \code{node_covars} are selected, what summary statistics should be estimated from them? Argument should be a character vector of the same length of \code{node_covars}and call a base-R function. (E.g. \code{"mean"}, \code{"median"}, \code{"sd"}). The first element in \code{node_costats} specifies the summary statistic extracted from the first element in \code{node_covars}, and so on.}
+\item{node_costats}{If any \code{node_covars} are selected, what summary statistics should be estimated from them? Argument should be a character vector and call a base-R function. (E.g. \code{"mean"}, \code{"median"}, \code{"sd"}). Each element specified in \code{node_costats} is applied to each element in \code{node_covars} and the out-put is stored as a node-level summary statistic in the \code{ResIN_nodeframe}. The extra columns in \code{ResIN_nodeframe} are labeled according to the following template: "covariate name"_"statistic". So for the respondents mean age, the corresponding column in \code{ResIN_nodeframe} would be labeled as "age_mean".}
 
 \item{network_stats}{Should common node- and graph level network statistics be extracted? Calls \code{qgraph::centrality_auto} and \code{DirectedClustering::ClustF} to the ResIN graph object to extract node-level betweenness, closeness, strength centrality, as well as the mean and standard deviation of these scores at the network level. Also estimates network expected influence, average path length, and global clustering coefficients.}
 
@@ -77,25 +77,25 @@ ResIN(
 
 \item{plot_ggplot}{Should a basic ggplot of the ResIN network be plotted? Defaults to TRUE.}
 
-\item{plot_whichstat}{Should a particular node-level metric be color-visualized in the ggplot output? For node clusters, specify "clusters". For a particular node-level co-variate please specify the name of the particular element in \code{node_covars} followed by a "_" and the specific \code{node_costats} you would like to visualize. For instance if you want the visualize average age at the node-level, you should specify "age_mean". To colorize by node centrality statistics, possible choices are "Strength", "Betweenness", "Closeness", and "ExpectedInfluence". Defaults to NULL. Make sure to supply appropriate choices to \code{node_covars}, \code{node_costats}, \code{detect_clusters}, and/or \code{network_stats} prior to setting this argument.}
+\item{plot_whichstat}{Should a particular node-level metric be color-visualized in the ggplot output? For node cluster, specify "cluster". For a particular node-level co-variate please specify the name of the particular element in \code{node_covars} followed by a "_" and the specific \code{node_costats} you would like to visualize. For instance if you want the visualize average age at the node-level, you should specify "age_mean". To colorize by node centrality statistics, possible choices are "Strength", "Betweenness", "Closeness", and "ExpectedInfluence". Defaults to NULL. Make sure to supply appropriate choices to \code{node_covars}, \code{node_costats}, \code{detect_clusters}, and/or \code{network_stats} prior to setting this argument.}
 
 \item{plot_title}{Optionally, a character scalar specifying the title of the ggplot output.}
 
 \item{save_input}{Optionally, should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.}
 }
 \value{
-An edge-list type dataframe, \code{ResIN_edgelist}, a node-level dataframe, \code{ResIN_nodeframe}, an n*2 dataframe of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}) and centralization (\code{graph_centralization}), as well as a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response dataframe (\code{df_dummies}).
+An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}) and centralization (\code{graph_centralization}), as well as a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}).
 }
 \description{
 Performs Response Item-Network (ResIN) analysis
 }
 \examples{
 
-## Load the 12-item simulated Likert-type ResIN toy dataset
+## Load the 12-item simulated Likert-type toy dataset
 data(lik_data)
 
 # Apply the ResIN function to toy Likert data:
-ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, cluster = TRUE)
+ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, detect_clusters = TRUE)
 
 
 }

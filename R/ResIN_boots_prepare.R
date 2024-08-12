@@ -1,6 +1,6 @@
 #' @title ResIN_boots_prepare
 #'
-#' @description Prepare ResIN analysis for bootstrapping
+#' @description Prepare a ResIN-based bootstrap analysis
 #'
 #' @param ResIN_object A ResIN object to prepare bootstrapping workflow.
 #' @param n Bootstrapping sample size. Defaults to 10.000.
@@ -12,14 +12,23 @@
 #' @return A list object containing n re-sampled or permuted copies of the raw data, along with a list of instructions for how to perform the ResIN analysis and what outputs to generate.
 #'
 #' @examples
-#' ## Load the 12-item simulated Likert-type ResIN toy dataset
+#' ## Load the 12-item simulated Likert-type toy dataset
 #' data(lik_data)
 #'
 #' # Apply the ResIN function to toy Likert data:
-#' ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, cluster = TRUE)
+#' ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE,
+#'                       generate_ggplot = FALSE)
 #'
+#'\dontrun{
 #' # Prepare for bootstrapping
 #' prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=5000, boots_type="permute")
+#'
+#' # Execute the prepared bootstrap list
+#' executed_boots <-  ResIN_boots_execute(prepped_boots, parallel = TRUE, detect_cores = TRUE)
+#'
+#' # Extract results - here for example, the network (global)-clustering coefficient
+#' ResIN_boots_extract(executed_boots, what = "global_clustering", summarize_results = TRUE)
+#'}
 #'
 #' @export
 #' @importFrom dplyr "sample_n" "select" "all_of"
@@ -65,7 +74,7 @@ ResIN_boots_prepare <- function(ResIN_object, n=10000, boots_type="resample", re
     }
   }
 
-  class(mega_list) <- c("list", "ResIN_bootsprepped")
+  class(mega_list) <- c("list", "ResIN_boots_prepped")
   return(mega_list)
 }
 

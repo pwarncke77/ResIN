@@ -8,14 +8,14 @@
 #' @param weights An optional continuous vector of survey weights. Should have the same length as number of observations in df. If weights are provided, weighted correlation matrix will be estimated with the \code{weightedCorr} function from the \code{wCorr} package.
 #' @param method_wCorr If weights are supplied, which method for weighted correlations should be used? Defaults to \code{"Polychoric"}. See \code{wCorr::weightedCorr} for all correlation options.
 #' @param poly_ncor How many CPU cores should be used to estimate polychoric correlation matrix? Only used if \code{cor_method = "polychoric"}.
-#' @param ResIN_scores Should spatial scores be calculated for every individual. Defaults to TURE. Function obtains the mean positional score on the major (x-axis) and minor (y-axsis). Further versions of this package will indlude more sophisticated scoring techniques.
+#' @param ResIN_scores Should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Further versions of this package will include more sophisticated scoring techniques.
 #' @param remove_negative Should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.
 #' @param EBICglasso Should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.
 #' @param EBICglasso_arglist An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE.
 #' @param remove_nonsignificant Optionally, should non-significant edges be removed from the ResIN network? Defaults to FALSE. Note that this option is incompatible with EBICglasso and weighted correlations.
 #' @param sign_threshold At what p-value threshold should non-significant edges be removed? Defaults to 0.05.
 #' @param node_covars An optional character string selecting quantitative covariates that can be used to enhance ResIN analysis. Typically, these covariates provide grouped summary statistics for item response nodes. (E.g.: What is the average age or income level of respondents who selected a particular item response?) Variable names specified here should match existing columns in \code{df}.
-#' @param node_costats If any \code{node_covars} are selected, what summary statistics should be estimated from them? Argument should be a character vector of the same length of \code{node_covars}and call a base-R function. (E.g. \code{"mean"}, \code{"median"}, \code{"sd"}). The first element in \code{node_costats} specifies the summary statistic extracted from the first element in \code{node_covars}, and so on.
+#' @param node_costats If any \code{node_covars} are selected, what summary statistics should be estimated from them? Argument should be a character vector and call a base-R function. (E.g. \code{"mean"}, \code{"median"}, \code{"sd"}). Each element specified in \code{node_costats} is applied to each element in \code{node_covars} and the out-put is stored as a node-level summary statistic in the \code{ResIN_nodeframe}. The extra columns in \code{ResIN_nodeframe} are labeled according to the following template: "covariate name"_"statistic". So for the respondents mean age, the corresponding column in \code{ResIN_nodeframe} would be labeled as "age_mean".
 #' @param network_stats Should common node- and graph level network statistics be extracted? Calls \code{qgraph::centrality_auto} and \code{DirectedClustering::ClustF} to the ResIN graph object to extract node-level betweenness, closeness, strength centrality, as well as the mean and standard deviation of these scores at the network level. Also estimates network expected influence, average path length, and global clustering coefficients.
 #' @param detect_clusters Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs a clustering method from the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) library and stores the results in the \code{ResIN_nodeframe} output.
 #' @param cluster_method A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function.
@@ -23,25 +23,25 @@
 #' @param cluster_assignment Should individual (survey) respondents be assigned to different clusters? If set to TRUE, function will generate an n*c matrix of probabilities for each respondent to be assigned to one of c clusters. Furthermore, a vector of length n is generated displaying the most likely cluster respondents belong to. In case of a tie between one or more clusters, a very small amount of random noise determines assignment. Both matrix and vectors are added to the \code{aux_objects} list. Defaults to FALSE and will be ignored if \code{detect_clusters} is set to FALSE.
 #' @param generate_ggplot Should a ggplot-based visualization of the ResIN network be generated? Defaults to TRUE.
 #' @param plot_ggplot Should a basic ggplot of the ResIN network be plotted? Defaults to TRUE.
-#' @param plot_whichstat Should a particular node-level metric be color-visualized in the ggplot output? For node clusters, specify "clusters". For a particular node-level co-variate please specify the name of the particular element in \code{node_covars} followed by a "_" and the specific \code{node_costats} you would like to visualize. For instance if you want the visualize average age at the node-level, you should specify "age_mean". To colorize by node centrality statistics, possible choices are "Strength", "Betweenness", "Closeness", and "ExpectedInfluence". Defaults to NULL. Make sure to supply appropriate choices to \code{node_covars}, \code{node_costats}, \code{detect_clusters}, and/or \code{network_stats} prior to setting this argument.
+#' @param plot_whichstat Should a particular node-level metric be color-visualized in the ggplot output? For node cluster, specify "cluster". For a particular node-level co-variate please specify the name of the particular element in \code{node_covars} followed by a "_" and the specific \code{node_costats} you would like to visualize. For instance if you want the visualize average age at the node-level, you should specify "age_mean". To colorize by node centrality statistics, possible choices are "Strength", "Betweenness", "Closeness", and "ExpectedInfluence". Defaults to NULL. Make sure to supply appropriate choices to \code{node_covars}, \code{node_costats}, \code{detect_clusters}, and/or \code{network_stats} prior to setting this argument.
 #' @param plot_title Optionally, a character scalar specifying the title of the ggplot output.
 #' @param save_input Optionally, should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.
 #' @param seed Random seed for force-directed algorithm.
 #'
-#' @return An edge-list type dataframe, \code{ResIN_edgelist}, a node-level dataframe, \code{ResIN_nodeframe}, an n*2 dataframe of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}) and centralization (\code{graph_centralization}), as well as a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response dataframe (\code{df_dummies}).
+#' @return An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}) and centralization (\code{graph_centralization}), as well as a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}).
 #'
 #' @examples
 #'
-#' ## Load the 12-item simulated Likert-type ResIN toy dataset
+#' ## Load the 12-item simulated Likert-type toy dataset
 #' data(lik_data)
 #'
 #' # Apply the ResIN function to toy Likert data:
-#' ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, cluster = TRUE)
+#' ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, detect_clusters = TRUE)
 #'
 #'
 #' @export
 #' @importFrom ggplot2 "ggplot" "geom_curve" "geom_point" "geom_text" "ggtitle" "scale_color_continuous" "scale_color_discrete" "aes" "element_blank" "element_text" "theme" "theme_classic" "coord_fixed"
-#' @importFrom dplyr "select" "left_join" "all_of"
+#' @importFrom dplyr "select" "left_join" "all_of" "mutate"
 #' @importFrom stats "complete.cases" "cor" "sd" "prcomp" "cov" "princomp"
 #' @importFrom fastDummies "dummy_cols"
 #' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso" "qgraph.layout.fruchtermanreingold"
@@ -51,7 +51,6 @@
 #' @importFrom DirectedClustering "ClustF"
 #' @importFrom psych "corr.test"
 #'
-
 
 ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
                       method_wCorr = "Polychoric", poly_ncor = 2, ResIN_scores = TRUE,
@@ -80,7 +79,6 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
     ResIN_arglist <- "not stored"
   }
 
-
   set.seed(seed)
 
   ## Select response node_vars
@@ -106,6 +104,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
     if(cor_method %in% c("pearson", "kendall", "spearman")) {
       res_in_cor <- cor(df_dummies, method = cor_method, use = "pairwise.complete.obs")
     }
+
   ### Weighted correlations:
   } else {
     res_in_cor <- matrix(NA, ncol(df_dummies), ncol(df_dummies))
@@ -190,8 +189,9 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
     structuration <- apply(node_net_stats$node.centrality, 2, FUN = mean)
     structuration[5] <- mean(node_net_stats$ShortestPathLengths)
     structuration[6] <- DirectedClustering::ClustF(res_in_cor)$GlobalCC
-    names(structuration) <- c("betweenness", "closeness", "strength", "expected_influence", "average_path_length", "global_clustering")
+    names(structuration) <- c("average_betweenness", "average_closeness", "average_strength", "average_expected_influence", "average_path_length", "global_clustering")
     centralization <- apply(node_net_stats$node.centrality, 2, FUN = sd)
+    names(centralization) <- c("betweenness_centralization", "closeness_centralization", "strength_centralization", "expected_influence_centralization")
   } else {
     structuration <- c("not estimated")
     centralization <- c("not estimated")
@@ -202,15 +202,20 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
     if(length(node_covars) != length(node_covars)) {
       stop("Covariate selection and summary statistics vectors must be of equal length.")
     }
+
+    node_costats_long <- rep(node_costats, length(node_covars))
     covars_frame <- dplyr::select(df, all_of(node_covars))
-    cov_stats <- as.data.frame(matrix(NA, length(same_items), length(node_covars)))
+    covars_frame_long <- matrix(unlist(replicate(length(node_costats), as.matrix(covars_frame), simplify = FALSE)), dim(covars_frame)[1], length(node_costats_long))
+
+    cov_stats <- as.data.frame(matrix(NA, length(same_items), length(node_costats_long)))
     for(i in 1:length(same_items)) {
-      for(j in 1:length(node_covars)) {
-        cov_stats[i, j] <- do.call(node_costats[j], c(list(x = covars_frame[, j][df_dummies[, i] == 1], na.rm = TRUE)))
+      for(j in 1:length(node_costats_long)) {
+        cov_stats[i, j] <- do.call(node_costats_long[j], c(list(x = covars_frame_long[, j][df_dummies[, i] == 1], na.rm = TRUE)))
       }
     }
-    colnames(cov_stats) <- paste(node_covars, node_costats, sep = "_")
+    colnames(cov_stats) <- paste(node_covars, node_costats_long, sep = "_")
     cov_stats$node_label <- colnames(res_in_cor)
+
   }
 
   ## Generating and merging the basic plotting dataframe with network and covariate stats
@@ -324,7 +329,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
 
     ### Maximum probability assignment
     temp_probs <- cluster_probs + rnorm(nrow(cluster_probs)*ncol(cluster_probs), 0, 0.001)
-    temp_probs <- mutate(temp_probs, max_ind = max.col(temp_probs))
+    temp_probs <- dplyr::mutate(temp_probs, max_ind = max.col(temp_probs))
     max_cluster <- temp_probs$max_ind
   } else {
     cluster_probs <- "not estimated"
@@ -342,7 +347,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
 
   # ggplot visualization
   if(generate_ggplot==FALSE){
-    ResIN_ggplot <- "no ggplot of ResIN network generated"
+    ResIN_ggplot <- "not generated"
   } else {
 
   if(is.null(plot_title)){
@@ -430,4 +435,6 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
 
   return(output)
 }
+
+
 

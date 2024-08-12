@@ -5,23 +5,26 @@
 \title{ResIN_boots_execute}
 \usage{
 ResIN_boots_execute(
-  ResIN_bootsprepped,
+  ResIN_boots_prepped,
   parallel = FALSE,
   detect_cores = TRUE,
   core_offset = 0L,
-  n_cores = 2L
+  n_cores = 2L,
+  inorder = FALSE
 )
 }
 \arguments{
-\item{ResIN_bootsprepped}{A list of prepared ResIN objects for bootstrapping (outcome of the \code{ResIN_boots_prepare} function)}
+\item{ResIN_boots_prepped}{A list of prepared ResIN objects for bootstrapping (outcome of the \code{ResIN_boots_prepare} function)}
 
-\item{parallel}{Should the function be executed in parallel using the \code{foreach} package? Defaults to FALSE. If FALSE, function will execute sequentially using a simple for loop.}
+\item{parallel}{Should the function be executed in parallel using the \code{foreach} package? Defaults to FALSE. If FALSE, function will execute sequentially in a simple for loop.}
 
 \item{detect_cores}{Should the number of available CPU cores be automatically detected? Defaults to TRUE and is ignored when parallel is set to FALSE.}
 
 \item{core_offset}{Optionally, specify a positive integer offset that is subtracted from the number of automatically detected cores. Defaults to 0L.}
 
 \item{n_cores}{Manually specify the number of available CPU cores. Defaults to 2L and is ignored if detect_cores is set to TRUE or if parallel is set to FALSE.}
+
+\item{inorder}{Should parallel execution be done in sequential order of the \code{ResIN_boots_prepped} object?}
 }
 \value{
 A list object containing n (bootstrapped) \code{ResIN} list objects.
@@ -30,19 +33,22 @@ A list object containing n (bootstrapped) \code{ResIN} list objects.
 Execute prepared ResIN bootstrap analysis
 }
 \examples{
-## Load the 12-item simulated Likert-type ResIN toy dataset
+## Load the 12-item simulated Likert-type toy dataset
 data(lik_data)
 
 # Apply the ResIN function to toy Likert data:
-ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, cluster = TRUE)
+ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE,
+                      generate_ggplot = FALSE)
 
 \dontrun{
 # Prepare for bootstrapping
 prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=5000, boots_type="permute")
 
 # Execute the prepared bootstrap list
+executed_boots <-  ResIN_boots_execute(prepped_boots, parallel = TRUE, detect_cores = TRUE)
 
-ResIN_boots_execute(prepped_boots, parallel = TRUE, detect_cores = TRUE)
+# Extract results - here for example, the network (global)-clustering coefficient
+ResIN_boots_extract(executed_boots, what = "global_clustering", summarize_results = TRUE)
 }
 
 }

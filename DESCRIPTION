@@ -11,8 +11,8 @@ BugReports: https://github.com/pwarncke77/ResIN/issues
 Depends:
     R (>= 4.2.0)
 Imports:
-    ggplot2,
-    dplyr,
+    ggplot2 (>= 3.4.4),
+    dplyr (>= 1.1.3),
     fastDummies,
     qgraph,
     igraph,

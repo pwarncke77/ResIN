@@ -3,18 +3,18 @@
 #' @description Saves a ResIN graph as a series of csv files readable by Gephi. Source code taken from RMHogervorst / gephi
 #'
 #' @param ResIN_object the output of the ResIN function (a list with class ResIN).
-#' @param path the path with a file name and csv extension for the Gephi readable file to be output at.
+#' @param file the name with .csv extension for the Gephi readable file to be output at. Defaults to "ResIN_gephi.csv".
 #'
-#' @return A series of csv files readablbe by Gephi
+#' @return A series of csv files readable by Gephi
 #'
 #' @examples
 #'
-#' \donttest{
+#' \dontrun{
 #' ## Load the 12-item simulated Likert-type ResIN toy dataset
 #' data(lik_data)
 #'
 #' ## Run the function:
-#' ResIN_to_gephi(ResIN(lik_data))
+#' ResIN_to_gephi(ResIN(lik_data), file = "ResIN_gephi.csv")
 #' }
 #'
 #' @export
@@ -22,26 +22,23 @@
 #' @references Source code was taken from: https://github.com/RMHogervorst/gephi?tab=MIT-1-ov-file#readme
 #'
 
-ResIN_to_gephi <- function(ResIN_object, file, from = "from", to = "to") {
+ResIN_to_gephi <- function(ResIN_object, file = "ResIN_gephi.csv") {
   ## Test for ResIN object
   if(class(ResIN_object)[2] !=  "ResIN"){
     stop("Please supply a ResIN type list object.")
   }
     dataframe <- ResIN_object$ResIN_edgelist
     df_names <- names(dataframe)
-    if (is.null(from)) {
-      from_ind <- 1
-    } else {
-      from_ind <- grep(from, df_names)[[1]]
-    }
+
+    from_ind <- grep("from", df_names)[[1]]
     df_names[from_ind] <- "Source"
-    if (is.null(to)) {
-      to_ind <- 2
-    } else {
-      to_ind <- grep(to, df_names)[[1]]
-    }
+
+    to_ind <- grep("to", df_names)[[1]]
     df_names[to_ind] <- "Target"
+
     names(dataframe) <- df_names
+
+    dataframe <- dataframe[, 1:3]
     readr::write_csv(dataframe, file = file, na = "")
     return(invisible(dataframe))
   }
@@ -57,7 +54,7 @@ ResIN_to_gephi <- function(ResIN_object, file, from = "from", to = "to") {
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-#   The above copyright notice and this permission notice shall be included in all
+# The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -67,4 +64,3 @@ ResIN_to_gephi <- function(ResIN_object, file, from = "from", to = "to") {
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-

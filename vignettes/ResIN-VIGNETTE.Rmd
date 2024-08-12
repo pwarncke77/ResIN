@@ -24,7 +24,7 @@ library(ResIN)
 
 Welcome to the ResIN R-Package vignette. Here we'll showcase and comment on some of the features available in the ResIN package.
 
-## A simple example with simulated data: 
+## A simple example with simulated data
 
 We'll first load a slightly noisy dataset of 8 Likert-scale items for 1000 hypothetical respondents:
 
@@ -46,13 +46,13 @@ ResIN_output <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE)
 ```
 
 
-### Visualize the network with ggplot:
+### Visualizing a ResIN network with ggplot
 
 The resulting \code{ResIN} object provides us both a node-list and an edge-list type data-frame. Let's first use the node-list to locate each vertex in 2D space. We can simply rely on the x- and y-axis coordinates estimated by the force-directed algorithm and supply these as arguments to \code{ggplot}. While we're at it, why not use a color aesthetic to visualize each node's strength centrality. Finally, we are just re-scaling the y-axis to 50% of the x-axis to demonstrate that uni-dimensionality is a reasonable assumption for this attitude space:
 
 ```{r plotting nodes, message=FALSE, warning=FALSE, fig.align='center', fig.width=12, fig.height=9}
 
-ggplot(ResIN_output$node_frame, aes(x = x, y = y))+
+ggplot(ResIN_output$ResIN_nodeframe, aes(x = x, y = y))+
   geom_point(size = 0.25, color = "grey")+
   geom_smooth(method = "lm", se = FALSE, linetype = 2, color = "red")+
   geom_label(data = ResIN_output$node_frame, aes(x = x, y = y, label = node_names, color = Strength), size = 5)+
@@ -69,10 +69,10 @@ ResIN's edge-list object provides us with much more detailed plotting (and analy
 ```{r plotting edges, message=FALSE, warning=FALSE, fig.align='center', fig.width=12, fig.height=9}
 
 edge_plot <- ggplot() +
-    geom_curve(data = ResIN_output$edgelist_frame, aes(x = from.x, xend = to.x, y = from.y,
+    geom_curve(data = ResIN_output$ResIN_edgelist, aes(x = from.x, xend = to.x, y = from.y,
                 yend = to.y, size = weight^5), curvature = 0.15, color = "darkgrey", alpha = 0.8) +
-    geom_label(data = ResIN_output$edgelist_frame, aes(x = from.x, y = from.y, label = from, color = Strength), size = 5) +
-    geom_label(data = ResIN_output$edgelist_frame, aes(x = to.x, y = to.y, label = to, color = Strength), size = 5) +
+    geom_label(data = ResIN_output$ResIN_edgelist, aes(x = from.x, y = from.y, label = from, color = Strength), size = 5) +
+    geom_label(data = ResIN_output$ResIN_edgelist, aes(x = to.x, y = to.y, label = to, color = Strength), size = 5) +
                   ## Make sure to plot node labels both based on the to and from columns in the plotting frame
     ggtitle("ResIN Network in 2D Latent Space")+
     labs(color = "Node strength centrality: ")+
@@ -90,28 +90,26 @@ edge_plot
 
 ```
 
-### qgraph and igraph integration:
+### Integration with qgraph and igraph
 
-The ResIN package allows for simple qgraph and igraph integration for researchers who primarily use either of these packages for network analysis. Among other output, the \code{ResIN_qgraph} and \code{ResIN_igraph} functions return S3 \code{qgraph} and \code{igraph}-list objects, respectively. The \code{qgraph_arglist} and \code{igraph_arglist} arguments conveniently pass a list of instructions to the underlying packages.
+The ResIN package allows for simple qgraph and igraph integration for researchers who primarily use either of these packages for network analysis.
 
 ```{r, warning=FALSE, message=FALSE, mysize=TRUE, size='\\scriptsize'}
 
 ## Integration with qgraph package
-resin_qgraph <- ResIN_qgraph(lik_data, plot_graph = TRUE,
-                    qgraph_arglist = list(layout = "spring", maximum = 1, vsize = 4,
-                    DoNotPlot = TRUE, sampleSize = nrow(lik_data),
-                    title = "ResIN plot made with qgraph package",
-                    mar = c(1,1,1,1), normalize = FALSE))
+ResIN_qgraph <- ResIN_to_qgraph(ResIN_output)
+
+plot(ResIN_qgraph)
 
 ```
 
 ```{r, warning=FALSE, message=FALSE, mysize=TRUE, size='\\scriptsize'}
 
 ## Integration with igraph package
-resin_igraph <- ResIN_igraph(lik_data)
+ResIN_igraph <- ResIN_to_igraph(ResIN_output)
 
-set.seed(12)
-igraph::plot.igraph(resin_igraph$igraph_obj)
+set.seed(24)
+igraph::plot.igraph(ResIN_igraph, margin = c(-0.1, -0.1 , -0.1, -0.1))
 
 ```
 
