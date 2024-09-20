@@ -11,6 +11,7 @@ ResIN(
   weights = NULL,
   method_wCorr = "Polychoric",
   poly_ncor = 2,
+  neg_offset = 0,
   ResIN_scores = TRUE,
   remove_negative = TRUE,
   EBICglasso = FALSE,
@@ -19,15 +20,19 @@ ResIN(
   sign_threshold = 0.05,
   node_covars = NULL,
   node_costats = NULL,
-  network_stats = FALSE,
+  network_stats = TRUE,
   detect_clusters = FALSE,
   cluster_method = NULL,
   cluster_arglist = NULL,
-  cluster_assignment = FALSE,
-  seed = 42,
+  cluster_assignment = TRUE,
+  seed = NULL,
   generate_ggplot = TRUE,
   plot_ggplot = TRUE,
   plot_whichstat = NULL,
+  plot_edgestat = NULL,
+  color_palette = "RdBu",
+  plot_responselabels = TRUE,
+  response_levels = NULL,
   plot_title = NULL,
   save_input = TRUE
 )
@@ -45,6 +50,8 @@ ResIN(
 
 \item{poly_ncor}{How many CPU cores should be used to estimate polychoric correlation matrix? Only used if \code{cor_method = "polychoric"}.}
 
+\item{neg_offset}{Should negative correlations be offset to avoid small correlation pairs disappearing? Defaults to \code{0}. Any positive number between 0 and 1 may be supplied instead.}
+
 \item{ResIN_scores}{Should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Further versions of this package will include more sophisticated scoring techniques.}
 
 \item{remove_negative}{Should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.}
@@ -61,7 +68,7 @@ ResIN(
 
 \item{node_costats}{If any \code{node_covars} are selected, what summary statistics should be estimated from them? Argument should be a character vector and call a base-R function. (E.g. \code{"mean"}, \code{"median"}, \code{"sd"}). Each element specified in \code{node_costats} is applied to each element in \code{node_covars} and the out-put is stored as a node-level summary statistic in the \code{ResIN_nodeframe}. The extra columns in \code{ResIN_nodeframe} are labeled according to the following template: "covariate name"_"statistic". So for the respondents mean age, the corresponding column in \code{ResIN_nodeframe} would be labeled as "age_mean".}
 
-\item{network_stats}{Should common node- and graph level network statistics be extracted? Calls \code{qgraph::centrality_auto} and \code{DirectedClustering::ClustF} to the ResIN graph object to extract node-level betweenness, closeness, strength centrality, as well as the mean and standard deviation of these scores at the network level. Also estimates network expected influence, average path length, and global clustering coefficients.}
+\item{network_stats}{Should common node- and graph level network statistics be extracted? Calls \code{qgraph::centrality_auto} and \code{DirectedClustering::ClustF} to the ResIN graph object to extract node-level betweenness, closeness, strength centrality, as well as the mean and standard deviation of these scores at the network level. Also estimates network expected influence, average path length, and global clustering coefficients. Defaults to TRUE. Set to FALSE if estimation takes a long time.}
 
 \item{detect_clusters}{Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs a clustering method from the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) library and stores the results in the \code{ResIN_nodeframe} output.}
 
@@ -71,15 +78,23 @@ ResIN(
 
 \item{cluster_assignment}{Should individual (survey) respondents be assigned to different clusters? If set to TRUE, function will generate an n*c matrix of probabilities for each respondent to be assigned to one of c clusters. Furthermore, a vector of length n is generated displaying the most likely cluster respondents belong to. In case of a tie between one or more clusters, a very small amount of random noise determines assignment. Both matrix and vectors are added to the \code{aux_objects} list. Defaults to FALSE and will be ignored if \code{detect_clusters} is set to FALSE.}
 
-\item{seed}{Random seed for force-directed algorithm.}
+\item{seed}{Random seed for force-directed algorithm. Defaults to NULL (no seed is set.) If scalar integer is supplied, that seed will be set prior to analysis.}
 
 \item{generate_ggplot}{Should a ggplot-based visualization of the ResIN network be generated? Defaults to TRUE.}
 
 \item{plot_ggplot}{Should a basic ggplot of the ResIN network be plotted? Defaults to TRUE.}
 
-\item{plot_whichstat}{Should a particular node-level metric be color-visualized in the ggplot output? For node cluster, specify "cluster". For a particular node-level co-variate please specify the name of the particular element in \code{node_covars} followed by a "_" and the specific \code{node_costats} you would like to visualize. For instance if you want the visualize average age at the node-level, you should specify "age_mean". To colorize by node centrality statistics, possible choices are "Strength", "Betweenness", "Closeness", and "ExpectedInfluence". Defaults to NULL. Make sure to supply appropriate choices to \code{node_covars}, \code{node_costats}, \code{detect_clusters}, and/or \code{network_stats} prior to setting this argument.}
+\item{plot_whichstat}{Should a particular node-level metric be color-visualized in the ggplot output? For node cluster, specify "cluster". For the same Likert response choices or options, specify "choices". For a particular node-level co-variate please specify the name of the particular element in \code{node_covars} followed by a "_" and the specific \code{node_costats} you would like to visualize. For instance if you want the visualize average age at the node-level, you should specify "age_mean". To colorize by node centrality statistics, possible choices are "Strength", "Betweenness", "Closeness", and "ExpectedInfluence". Defaults to NULL. Make sure to supply appropriate choices to \code{node_covars}, \code{node_costats}, \code{detect_clusters}, and/or \code{network_stats} prior to setting this argument.}
 
-\item{plot_title}{Optionally, a character scalar specifying the title of the ggplot output.}
+\item{plot_edgestat}{Should the thickness of the edges be adjusted according to a particular co-statistic? Defaults to NULL. Possible choices are "weights" for the bi-variate correlation strength, and "edgebetweenness"}
+
+\item{color_palette}{Optionally, you may specify the ggplot2 color palette to be applied to the plot. All options contained in [\code{RColorBrewer}](https://cran.r-project.org/web/packages/RColorBrewer/RColorBrewer.pdf) (for discrete colors such as cluster assignments) and [\code{ggplot2::scale_colour_distiller}](https://ggplot2.tidyverse.org/reference/scale_brewer.html) are supported. Defaults to "RdBu".}
+
+\item{plot_responselabels}{Should response labels be plotted via \code{geom_text}? Defaults to TRUE. It is recommended to set to FALSE if the network possesses a lot of nodes and/or long response choice names.}
+
+\item{response_levels}{An optional character vector specifying the correct order of global response levels. Only useful if all node-items follow the same convention (e.g. ranging from "strong disagreement" to "strong agreement"). The supplied vector should have the same length as the total number of response options and supply these (matching exactly) in the correct order. E.g. c("Strongly Agree", "Somewhat Agree", "Neutral", "Somewhat Disagree", "Strongly Disagree"). Defaults to NULL.}
+
+\item{plot_title}{Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".}
 
 \item{save_input}{Optionally, should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.}
 }
