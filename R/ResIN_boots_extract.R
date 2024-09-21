@@ -36,26 +36,29 @@ ResIN_boots_extract <- function(ResIN_boots_executed, what, summarize_results = 
   result <- list()
 
   ### Define search list function
-  search_list <- function(current_list) {
-    for (name in names(current_list)) {
-      item <- current_list[[name]]
+  search_list <- function(current_list, what) {
+    result <- list()
+    for (i in seq_along(current_list)) {
+      item <- current_list[[i]]
+      # Get the name if it exists; otherwise, set to NULL
+      name <- if (!is.null(names(current_list))) names(current_list)[i] else NULL
+
       if (is.list(item)) {
-        search_list(item)
+        # Recursively search the sublist and accumulate results
+        result <- c(result, search_list(item, what))
       } else if (is.data.frame(item)) {
         if (what %in% colnames(item)) {
-          result <<- c(result, item[[what]])
+          result <- c(result, item[[what]])
         }
-      } else if (name == what) {
-        result <<- c(result, item)
+      } else if (!is.null(name) && name == what) {
+        result <- c(result, item)
       }
     }
+    return(result)
   }
 
-  ### Execute search list function
-  search_list(ResIN_boots_executed)
-
-  ### Store and return results as vector
-  result <- unlist(result)
+  # Execute search list function
+  result <- search_list(ResIN_boots_executed, what = what)
 
   ### Optional summarize function
   sum_res <- function(result) {

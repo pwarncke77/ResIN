@@ -32,7 +32,7 @@ To see this in action, let's replicate and (slightly) extend the analysis in [LÃ
 
 As with any data analysis, a little bit of housekeeping goes a long way... and ResIN is no exception! Let's use the LÃ¼ders et.al. (2024) data -- which comes for free with the R-package -- to illustrate this process.
 
-```{r import and data cleaning, echo = FALSE}
+```{r import and data cleaning, echo = FALSE, warning = FALSE}
 library(ResIN)
 library(dplyr)
 
@@ -75,7 +75,6 @@ Core_Items <- Core_Items %>%
 ## Setting the seed for consistency
 set.seed(151)
 
-
 ```
 
 The cleaned data set now looks like this:
@@ -90,7 +89,7 @@ head(Core_Items)
 Let's get to the meat of it. For a first, very basic ResIN model, we can simply supply our \code{Core_Items} set to the \code{ResIN} function.
 
 ```{r first ResIN}
-ResIN_out <- ResIN(Core_Items)
+ResIN_out <- ResIN(Core_Items, seed=151)
 ```
 
 Not too bad! You'll notice that the \code{ResIN} function produces and output a basic ggplot by default. This feature can be turned of by setting \code{plot_ggplot=FALSE} (something you definitely want to do when bootstrapping thousands of networks, but we'll get to that part). You can always access and call the ResIN-plot object in the stored output (e.g., \code{ResIN_output$ResIN_ggplot}. To suppress the off-the-shelf plot generation altogether, simply set \code{generate_ggplot=FALSE}.
@@ -233,11 +232,18 @@ Let's run a bootstrapping analysis to estimate the non-parametric uncertainty ar
 
 ```{r}
 ## Let's generate a new, more lean ResIN analysis by omitting network statistics calculations, plot generation, and individual-level scoring. This will optimize the execution time.
-# ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants", "welfare_spending", "gay_marriage", "protect_environ", "gun_control", "aid_blacks"), node_covars = c("partisan"), node_costats = c("mean"), network_stats = FALSE, generate_ggplot = FALSE, plot_ggplot = FALSE, ResIN_scores = FALSE, seed = 151)
+ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants", "welfare_spending", "gay_marriage", "protect_environ", "gun_control", "aid_blacks"), node_covars = c("partisan"), node_costats = c("mean"), network_stats = FALSE, generate_ggplot = FALSE, plot_ggplot = FALSE, ResIN_scores = FALSE, detect_clusters = FALSE, seed = 151)
+
+ResIN_prepped <- ResIN_boots_prepare(ResIN_out, n = 2, boots_type = "resample")
+
+# ResIN_executed <- ResIN_boots_execute(ResIN_prepped, parallel = TRUE, n_cores = 2)
 # 
-# ResIN_prepped <- ResIN_boots_prepare(ResIN_out, n = 500, boots_type = "resample")
-# 
-# ResIN_executed <- ResIN_boots_execute(ResIN_prepped)
+# saveRDS(ResIN_executed, "ResIN_executed.RDS")
+ResIN_executed <- readRDS("ResIN_executed.RDS")
+
+# node_x <- ResIN_boots_extract(ResIN_executed, what = "x")
+
+# ResIN_boots_executed <- ResIN_executed
 ```
 
 ## Export ResIN graphs to qgraph, igraph, and gephi
@@ -255,3 +261,55 @@ class(ResIN_qgraph)
 # ResIN_to_gephi(ResIN_out, file = "ResIN_gephi.csv")
 
 ```
+
+```{r Spielwiese}
+
+search_list <- function(current_list, what) {
+  result <- list()
+  for (name in names(current_list)) {
+    item <- current_list[[name]]
+    if (is.list(item)) {
+      # Recursively search the sublist and accumulate results
+      result <- c(result, search_list(item, what))
+    } else if (is.data.frame(item)) {
+      if (what %in% colnames(item)) {
+        result <- c(result, item[[what]])
+      }
+    } else if (name == what) {
+      result <- c(result, item)
+    }
+  }
+  return(result)
+}
+
+# Execute search list function
+result <- unlist(search_list(ResIN_executed, what = what))
+
+# Sample data
+ResIN_executed <- list(
+  a = 1,
+  b = list(
+    c = data.frame(d = 4, e = 5),
+    f = 6
+  ),
+  g = data.frame(h = 7, i = 8),
+  j = list(
+    k = 9,
+    l = data.frame(m = 10, n = 11, d = 6)
+  )
+)
+
+# Define the search term
+what <- "d"
+
+# Execute the function
+result <- unlist(search_list(ResIN_executed, what = what))
+
+# View the result
+print(result)
+
+```
+
+
+
+

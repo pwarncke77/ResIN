@@ -223,24 +223,6 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
     centralization <- c("not estimated")
   }
 
-  ## Calculating summary statistics based on co-variates
-  if(!(is.null(node_covars)) & !(is.null(node_costats))) {
-    if(length(node_covars) != length(node_covars)) {
-      stop("Covariate selection and summary statistics vectors must be of equal length.")
-    }
-
-    covars_frame <- as.matrix(dplyr::select(df, all_of(node_covars)))
-    cov_stats <- as.data.frame(matrix(NA, length(same_items), length(node_costats)))
-    for(i in 1:length(same_items)) {
-      for(j in 1:length(node_costats)) {
-        cov_stats[i, j] <- do.call(node_costats[j], c(list(x = covars_frame[, j][df_dummies[, i] == 1], na.rm = TRUE)))
-      }
-    }
-    colnames(cov_stats) <- paste(node_covars, node_costats, sep = "_")
-    cov_stats$node_label <- colnames(res_in_cor)
-
-  }
-
   ## Generating and merging the basic plotting dataframe with network and covariate stats
   if(remove_negative==FALSE) {
     graph_layout <- as.data.frame(prcomp(igraph::layout_nicely(ResIN_igraph))$x)
@@ -254,59 +236,58 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
   node_frame <- graph_layout
   node_frame$from <- node_frame$node_names
 
-  if(network_stats==TRUE) {
-    node_frame <- cbind(node_frame, node_net_stats$node.centrality)
-    }
+  ## Generating the edge-list data-frame
+  g <- igraph::as_data_frame(ResIN_igraph)
+  g$from.x <- node_frame$x[match(g$from, node_frame$node_names)]
+  g$from.y <- node_frame$y[match(g$from, node_frame$node_names)]
+  g$to.x <- node_frame$x[match(g$to, node_frame$node_names)]
+  g$to.y <- node_frame$y[match(g$to, node_frame$node_names)]
 
-  if(!(is.null(node_covars)) & !(is.null(node_costats))) {
-    node_frame <- cbind(node_frame, cov_stats)
+  edgelist_frame <- dplyr::left_join(g, node_frame, by = "from")
+
+  ### Adding edge-betweenness if desired
+  if(network_stats==TRUE) {
+    edgelist_frame$from_to <- paste(edgelist_frame$from, edgelist_frame$to, sep = "_")
+    node_net_stats$edge.betweenness.centrality$from_to <- paste(node_net_stats$edge.betweenness.centrality$from,
+                                    node_net_stats$edge.betweenness.centrality$to, sep = "_")
+
+    node_net_stats$edge.betweenness.centrality$from <- NULL
+    node_net_stats$edge.betweenness.centrality$to <- NULL
+
+    edgelist_frame <- left_join(edgelist_frame, node_net_stats$edge.betweenness.centrality, by = "from_to")
   }
 
-  ## Scoring
-  if(ResIN_scores==TRUE & remove_negative==TRUE){
-    score_dummies_x <- as.matrix(df_dummies)
-    score_dummies_y <- as.matrix(df_dummies)
-    for(i in 1:ncol(score_dummies_x)){
-    score_dummies_x[, node_frame$node_names[i]][score_dummies_x[, node_frame$node_names[i]]==1] <- node_frame$x[node_frame$node_names==node_frame$node_names[i]]
-    score_dummies_y[, node_frame$node_names[i]][score_dummies_y[, node_frame$node_names[i]]==1] <- node_frame$y[node_frame$node_names==node_frame$node_names[i]]
-    }
-    score_dummies_x[score_dummies_x==0] <- NA
-    score_dummies_y[score_dummies_y==0] <- NA
-
-    scores_x <- apply(score_dummies_x, 1, FUN = function(x) {mean(x, na.rm=TRUE)})
-    scores_y <- apply(score_dummies_y, 1, FUN = function(x) {mean(x, na.rm=TRUE)})
-
-    scores <- as.data.frame(cbind(scores_x, scores_y))
-  } else {
-    scores <- "not estimated"
+  ## Integrating node-level network stats only into node-frame
+  if(network_stats==TRUE) {
+    node_frame <- cbind(node_frame, node_net_stats$node.centrality)
   }
 
   ## Perform clustering analysis
   if(detect_clusters==TRUE) {
     if(is.null(cluster_method)) {
-    cluster <- do.call(igraph::cluster_leading_eigen, c(list(graph = ResIN_igraph), cluster_arglist))
+      cluster <- do.call(igraph::cluster_leading_eigen, c(list(graph = ResIN_igraph), cluster_arglist))
     } else {
-    if(cluster_method=="cluster_leading_eigen") {
+      if(cluster_method=="cluster_leading_eigen") {
+      }
+      if(cluster_method=="cluster_fast_greedy") {
+        cluster <- do.call(igraph::cluster_fast_greedy, c(list(graph = ResIN_igraph), cluster_arglist))
+      }
+      if(cluster_method=="cluster_spinglass") {
+        cluster <- do.call(igraph::cluster_spinglass, c(list(graph = ResIN_igraph), cluster_arglist))
+      }
+      if(cluster_method=="cluster_edge_betweenness") {
+        cluster <- do.call(igraph::cluster_edge_betweenness, c(list(graph = ResIN_igraph), cluster_arglist))
+      }
+      if(cluster_method=="cluster_louvain") {
+        cluster <- do.call(igraph::cluster_louvain, c(list(graph = ResIN_igraph), cluster_arglist))
+      }
+      if(cluster_method=="cluster_leiden") {
+        cluster <- do.call(igraph::cluster_leiden, c(list(graph = ResIN_igraph), cluster_arglist))
+      }
+      if(cluster_method=="cluster_walktrap") {
+        cluster <- do.call(igraph::cluster_walktrap, c(list(graph = ResIN_igraph), cluster_arglist))
+      }
     }
-    if(cluster_method=="cluster_fast_greedy") {
-      cluster <- do.call(igraph::cluster_fast_greedy, c(list(graph = ResIN_igraph), cluster_arglist))
-    }
-    if(cluster_method=="cluster_spinglass") {
-      cluster <- do.call(igraph::cluster_spinglass, c(list(graph = ResIN_igraph), cluster_arglist))
-    }
-    if(cluster_method=="cluster_edge_betweenness") {
-      cluster <- do.call(igraph::cluster_edge_betweenness, c(list(graph = ResIN_igraph), cluster_arglist))
-    }
-    if(cluster_method=="cluster_louvain") {
-      cluster <- do.call(igraph::cluster_louvain, c(list(graph = ResIN_igraph), cluster_arglist))
-    }
-    if(cluster_method=="cluster_leiden") {
-      cluster <- do.call(igraph::cluster_leiden, c(list(graph = ResIN_igraph), cluster_arglist))
-    }
-    if(cluster_method=="cluster_walktrap") {
-      cluster <- do.call(igraph::cluster_walktrap, c(list(graph = ResIN_igraph), cluster_arglist))
-    }
-  }
 
     communities <- igraph::membership(cluster)
     nodes <- names(communities)
@@ -335,7 +316,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
     cluster_dummies <- as.matrix(df_dummies)
 
     for(i in 1:ncol(cluster_dummies)) {
-    cluster_dummies[, i][cluster_dummies[, i]==1] <- node_frame$cluster[node_frame$node_names==node_frame$node_names[i]]
+      cluster_dummies[, i][cluster_dummies[, i]==1] <- node_frame$cluster[node_frame$node_names==node_frame$node_names[i]]
     }
 
     cluster_dummies[cluster_dummies==0] <- NA
@@ -343,8 +324,8 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
 
     for(j in 1:max(node_frame$cluster, na.rm=TRUE)){
       for(i in 1:nrow(df_dummies)){
-    cluster_probs[i, j] <- sum(cluster_dummies[i, ][cluster_dummies[i, ]==j]/j, na.rm = TRUE)/sum(!(is.na(cluster_dummies[i, ])))
-        }
+        cluster_probs[i, j] <- sum(cluster_dummies[i, ][cluster_dummies[i, ]==j]/j, na.rm = TRUE)/sum(!(is.na(cluster_dummies[i, ])))
+      }
     }
 
     colnames(cluster_probs) <- paste0("cluster_", names(table(node_frame$cluster)))
@@ -358,28 +339,45 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
     max_cluster <- "not estimated"
   }
 
+  ## Calculating summary statistics based on co-variates
+  if(!(is.null(node_covars)) & !(is.null(node_costats))) {
+    if(length(node_covars) != length(node_covars)) {
+      stop("Covariate selection and summary statistics vectors must be of equal length.")
+    }
+
+    covars_frame <- as.matrix(dplyr::select(df, all_of(node_covars)))
+    cov_stats <- as.data.frame(matrix(NA, length(same_items), length(node_costats)))
+    for(i in 1:length(same_items)) {
+      for(j in 1:length(node_costats)) {
+        cov_stats[i, j] <- do.call(node_costats[j], c(list(x = covars_frame[, j][df_dummies[, i] == 1], na.rm = TRUE)))
+      }
+    }
+    colnames(cov_stats) <- paste(node_covars, node_costats, sep = "_")
+    cov_stats$node_label <- colnames(res_in_cor)
+
+    node_frame <- cbind(node_frame, cov_stats)
+  }
+
   ## Add choices to node_frame
   node_frame$choices <- as.factor(choices)
 
-  ## Generating the edge-list data-frame
-  g <- igraph::as_data_frame(ResIN_igraph)
-  g$from.x <- node_frame$x[match(g$from, node_frame$node_names)]
-  g$from.y <- node_frame$y[match(g$from, node_frame$node_names)]
-  g$to.x <- node_frame$x[match(g$to, node_frame$node_names)]
-  g$to.y <- node_frame$y[match(g$to, node_frame$node_names)]
+  ## Scoring
+  if(ResIN_scores==TRUE & remove_negative==TRUE){
+    score_dummies_x <- as.matrix(df_dummies)
+    score_dummies_y <- as.matrix(df_dummies)
+    for(i in 1:ncol(score_dummies_x)){
+      score_dummies_x[, node_frame$node_names[i]][score_dummies_x[, node_frame$node_names[i]]==1] <- node_frame$x[node_frame$node_names==node_frame$node_names[i]]
+      score_dummies_y[, node_frame$node_names[i]][score_dummies_y[, node_frame$node_names[i]]==1] <- node_frame$y[node_frame$node_names==node_frame$node_names[i]]
+    }
+    score_dummies_x[score_dummies_x==0] <- NA
+    score_dummies_y[score_dummies_y==0] <- NA
 
-  edgelist_frame <- dplyr::left_join(g, node_frame, by = "from")
+    scores_x <- apply(score_dummies_x, 1, FUN = function(x) {mean(x, na.rm=TRUE)})
+    scores_y <- apply(score_dummies_y, 1, FUN = function(x) {mean(x, na.rm=TRUE)})
 
-  ### Adding edge-betweenness if desired
-  if(network_stats==TRUE) {
-    edgelist_frame$from_to <- paste(edgelist_frame$from, edgelist_frame$to, sep = "_")
-    node_net_stats$edge.betweenness.centrality$from_to <- paste(node_net_stats$edge.betweenness.centrality$from,
-                                    node_net_stats$edge.betweenness.centrality$to, sep = "_")
-
-    node_net_stats$edge.betweenness.centrality$from <- NULL
-    node_net_stats$edge.betweenness.centrality$to <- NULL
-
-    edgelist_frame <- left_join(edgelist_frame, node_net_stats$edge.betweenness.centrality, by = "from_to")
+    scores <- as.data.frame(cbind(scores_x, scores_y))
+  } else {
+    scores <- "not estimated"
   }
 
   # ggplot visualization
@@ -526,6 +524,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
 
   return(output)
 }
+
 
 
 
