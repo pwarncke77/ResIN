@@ -97,7 +97,7 @@ Not too bad! You'll notice that the \code{ResIN} function produces and output a 
 If you would like to produce a less busy looking plot, you can replace the node labels with a simpler \code{geom_point}-aethetic by specifying \code{plot_responselabels=FALSE}. We are keeping the random seed identical throughout all examples here to avoid left and right flipping in the output. (ResIN doesn't care if the political left is also plotted on the left so we are seeding the random part of the model to avoid having to flip the graph manually.)
 
 ```{r first ResIN with geom_ploint}
-first_ResIN <- ResIN(Core_Items, plot_responselabels=FALSE, plot_ggplot=FALSE, seed = 151)
+first_ResIN <- ResIN(Core_Items, plot_responselabels=FALSE, plot_ggplot=FALSE, seed = 22)
 
 first_ResIN$ResIN_ggplot
 ```
@@ -108,7 +108,7 @@ So far so good. The above plots nicely reveal the familiar unidimensional spectr
 
 ```{r figure 2a}
 
-ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices", response_levels = c("--", "-", "+/-" , "+", "++"), plot_responselabels = FALSE, plot_title = "BrJSocPsychol 2024 ResIN Network", seed = 151)
+ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices", response_levels = c("--", "-", "+/-" , "+", "++"), plot_responselabels = FALSE, plot_title = "BrJSocPsychol 2024 ResIN Network", seed = 22)
 
 ```
 
@@ -124,10 +124,10 @@ The \code{ResIN} function features several cluster detection methods that are en
 
 ```{r}
 ## Using leading eigenvalue by default:
-ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster", plot_responselabels = FALSE, plot_title = "Leading eigenvalue community detection", seed = 151, color_palette = "Set2")
+ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster", plot_responselabels = FALSE, plot_title = "Leading eigenvalue community detection", seed = 22, color_palette = "Set2")
 
 ## Switching to edge-betweenness cluster detection:
-ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster",  cluster_method = "cluster_fast_greedy", plot_responselabels = FALSE, plot_title = "Fast and greedy community detection", seed = 151, color_palette = "Set2")
+ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster",  cluster_method = "cluster_fast_greedy", plot_responselabels = FALSE, plot_title = "Fast and greedy community detection", seed = 22, color_palette = "Set2")
 
 ```
 
@@ -143,7 +143,7 @@ The ResIN function delivers off-the-shelve estimates for the strength, closeness
 
 ```{r}
 
-ResIN_out <- ResIN(Core_Items, plot_whichstat = "Strength", plot_responselabels = FALSE, plot_title = "Node strength centrality", seed = 151, color_palette = "Greens")
+ResIN_out <- ResIN(Core_Items, plot_whichstat = "Strength", plot_responselabels = FALSE, plot_title = "Node strength centrality", seed = 22, color_palette = "Greens")
 
 ```
 
@@ -153,7 +153,7 @@ ResIN also natively supports visual adjustments to the edge width or thickness b
 
 ```{r, warning=FALSE}
 
-ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster", cluster_method = "cluster_edge_betweenness", plot_edgestat = "edgebetweenness", plot_responselabels = FALSE, plot_title = "Edge weight based on edge-betweenness centrality", seed = 151, color_palette = "Set1")
+ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster", cluster_method = "cluster_edge_betweenness", plot_edgestat = "edgebetweenness", plot_responselabels = FALSE, plot_title = "Edge weight based on edge-betweenness centrality", seed = 22, color_palette = "Set1")
 
 ```
 
@@ -172,7 +172,7 @@ Core_Items$dem_bias  <- as.numeric(BrJSocPsychol_2024$Q15_1) - as.numeric(BrJSoc
 
 ## Separately specifying attitude nodes and covariate here:
 
-ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants", "welfare_spending", "gay_marriage", "protect_environ", "gun_control", "aid_blacks"), node_covars = c("dem_bias"), node_costats = c("mean"), plot_whichstat = "dem_bias_mean", plot_responselabels = FALSE, plot_title = "Mean affective preference of Democrats over Republicans", seed = 151, color_palette = "RdBu")
+ResIN_out <- ResIN(Core_Items,left_anchor = "legal_abort_++", node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants", "welfare_spending", "gay_marriage", "protect_environ", "gun_control", "aid_blacks"), node_covars = c("dem_bias"), node_costats = c("mean"), plot_whichstat = "dem_bias_mean", plot_responselabels = FALSE, plot_title = "Affective preference of Democrats over Republicans", color_palette = "RdBu")
 
 ```
 
@@ -187,7 +187,7 @@ Core_Items <- Core_Items %>% mutate(partisan = as.numeric(recode(BrJSocPsychol_2
                                        "Independent" = 1,
                                        "Republican" = 2)))
 
-ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants", "welfare_spending", "gay_marriage", "protect_environ", "gun_control", "aid_blacks"), node_covars = c("dem_bias", "partisan"), node_costats = c("mean", "mean"), plot_ggplot = FALSE, seed = 151)
+ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants", "welfare_spending", "gay_marriage", "protect_environ", "gun_control", "aid_blacks"), node_covars = c("dem_bias", "partisan"), node_costats = c("mean", "mean"), plot_ggplot = FALSE, seed = 22)
 
 ## Loading the psych package to run the correlation test.
 library(psych)
@@ -232,18 +232,30 @@ Let's run a bootstrapping analysis to estimate the non-parametric uncertainty ar
 
 ```{r}
 ## Let's generate a new, more lean ResIN analysis by omitting network statistics calculations, plot generation, and individual-level scoring. This will optimize the execution time.
-ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants", "welfare_spending", "gay_marriage", "protect_environ", "gun_control", "aid_blacks"), node_covars = c("partisan"), node_costats = c("mean"), network_stats = FALSE, generate_ggplot = FALSE, plot_ggplot = FALSE, ResIN_scores = FALSE, detect_clusters = FALSE, seed = 151)
+ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants", "welfare_spending", "gay_marriage", "protect_environ", "gun_control", "aid_blacks"), node_covars = c("partisan"), node_costats = c("mean"), network_stats = FALSE, generate_ggplot = FALSE, plot_ggplot = FALSE, ResIN_scores = FALSE, detect_clusters = FALSE, seed = 22)
 
-ResIN_prepped <- ResIN_boots_prepare(ResIN_out, n = 2, boots_type = "resample")
+ResIN_prepped <- ResIN_boots_prepare(ResIN_out, n = 1000, boots_type = "resample")
 
-# ResIN_executed <- ResIN_boots_execute(ResIN_prepped, parallel = TRUE, n_cores = 2)
-# 
+## Running the bootstrap might take a while; uncomment to try yourself
+# ResIN_executed <- ResIN_boots_execute(ResIN_prepped, parallel = TRUE, n_cores = 2) 
+
 # saveRDS(ResIN_executed, "ResIN_executed.RDS")
 ResIN_executed <- readRDS("ResIN_executed.RDS")
 
-# node_x <- ResIN_boots_extract(ResIN_executed, what = "x")
+## Extracting the mean level partisanship per node across all iterations
+partisan_means <- ResIN_boots_extract(ResIN_executed, what = "partisan_mean")
 
-# ResIN_boots_executed <- ResIN_executed
+## Extracting the node-level latent space coordinate across all iterations
+x_postions <- ResIN_boots_extract(ResIN_executed, what = "x")
+
+## Correlating each list element and storing results in a new vector
+correlations <- list()
+for(i in 1:length(partisan_means)){
+  correlations[[i]] <- cor(partisan_means[[i]], x_postions[[i]])
+}
+
+summary(unlist(correlations))
+
 ```
 
 ## Export ResIN graphs to qgraph, igraph, and gephi
@@ -261,55 +273,6 @@ class(ResIN_qgraph)
 # ResIN_to_gephi(ResIN_out, file = "ResIN_gephi.csv")
 
 ```
-
-```{r Spielwiese}
-
-search_list <- function(current_list, what) {
-  result <- list()
-  for (name in names(current_list)) {
-    item <- current_list[[name]]
-    if (is.list(item)) {
-      # Recursively search the sublist and accumulate results
-      result <- c(result, search_list(item, what))
-    } else if (is.data.frame(item)) {
-      if (what %in% colnames(item)) {
-        result <- c(result, item[[what]])
-      }
-    } else if (name == what) {
-      result <- c(result, item)
-    }
-  }
-  return(result)
-}
-
-# Execute search list function
-result <- unlist(search_list(ResIN_executed, what = what))
-
-# Sample data
-ResIN_executed <- list(
-  a = 1,
-  b = list(
-    c = data.frame(d = 4, e = 5),
-    f = 6
-  ),
-  g = data.frame(h = 7, i = 8),
-  j = list(
-    k = 9,
-    l = data.frame(m = 10, n = 11, d = 6)
-  )
-)
-
-# Define the search term
-what <- "d"
-
-# Execute the function
-result <- unlist(search_list(ResIN_executed, what = what))
-
-# View the result
-print(result)
-
-```
-
 
 
 

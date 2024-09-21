@@ -33,32 +33,50 @@
 
 ResIN_boots_extract <- function(ResIN_boots_executed, what, summarize_results = FALSE) {
 
-  result <- list()
-
-  ### Define search list function
   search_list <- function(current_list, what) {
     result <- list()
+    # Initialize a counter in the environment if it doesn't exist
+    if (!exists("match_counter", envir = .GlobalEnv)) {
+      assign("match_counter", 0, envir = .GlobalEnv)
+    }
     for (i in seq_along(current_list)) {
       item <- current_list[[i]]
-      # Get the name if it exists; otherwise, set to NULL
+      # Get the name if it exists; otherwise, set to index
       name <- if (!is.null(names(current_list))) names(current_list)[i] else NULL
 
       if (is.list(item)) {
         # Recursively search the sublist and accumulate results
-        result <- c(result, search_list(item, what))
+        res <- search_list(item, what)
+        if (length(res) > 0) {
+          result <- c(result, res)
+        }
       } else if (is.data.frame(item)) {
         if (what %in% colnames(item)) {
-          result <- c(result, item[[what]])
+          # Increment the counter
+          match_counter <<- get("match_counter", envir = .GlobalEnv) + 1
+          # Add the matching column as a separate list element
+          result[[length(result) + 1]] <- item[[what]]
+          # Set a name for this element with the index
+          names(result)[length(result)] <- paste0(what, "_", match_counter)
         }
       } else if (!is.null(name) && name == what) {
-        result <- c(result, item)
+        # Increment the counter
+        match_counter <<- get("match_counter", envir = .GlobalEnv) + 1
+        # Add the matching item as a separate list element
+        result[[length(result) + 1]] <- item
+        # Set the name of this element with the index
+        names(result)[length(result)] <- paste0(what, "_", match_counter)
       }
+    }
+    # Remove the counter from the environment when the top-level call finishes
+    if (sys.nframe() == 1) {
+      rm("match_counter", envir = .GlobalEnv)
     }
     return(result)
   }
 
-  # Execute search list function
   result <- search_list(ResIN_boots_executed, what = what)
+  rm("match_counter", envir = .GlobalEnv)
 
   ### Optional summarize function
   sum_res <- function(result) {

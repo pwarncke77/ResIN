@@ -3,7 +3,8 @@
 #' @description Performs Response Item-Network (ResIN) analysis
 #'
 #' @param df A data-frame object containing the raw data.
-#' @param node_vars An optional character string detailing the attitude item columns to be selected for ResIN analysis (i.e. the subset of attitude variables in df).
+#' @param node_vars An optional character vector detailing the attitude item columns to be selected for ResIN analysis (i.e. the subset of attitude variables in df).
+#' @param left_anchor An optional character scalar indicating a particular response node which determines the spatial orientation of the ResIN latent space. If this response node does not appear on the left-hand side, the x-plane will be inverted. This ensures consistent interpretation of the latent space across multiple iterations (e.g. in bootstrapping analysis). Defaults to NULL (no adjustment to orientation is taken.)
 #' @param cor_method Which correlation method should be used? Defaults to "auto" which applies the \code{cor_auto} function from the \code{qgraph} package. Possible arguments are \code{"auto"}, \code{"pearson"}, \code{"kendall"}, and \code{"spearman"}.
 #' @param weights An optional continuous vector of survey weights. Should have the same length as number of observations in df. If weights are provided, weighted correlation matrix will be estimated with the \code{weightedCorr} function from the \code{wCorr} package.
 #' @param method_wCorr If weights are supplied, which method for weighted correlations should be used? Defaults to \code{"Polychoric"}. See \code{wCorr::weightedCorr} for all correlation options.
@@ -58,7 +59,7 @@
 #' @importFrom shadowtext "geom_shadowtext"
 #'
 
-ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
+ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto", weights = NULL,
                       method_wCorr = "Polychoric", poly_ncor = 2, neg_offset = 0,
                       ResIN_scores = TRUE, remove_negative = TRUE,
                       EBICglasso = FALSE, EBICglasso_arglist = NULL,
@@ -223,11 +224,17 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
     centralization <- c("not estimated")
   }
 
-  ## Generating and merging the basic plotting dataframe with network and covariate stats
+  ## Force directed algorithm and principle component rotation
   if(remove_negative==FALSE) {
     graph_layout <- as.data.frame(prcomp(igraph::layout_nicely(ResIN_igraph))$x)
   } else {
     graph_layout <- as.data.frame(prcomp(igraph::layout_with_fr(ResIN_igraph))$x)
+    rownames(graph_layout) <- rownames(res_in_cor)
+    if(!is.null(left_anchor)) {
+      if(graph_layout[left_anchor,][1]>0) {
+      graph_layout[,1] <- -1*graph_layout[,1]
+      }
+    }
   }
 
   graph_layout$node_names <- colnames(res_in_cor)
@@ -412,7 +419,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
   ResIN_ggplot <- ResIN_ggplot+
     ggplot2::ggtitle(plot_title)+
     ggplot2::theme_classic()+
-    ggplot2::theme(axis.line = element_blank(), axis.text.x = ggplot2::element_blank(), axis.title.x = ggplot2::element_blank(),
+    ggplot2::theme(axis.line = ggplot2::element_blank(), axis.text.x = ggplot2::element_blank(), axis.title.x = ggplot2::element_blank(),
           axis.text.y = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(),
           axis.ticks = ggplot2::element_blank(), panel.grid.major = ggplot2::element_blank(),
           panel.grid.minor = ggplot2::element_blank(), legend.position = "bottom", legend.box = "vertical",
@@ -444,7 +451,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
     ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_brewer(palette = color_palette) +
       ggplot2::scale_fill_brewer(palette = color_palette) +
       ggplot2::labs(color = "Cluster membership", fill = "Cluster membership")+
-      theme(legend.text = ggplot2::element_text(size=10))
+      ggplot2::theme(legend.text = ggplot2::element_text(size=10))
   }
 
   if(plot_whichstat=="choices"){
@@ -460,7 +467,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
   ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_brewer(palette = color_palette) +
     ggplot2::scale_fill_brewer(palette = color_palette) +
     ggplot2::labs(color = "Response choices", fill = "Response choices")+
-    theme(legend.text = ggplot2::element_text(size=10))
+    ggplot2::theme(legend.text = ggplot2::element_text(size=10))
   }
 
   ### Coloring by node-level centrality stats:
@@ -479,7 +486,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
     ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_distiller(palette = color_palette, direction = 1) +
       ggplot2::scale_fill_distiller(palette = color_palette, direction = 1)+
       ggplot2::labs(color = plot_whichstat, fill = plot_whichstat)+
-      theme(legend.text = ggplot2::element_text(size=10))
+      ggplot2::theme(legend.text = ggplot2::element_text(size=10))
     }
 
     ### Coloring by co-stats:
@@ -498,7 +505,7 @@ ResIN <- function(df, node_vars = NULL, cor_method = "auto", weights = NULL,
       ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_distiller(palette = color_palette, direction = 1) +
         ggplot2::scale_fill_distiller(palette = color_palette, direction = 1)+
         ggplot2::labs(color = plot_whichstat, fill = plot_whichstat)+
-        theme(legend.text = ggplot2::element_text(size=10))
+        ggplot2::theme(legend.text = ggplot2::element_text(size=10))
     }
    }
   }

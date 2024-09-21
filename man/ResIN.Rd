@@ -7,6 +7,7 @@
 ResIN(
   df,
   node_vars = NULL,
+  left_anchor = NULL,
   cor_method = "auto",
   weights = NULL,
   method_wCorr = "Polychoric",
@@ -40,7 +41,9 @@ ResIN(
 \arguments{
 \item{df}{A data-frame object containing the raw data.}
 
-\item{node_vars}{An optional character string detailing the attitude item columns to be selected for ResIN analysis (i.e. the subset of attitude variables in df).}
+\item{node_vars}{An optional character vector detailing the attitude item columns to be selected for ResIN analysis (i.e. the subset of attitude variables in df).}
+
+\item{left_anchor}{An optional character scalar indicating a particular response node which determines the spatial orientation of the ResIN latent space. If this response node does not appear on the left-hand side, the x-plane will be inverted. This ensures consistent interpretation of the latent space across multiple iterations (e.g. in bootstrapping analysis). Defaults to NULL (no adjustment to orientation is taken.)}
 
 \item{cor_method}{Which correlation method should be used? Defaults to "auto" which applies the \code{cor_auto} function from the \code{qgraph} package. Possible arguments are \code{"auto"}, \code{"pearson"}, \code{"kendall"}, and \code{"spearman"}.}
 
