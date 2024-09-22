@@ -22,14 +22,14 @@ Welcome to the **ResIN** tutorial! ResIN stands for '**Res**ponse **I**tem **N**
 This tutorial primarily introduces the [ResIN-R package](https://cran.r-project.org/web/packages/ResIN/index.html) and provides an overview of the main functions, their capabilites, and additional features. It requires a little bit of background knowledge in R and the Tidyverse but certainly no advanced skills. For an in-depth conceptual introduction to ResIN as a method, please refer to the [ResIN website](https://www.resinmethod.net/) or the above-referenced publication. The website also features upcoming dates for introductory talks performed by the ResIN team if you are instead interested in a live, hands-on tutorial.
 
 
-
 ## Introducing ResIN
 
-ResIN models all possible response options to a given set of survey items, such as 'strongly opposing cutting the minimum wage', 'mildly supporting carbon taxes', or 'being neutral on equal pay for women and men' as nodes a in self-contained attitude network. The more people co-endorse a given attitude pair, the stronger the edge-weight (or connecting links) between them becomes. Negatively correlated attitude pairs (i.e. things that people don't frequently co-endorse) are, on the other hand, ignored. ResIN thus reconstructs attitude systems entirely based on the principle of homophily -- a parsimonious yet powerful approach as you shall hopefully see.
+ResIN is a model of co-endorsements of social attitudes. Broadly understood, attitudes denote a sentiment towards a social or political issue, for instance, opposing cuts the minimum wage, being neutral on carbon taxes, or supporting equal pay for women and men. ResIN presumes that the more people co-endorse a given pair of attitudes (e.g. simultaneously supporting equal pay while opposing cuts to the minimum wage), the closer such attitudes are related to one another in a latent space. 
 
-Unlike [classic belief network models](https://www.journals.uchicago.edu/doi/abs/10.1086/691274), ResIN takes explicit advantage of the latent space in which attitude networks are embedded in. Given that only co-endorsed (i.e. positively correlated) nodes attract one another, a free-floating simulation of all attitude pairs (i.e. a [force-directed algorithm](https://en.wikipedia.org/wiki/Force-directed_graph_drawing)) results in an interpretable, theoretically meaningful [latent space](https://osf.io/preprints/psyarxiv/uzdcg) in which both attitudes and people can be located.
+More formally, ResIN models  all possible interactions among a given set of attitudes as an network, where responses form the nodes and the edge-weights (or connecting links) determines the strength of the attractive force between them.
+Unlike [classic belief network models](https://www.journals.uchicago.edu/doi/abs/10.1086/691274), ResIN takes explicit advantage of the latent space in which attitude networks are embedded in. Given that only co-endorsed (i.e. positively correlated) nodes attract one another, a force simulation involving all survey responses (i.e. a [force-directed algorithm](https://en.wikipedia.org/wiki/Force-directed_graph_drawing)) results in an interpretable, theoretically meaningful [latent space](https://osf.io/preprints/psyarxiv/uzdcg) in which both attitudes and people can be located.
 
-To see this in action, let's replicate and (slightly) extend the analysis in [Lüders et.al.'s 2024 piece](https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665), 'Attitude networks as intergroup realities: Using network‐modelling to research attitude‐identity relationships in polarized political contexts.'
+To see this in action, let's replicate and extend the analysis in [Lüders et.al.'s 2024 piece](https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665), 'Attitude networks as intergroup realities: Using network‐modelling to research attitude‐identity relationships in polarized political contexts.'
 
 ## Data import and cleaning
 
@@ -43,14 +43,14 @@ library(dplyr, warn.conflicts = FALSE)
 BrJSocPsychol_2024 <- ResIN::BrJSocPsychol_2024
 ```
 
-First, lets select the core set of eight issue items from the survey and, as in the paper, re-code a few of these such that agreement is always the conservative and disagreement indicates the liberal position. (This is not strictly necessary but makes interpretation of the ResIN graphs easier). These attitudes deal with the legality of abortion, reducing income inequality, deporting illegal immigrants, increasing welfare spending, increase welfare spending, gay marriage, protecting the environment, gun control, and government aid to African Americans.
+First, lets select the core set of eight issue items from the Lüders et.al. data and, as in the paper, re-code a few of these such that agreement always denotes the liberal position. (This step is not necessary but makes interpretation of the the results easier). These attitudes deal with the legality of abortion, reducing income inequality, deporting illegal immigrants, increasing welfare spending, increase welfare spending, gay marriage, protecting the environment, gun control, and government aid to African Americans.
 
 We'll also give each item and their respective response options more telling labels to further improve visual interpretability.
 
 ```{r recoding items}
-## Sub-setting and re-coding items
-Core_Items <- BrJSocPsychol_2024 %>% dplyr::select(Q9_1, Q9_2, Q9_3, Q9_4, Q9_5, Q9_6,
-                                                   Q9_7, Q9_8) %>% 
+## Sub-setting and re-coding items in a liberal-conservative direction
+Core_Items <- BrJSocPsychol_2024 %>% dplyr::select(Q9_1, Q9_2, Q9_3, Q9_4, 
+                                                   Q9_5, Q9_6, Q9_7, Q9_8) %>% 
    dplyr::mutate(Q9_1 = recode(Q9_1, "Strongly Disagree" = "Strongly Agree",
                                      "Somewhat Disagree" = "Somewhat Agree",
                                      "Neutral" = "Neutral",
@@ -78,7 +78,7 @@ Core_Items <- Core_Items %>%
   )))
 
 ## Setting the seed for consistency
-set.seed(151)
+set.seed(42)
 
 ```
 
@@ -91,18 +91,22 @@ head(Core_Items)
 
 ## Create your first ResIN network!
 
-Let's get to the meat of it. For a first, very basic ResIN model, we can simply supply our `Core_Items` set to the `ResIN` function.
+Let's get to the meat of it. For a first, bare-bones ResIN model, we can simply supply our `Core_Items` set to the `ResIN` function.
 
 ```{r first ResIN, fig.width = 7.2, fig.height = 4}
 ResIN_out <- ResIN(Core_Items)
 ```
 
-Not too bad! You'll notice that the `ResIN` function produces and output a basic ggplot by default. This feature can be turned of by setting `plot_ggplot=FALSE` (something you definitely want to do when bootstrapping thousands of networks, but we'll get to that part). You can always access and call the ResIN-plot object in the stored output (e.g., `ResIN_output$ResIN_ggplot`. To suppress the off-the-shelf plot generation altogether, simply set `generate_ggplot=FALSE`.
+Not too bad! You'll notice that the `ResIN` function produces and output a basic ggplot by default. This feature can be turned of by setting `plot_ggplot=FALSE` (something you definitely want to do if you need to bootstrapping thousands of networks, but we'll get to that part later). You can always access and call the ResIN-plot object in the stored output (e.g., `ResIN_output$ResIN_ggplot`. To suppress the off-the-shelf plot generation altogether, simply set `generate_ggplot=FALSE`.
 
-If you would like to produce a less busy looking plot, you can replace the node labels with a simpler `geom_point`-aesthetic by specifying `plot_responselabels=FALSE`. We are keeping the random seed identical throughout all examples here to avoid left and right flipping in the output. (ResIN doesn't care if the political left is also plotted on the left so we are seeding the random part of the model to avoid having to flip the graph manually.)
+If you would like to produce a less busy looking plot, you can replace the node labels with a simpler `geom_point`-aesthetic by specifying `plot_responselabels=FALSE`. 
+
+One feat you might have noticed from the above plot is that ResIN does not innately care if the politically left attitudes are also plotted on the left-hand side of the graph. In fact, the left-wing attitude cluster happens to appear on the right-hand-side in above plot.
+
+If you are modeling concepts for which spatial orientation has a particular meaning, such as political ideology, you can specify a particular attitude node which should consistently appear on the left side of the resulting graph with the  `left_anchor` argument. Below, we'll set the `left_anchor = "legal_abort_++"` as strongly wishing to preserve legal access to abortion appears as one of the most left-wing attitude in the starting plot. (Setting a `left_anchor` does not affect the network estimation or spatial positioning of the nodes - it simply flips the x-axis should the target node appear on the right-hand half of the grapth). We'll also set a seed to avoid (minor) fluctuations in between runs.
 
 ```{r first ResIN with geom_ploint, fig.width = 7.2, fig.height = 4}
-first_ResIN <- ResIN(Core_Items, plot_responselabels=FALSE, plot_ggplot=FALSE, seed = 22)
+first_ResIN <- ResIN(Core_Items, plot_responselabels=FALSE, plot_ggplot=FALSE, seed = 22, left_anchor = "legal_abort_++")
 
 first_ResIN$ResIN_ggplot
 ```
@@ -116,11 +120,12 @@ So far so good. The above plots nicely reveal the familiar unidimensional spectr
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices", 
                    response_levels = c("--", "-", "+/-" , "+", "++"), 
                    plot_responselabels = FALSE, 
-                   plot_title = "BrJSocPsychol 2024 ResIN Network", seed = 22)
+                   plot_title = "BrJSocPsychol 2024 ResIN Network",
+                   left_anchor = "legal_abort_++", seed = 22)
 
 ```
 
-In the above function call, you'll notice a couple of additional arguments. The most important one, `plot_whichstat`, determines which piece of information we'd like to visually enhance. As in Lüders's figure 2a, we simply opted for the different response choices by setting `plot_whichstat="choices"`. Since R applies an alpha-numeric coding for qualitative response levels, it is important to supply the correct order (either from most to least or least to most agreement) with the `response_levels`. The argument here should be a character vector of the same length of the response levels -- just remember to put them in the correct order.
+In the above function call, you'll notice a couple of additional arguments. The most important one, `plot_whichstat`, determines which piece of information we'd like to visually enhance. As in Lüders's figure 2a, we simply opted for the different response choices by setting `plot_whichstat="choices"`. Since R applies an alpha-numeric coding for qualitative response levels, you can supply the correct order (either from most to least or least to most agreement) with the `response_levels` argument. This should be a character vector of the same length of the response levels -- just remember to put them in the correct order.
 
 As in the original paper, we omit the response labels in favor of dots for nodes. Finally, the `plot_title` argument lets you specify a custom title. Neat - ha?!
 
@@ -134,13 +139,13 @@ The `ResIN()` function features several cluster detection methods that are enabl
 ## Using leading eigenvalue by default:
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster", 
                    plot_responselabels = FALSE, plot_title = "Leading eigenvalue community detection",
-                   seed = 22, color_palette = "Set2")
+                    color_palette = "Set2", seed = 22, left_anchor = "legal_abort_++")
 
 ## Switching to edge-betweenness cluster detection:
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster",
                    cluster_method = "cluster_fast_greedy", plot_responselabels = FALSE,
-                   plot_title = "Fast and greedy community detection", seed = 22, 
-                   color_palette = "Set2")
+                   plot_title = "Fast and greedy community detection",
+                   color_palette = "Set1", seed = 22, left_anchor = "legal_abort_++")
 
 ```
 
@@ -152,26 +157,28 @@ head(ResIN_out$aux_objects$cluster_probabilities)
 
 ## Node centrality
 
-The `ResIN()` function delivers off-the-shelve estimates for the strength, closeness, and betweenness-centrality, as well as expected node influence. It also estimates a couple of graph-level quantities including the global clustering coefficient, average path length, and the network diameter. These quantities are estimated by default; to turn this feature off, simply specify `network_stats=FALSE`. The example below visualizes differences in strength centrality (it is possible to set `plot_whichstat` to either "Strength", "Closeness", "Betweenness", or "ExpectedInfluence". The raw metrics for each node-level statistic can be found in `ResIN_out\$ResIN_nodeframe`. Graph-level statistics are stored in `ResIN_out\$graph_stats`.
+The `ResIN()` function delivers off-the-shelve estimates for various node-level statistics, including the strength, closeness, and betweenness-centrality, as well as expected node influence. It also estimates a couple of graph-level quantities including the global clustering coefficient, average path length, and the network diameter. These quantities are estimated by default; to turn this feature off, simply specify `network_stats=FALSE`. The example below visualizes differences in strength centrality (it is possible to set `plot_whichstat` to either "Strength", "Closeness", "Betweenness", or "ExpectedInfluence". The raw metrics for each node-level statistic can be found in `ResIN_out\$ResIN_nodeframe`. Graph-level statistics are stored in `ResIN_out\$graph_stats`.
 
 ```{r, fig.width = 7.2, fig.height = 4}
 
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "Strength", plot_responselabels = FALSE, 
-                   plot_title = "Node strength centrality", seed = 22, color_palette = "Greens")
+                   plot_title = "Node strength centrality", seed = 22, color_palette = "Greens",
+                   left_anchor = "legal_abort_++")
 
 ```
 
 ## Edge centrality and adjustments to the edge width
 
-ResIN also natively supports visual adjustments to the edge width or thickness based on either the bi-variate correlation weight (`plot_edgestat = "weights"`) or the edge betweenness centrality (`plot_edgestat = "cluster_edge_betweenness"`). The plot below showcases the latter while also visualizing the clusters detected with the edge betweenness algorithm.
+`ResIN()` also natively supports visual adjustments to the edge width or thickness on the basis of either the bi-variate correlation weight (`plot_edgestat = "weights"`) or the edge betweenness centrality (`plot_edgestat = "cluster_edge_betweenness"`). The plot below showcases the latter while also visualizing the clusters detected with the edge betweenness algorithm.
 
 ```{r, warning=FALSE, fig.width = 7.2, fig.height = 4}
 
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster",
-                   cluster_method = "cluster_edge_betweenness", plot_edgestat = "edgebetweenness",
+                   cluster_method = "cluster_edge_betweenness", 
+                   plot_edgestat = "edgebetweenness",
                    plot_responselabels = FALSE, 
                    plot_title = "Edge weight based on edge-betweenness centrality",
-                   seed = 22, color_palette = "Set1")
+                   seed = 22, color_palette = "Set1", left_anchor = "legal_abort_++")
 
 ```
 
@@ -179,9 +186,10 @@ ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster
 
 The ability to visualize various covariates of interest at the node-level is one of ResIN's most powerful features. [Lüders et.al.'s (2024, p. 45)](https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665) employed this strategy to co-visualize ResIN node position and the node-level partisan-affective polarization among their sample (figure 2b.).
 
-To do this with the ResIN function, we first need to attach our covariates of interest to the attitude frame. Then, we simply need to tell ResIN which data columns to treat as node variables by supplying a dedicated `node_vars` vector. Next, we specify another vector `node_covars` pointing to our desired set of node-level covariates. Finally, we need to tell ResIN with `node_costats` which covariate statistic to calculate for which of the covariates. Currently supported are "mean", "median", "sd", "var", and several other, base-R functions. Just make sure that `node_costats` has the same length as the `node_covars` so that ResIN knows which statistic to extract based on which covariate. Each covariate then appears as an variable `ResIN_out\$ResIN_nodeframe` with a concatenated label consisting of the variable name and the desired statistic (e.g., "age_mean").
+To accomplish this with the ResIN function, we first need to attach our covariates of interest to the attitude frame. Then, we simply need to tell ResIN which data columns to treat as node variables by supplying a dedicated `node_vars` vector. Likewise we need to supply a separate string, `node_covars`, specifying the desired set of node-level covariates. Finally, we have to tell ResIN with `node_costats` which covariate statistic to calculate for which of the given covariates. Currently supported are `"mean"`, `"median"`, `"sd"`, `"var"`, and several other, base-R functions. Just make sure that `node_costats` has the same length as the `node_covars` so that ResIN knows which statistic to extract based on which covariate.
 
-If you want to visualize such a node-level covariate, you simply need to supply the concatenated covariate-statistic label to the `plot_whichstat` argument. The example below shows how to replicate the affective polarization measure in Lüders et.al. (2024) following this strategy.
+Attached to the `ResIN_nodeframe`, the resulting ResIN object will feature a new set of variables with concatenated labels consisting of the original co-variate  name and the desired statistic (e.g., `ResIN_nodeframe$age_mean`). If you want to visualize these node-level covariates, you simply need to supply the concatenated covariate-statistic label to the `plot_whichstat` argument. The example below shows how to replicate the affective polarization measure in Lüders et.al. (2024) following this strategy.
+
 
 ```{r, warning=FALSE, fig.width = 7.2, fig.height = 4}
 ## Calculating the relative preference of Democrats over Republicans 
@@ -190,27 +198,40 @@ Core_Items$dem_bias  <- as.numeric(BrJSocPsychol_2024$Q15_1) - as.numeric(BrJSoc
 
 ## Separately specifying attitude nodes and covariate here:
 
-ResIN_out <- ResIN(Core_Items,left_anchor = "legal_abort_++",
+ResIN_out <- ResIN(Core_Items,
                    node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants",
                                  "welfare_spending", "gay_marriage", "protect_environ",
                                  "gun_control", "aid_blacks"), node_covars = c("dem_bias"),
                    node_costats = c("mean"), plot_whichstat = "dem_bias_mean",
-                   plot_responselabels = FALSE, 
+                   plot_responselabels = FALSE, left_anchor = "legal_abort_++",
                    plot_title = "Affective preference of Democrats over Republicans", 
                    color_palette = "RdBu", seed = 22)
 
 ```
 
+The above plot nicely visualizes the co-dependency between affective and issue polarization which characterizes contemporary American political attitude space. However, it also shows that the relationship is not entirely symmetric; while all left-wing attitudes are associated with approximately the same degree of affective bias, only select attitudes within the more diverse, center/ center-right attitude community are predominantly endorsed by affectively polarized individuals. Switching back to viewing the complete response labels, we'll note that these respondents reject government aid to African Americans and environmental regulations in particular.
+
+```{r, warning=FALSE, fig.width = 7.2, fig.height = 4}
+ResIN_out <- ResIN(Core_Items,
+                   node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants",
+                                 "welfare_spending", "gay_marriage", "protect_environ",
+                                 "gun_control", "aid_blacks"), node_covars = c("dem_bias"),
+                   node_costats = c("mean"), plot_whichstat = "dem_bias_mean",
+                   plot_responselabels = TRUE, left_anchor = "legal_abort_++",
+                   plot_title = "Affective preference of Democrats over Republicans", 
+                   color_palette = "RdBu", seed = 22)
+```
+
 ## Spacial interpretation and individual latent space scores
 
-Finally, let's turn our attention towards the latent space in which our ResIN network is embedded in. As indicated above, ResIN combines belief network analysis with latent variable modeling in that the spatial location of the attitudes can be interpreted as an underlying latent spectrum. Following Lüders (2024), if the left-right location of the abstract network space correlates substantially with people's partisan identities and animosities, there is strong reason to believe that the ResIN network spatially captures the liberal-conservative attitude spectrum. You can access the node location on the main spatial axis via `ResIN_out\$ResIN_nodeframe\$x`.
+Finally, let's turn our attention towards the latent space in which our ResIN network is embedded in. As indicated above, ResIN combines belief network analysis with latent variable modeling in that the spatial location of the attitudes can be interpreted as an underlying latent spectrum. Following Lüders (2024) core hypothesis, if the left-right location of the abstract network space correlates substantially with people's partisan identities and animosities, there should be strong reason to believe that the ResIN network spatially captures the liberal-conservative attitude spectrum. You can access the node location on the main spatial axis simply via `ResIN_out\$ResIN_nodeframe\$x`.
 
 ```{r, fig.width = 7.2, fig.height = 4}
 ## Further attaching partisan identification
 Core_Items <- Core_Items %>% mutate(partisan = as.numeric(recode(BrJSocPsychol_2024$Q13, 
-                                       "Democrat" = 0,
+                                       "Democrat" = 2,
                                        "Independent" = 1,
-                                       "Republican" = 2)))
+                                       "Republican" = 0)))
 
 ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", 
                                              "keep_immigrants", "welfare_spending",
@@ -245,11 +266,13 @@ While these correlations are somewhat weaker, they still support the same postul
 
 ## Bootstrapping
 
-What sets ResIN apart from other belief network models is its ability to determine node location in a theoretically meaningful latent space. As a non-parametric method, however, it cannot rely on closed-form probability distributions to derive uncertainty estimates for location estimates in the latent space. In fact, the same is true for all descriptive network statistics covered in this tutorial.
+What sets ResIN apart from other belief network models is its ability to determine node location in a theoretically interpretable latent space. As a non-parametric method, however, it cannot rely on closed-form probability distributions to derive uncertainty bounds for location estimates in the latent space. In fact, the same is true for all descriptive network statistics covered in this tutorial.
 
-How can one nevertheless estimate the uncertainty around these quantities? The answer - as you might have guessed from the section header - is *bootstrapping*. DYI implementations for bootstrapping quantities generated with novel methods can be relatively daunting to, even for experienced statistical programmers. Thankfully the ResIN package features a native workflow in the form of three functions that much-simplifies this process.
+How can one nevertheless estimate the uncertainty around such quantities? The answer - as you might have guessed from the section header - is *bootstrapping*. 
 
-A canned bootstrapping procedure with the ResIN package involves the following three steps:
+DYI implementations for bootstrapping quantities generated with novel methods can be relatively daunting to, even for experienced statistical programmers. Thankfully, the `ResIN` package features a native workflow in the form of three functions that much-simplifies this process.
+
+A canned bootstrapping procedure with `ResIN` involves the following three steps:
 
 1.  The `ResIN_boots_prepare()` function prepares a given ResIN-object for re-sampling. Additional parameters, such as `n` and `boots_type` determine the number of iterations and the basic type of bootstrapping analysis to be performed. Supported are `"resample"` and `"permute"`; the former can be used to estimate the uncertainty around a point estimate while the latter is reserved for deriving a null-hypothesis distributions for that parameter.
 
@@ -259,7 +282,7 @@ A canned bootstrapping procedure with the ResIN package involves the following t
 
 Let's run a bootstrapping analysis to estimate the non-parametric uncertainty around the above estimated correlation coefficient between the attitude node location and the node-level mean partisan identification.
 
-```{r, fig.width = 7.2, fig.height = 4}
+```{r, warning=FALSE, message = FALSE, fig.width = 7.2, fig.height = 4}
 ## Let's generate a new, more lean ResIN analysis by omitting network statistics calculations, 
 ## plot generation, and individual-level scoring. This will optimize the execution time.
 ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", 
@@ -274,7 +297,7 @@ ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes",
 ResIN_prepped <- ResIN_boots_prepare(ResIN_out, n = 1000, boots_type = "resample")
 
 ## Running the bootstrap might take a while; uncomment to try yourself
-# ResIN_executed <- ResIN_boots_execute(ResIN_prepped, parallel = TRUE, n_cores = 20)
+# ResIN_executed <- ResIN_boots_execute(ResIN_prepped, parallel = TRUE, n_cores = 2L)
 # 
 # saveRDS(ResIN_executed, "ResIN_executed.RDS")
 ResIN_executed <- readRDS("ResIN_executed.RDS")
@@ -293,29 +316,30 @@ for(i in 1:length(partisan_means)){
 
 correlations <- unlist(correlations)
 
-## Ignoring a handful few results that flipped left and right
-correlations[correlations>0.75] <- NA
+## Ignoring a handful few results where left and right are still flipped
+correlations[correlations<(-0.75)] <- NA
 
 summary(correlations)
 
 ## Let's plot the result with 95% CI lines:
 correlations <- as.data.frame(correlations)
-prob_lines <- quantile(correlations$correlations, c(0.025, 0.975), na.rm=TRUE)
+prob_lines <- quantile(correlations$correlations, c(0.025,0.5, 0.975), na.rm=TRUE)
 
 library(ggplot2)
 ggplot(correlations, aes(x = correlations))+
   geom_density(fill = "lightblue")+
-  ggtitle("Density of correlations between latent node position and partisanship")+
+  ggtitle("Density of bootstrapped correlations between node position and partisanship")+
   labs(y = "Probability density", x = "Correlation between ResIN attitude node 
        position and average partisan identity")+
   geom_vline(xintercept = prob_lines[1], color = "darkred",linetype = 2)+
-  geom_vline(xintercept = prob_lines[2], color = "darkred",linetype = 2)+
-  xlim(c(-0.87, -0.85))+
+  geom_vline(xintercept = prob_lines[2], color = "black",linetype = 2, size = 1)+
+  geom_vline(xintercept = prob_lines[3], color = "darkred",linetype = 2)+
+  xlim(c(0.85, 0.87))+
   theme_classic()
 
 ```
 
-Our bootstrapped distribution nicely shows that the positions in latent space and partisan identities are indeed strongly and robustly correlated.
+The bootstrapped distribution shows that the positions in latent space and partisan identities are indeed strongly and robustly correlated.
 
 ## Export ResIN graphs to qgraph, igraph, and gephi
 
@@ -330,5 +354,4 @@ ResIN_qgraph <- ResIN_to_qgraph(ResIN_out)
 class(ResIN_qgraph)
 
 # ResIN_to_gephi(ResIN_out, file = "ResIN_gephi.csv")
-
 ```
