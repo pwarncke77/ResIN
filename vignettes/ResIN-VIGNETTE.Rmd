@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 
-![](teaser){width="700"}
+![](teaser.png){width="700"}
 
 Welcome to the **ResIN** tutorial! ResIN stands for '**Res**ponse **I**tem **N**etworks' and was first introduced by [Carpentras et.al. 2022](https://www.nature.com/articles/s41598-022-10069-3). If you are interested in all things ResIN-related, including news, papers, and the corresponding Python tutorial, please check out the [ResIN website](https://www.resinmethod.net/).
 
