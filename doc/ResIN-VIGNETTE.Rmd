@@ -15,7 +15,59 @@ knitr::opts_chunk$set(
 ```
 
 
-![](teaser.png){width="700"}
+```{r silent intro, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 8, fig.height = 5}
+
+library(ResIN)
+library(dplyr, warn.conflicts = FALSE)
+
+## Loading the data
+BrJSocPsychol_2024 <- ResIN::BrJSocPsychol_2024
+
+## Sub-setting and re-coding items in a liberal-conservative direction
+Core_Items <- BrJSocPsychol_2024 %>% dplyr::select(Q9_1, Q9_2, Q9_3, Q9_4, 
+                                                   Q9_5, Q9_6, Q9_7, Q9_8) %>% 
+   dplyr::mutate(Q9_1 = recode(Q9_1, "Strongly Disagree" = "Strongly Agree",
+                                     "Somewhat Disagree" = "Somewhat Agree",
+                                     "Neutral" = "Neutral",
+                                     "Somewhat Agree" = "Somewhat Disagree",
+                                     "Strongly Agree" = "Strongly Disagree"),
+                Q9_3 = recode(Q9_3,  "Strongly Disagree" = "Strongly Agree",
+                                     "Somewhat Disagree" = "Somewhat Agree",
+                                     "Neutral" = "Neutral",
+                                     "Somewhat Agree" = "Somewhat Disagree",
+                                     "Strongly Agree" = "Strongly Disagree"))
+
+## Relabeling the attitudes
+colnames(Core_Items) <- c("legal_abort", "equalize_incomes", "keep_immigrants", 
+                          "welfare_spending", "gay_marriage", "protect_environ", 
+                          "gun_control", "aid_blacks")
+
+# Assigning response symbols for easier interpretation
+Core_Items <- Core_Items %>%
+  mutate(across(everything(), ~ recode(.,
+    "Strongly Agree" = "++",
+    "Somewhat Agree" = "+",
+    "Neutral" = "+/-",
+    "Somewhat Disagree" = "-",
+    "Strongly Disagree" = "--",
+  )))
+
+Core_Items$dem_bias  <- as.numeric(BrJSocPsychol_2024$Q15_1) - as.numeric(BrJSocPsychol_2024$Q15_2)
+
+## Separately specifying attitude nodes and covariate here:
+
+ResIN_out <- ResIN(Core_Items,
+                   node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants",
+                                 "welfare_spending", "gay_marriage", "protect_environ",
+                                 "gun_control", "aid_blacks"), node_covars = c("dem_bias"),
+                   node_costats = c("mean"), plot_whichstat = "dem_bias_mean",
+                   plot_responselabels = FALSE, left_anchor = "legal_abort_++",
+                   plot_title = "", plot_ggplot = FALSE,
+                   color_palette = "RdBu", seed = 22)
+
+ResIN_out$ResIN_ggplot + ggplot2::theme(legend.position = "none", plot.title = ggplot2::element_blank())
+
+```
 
 Welcome to the **ResIN** tutorial! ResIN stands for '**Res**ponse **I**tem **N**etworks' and was first introduced by [Carpentras et.al. 2022](https://www.nature.com/articles/s41598-022-10069-3). If you are interested in all things ResIN-related, including news, papers, and the corresponding Python tutorial, please check out the [ResIN website](https://www.resinmethod.net/).
 
@@ -323,7 +375,7 @@ summary(correlations)
 
 ## Let's plot the result with 95% CI lines:
 correlations <- as.data.frame(correlations)
-prob_lines <- quantile(correlations$correlations, c(0.025,0.5, 0.975), na.rm=TRUE)
+prob_lines <- quantile(correlations$correlations, c(0.025,0.5, 0.975), na.rm=TRUE) 
 
 library(ggplot2)
 ggplot(correlations, aes(x = correlations))+
