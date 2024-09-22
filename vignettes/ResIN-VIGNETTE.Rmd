@@ -323,7 +323,7 @@ summary(correlations)
 
 ## Let's plot the result with 95% CI lines:
 correlations <- as.data.frame(correlations)
-prob_lines <- quantile(correlations$correlations, c(0.025,0.5, 0.975), na.rm=TRUE)
+prob_lines <- quantile(correlations$correlations, c(0.025,0.5, 0.975), na.rm=TRUE) 
 
 library(ggplot2)
 ggplot(correlations, aes(x = correlations))+
