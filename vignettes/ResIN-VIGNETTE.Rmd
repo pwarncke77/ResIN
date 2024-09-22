@@ -335,7 +335,7 @@ ggplot(correlations, aes(x = correlations))+
   geom_vline(xintercept = prob_lines[2], color = "black",linetype = 2, size = 1)+
   geom_vline(xintercept = prob_lines[3], color = "darkred",linetype = 2)+
   xlim(c(0.85, 0.87))+
-  theme_classic()
+  theme_classic() 
 
 ```
 
