@@ -6,12 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="ResIN">
-<title>ResIN Tutorial • ResIN</title>
+<title>ResIN Tutorial-Vignette • ResIN</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="ResIN Tutorial">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="ResIN Tutorial-Vignette">
 <meta property="og:description" content="ResIN">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -41,7 +41,7 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/ResIN-VIGNETTE.html">ResIN Tutorial</a>
+    <a class="dropdown-item" href="../articles/ResIN-VIGNETTE.html">ResIN Tutorial-Vignette</a>
   </div>
 </li>
       </ul>
@@ -68,7 +68,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>ResIN Tutorial</h1>
+      <img src="" class="logo" alt=""><h1>ResIN Tutorial-Vignette</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/pwarncke77/ResIN/blob/HEAD/vignettes/ResIN-VIGNETTE.Rmd" class="external-link"><code>vignettes/ResIN-VIGNETTE.Rmd</code></a></small>
@@ -77,9 +77,9 @@
 
     
     
-<p><img src="ResIN-VIGNETTE_files/figure-html/silent%20intro-1.png" width="768"></p>
-<p>Welcome to the <strong>ResIN</strong> tutorial! ResIN stands for
-‘<strong>Res</strong>ponse <strong>I</strong>tem
+<p><img src="ResIN-VIGNETTE_files/figure-html/silent%20intro-1.png" width="691.2"></p>
+<p>Welcome to the <strong>ResIN</strong> tutorial-vignette! ResIN stands
+for ‘<strong>Res</strong>ponse <strong>I</strong>tem
 <strong>N</strong>etworks’ and was first introduced by <a href="https://www.nature.com/articles/s41598-022-10069-3" class="external-link">Carpentras
 et.al. 2022</a>. If you are interested in all things ResIN-related,
 including news, papers, and the corresponding Python tutorial, please
@@ -87,18 +87,19 @@ check out the <a href="https://www.resinmethod.net/" class="external-link">ResIN
 website</a>.</p>
 <p>This tutorial primarily introduces the <a href="https://cran.r-project.org/web/packages/ResIN/index.html" class="external-link">ResIN-R
 package</a> and provides an overview of the main functions, their
-capabilites, and additional features. It requires a little bit of
-background knowledge in R and the Tidyverse but certainly no advanced
-skills. For an in-depth conceptual introduction to ResIN as a method,
-please refer to the <a href="https://www.resinmethod.net/" class="external-link">ResIN
-website</a> or the above-referenced publication. The website also
-features upcoming dates for introductory talks performed by the ResIN
-team if you are instead interested in a live, hands-on tutorial.</p>
+capabilities, and some additional features. A little bit of background
+knowledge in R and the Tidyverse is required to follow but you certainly
+do not need to have advanced skills either in R or network statistics.
+For an in-depth conceptual introduction to ResIN as a method, please
+refer to the <a href="https://www.resinmethod.net/" class="external-link">ResIN website</a> or
+the above-referenced publication. The website also features <a href="https://www.resinmethod.net/conference-presentations/" class="external-link">dates</a>
+for upcoming introductory talks by the <a href="https://www.resinmethod.net/contact/" class="external-link">ResIN team</a> if you are
+instead interested in a live, hands-on, demonstration.</p>
 <div class="section level2">
 <h2 id="introducing-resin">Introducing ResIN<a class="anchor" aria-label="anchor" href="#introducing-resin"></a>
 </h2>
 <p>ResIN is a model of co-endorsements of social attitudes. Broadly
-understood, attitudes denote a sentiment towards a social or political
+understood, attitudes denote sentiments towards a social or political
 issue, for instance, opposing cuts the minimum wage, being neutral on
 carbon taxes, or supporting equal pay for women and men. ResIN presumes
 that the more people co-endorse a given pair of attitudes
@@ -106,13 +107,13 @@ that the more people co-endorse a given pair of attitudes
 minimum wage), the closer such attitudes are related to one another in a
 latent space.</p>
 <p>More formally, ResIN models all possible interactions among a given
-set of attitudes as an network, where responses form the nodes and the
-edge-weights (or connecting links) determines the strength of the
-attractive force between them. Unlike <a href="https://www.journals.uchicago.edu/doi/abs/10.1086/691274" class="external-link">classic
+set of attitudes as a statistical network, where responses form the
+nodes and the edge-weights (or connecting links) determines the strength
+of the attractive force between them. Unlike <a href="https://www.journals.uchicago.edu/doi/abs/10.1086/691274" class="external-link">classic
 belief network models</a>, ResIN takes explicit advantage of the latent
-space in which attitude networks are embedded in. Given that only
+space in which attitude nodes are embedded in. Given that only
 co-endorsed (i.e. positively correlated) nodes attract one another, a
-force simulation involving all survey responses (i.e. a <a href="https://en.wikipedia.org/wiki/Force-directed_graph_drawing" class="external-link">force-directed
+force simulation involving all survey response nodes (i.e. a <a href="https://en.wikipedia.org/wiki/Force-directed_graph_drawing" class="external-link">force-directed
 algorithm</a>) results in an interpretable, theoretically meaningful <a href="https://osf.io/preprints/psyarxiv/uzdcg" class="external-link">latent space</a> in which
 both attitudes and people can be located.</p>
 <p>To see this in action, let’s replicate and extend the analysis in <a href="https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665" class="external-link">Lüders
@@ -125,8 +126,8 @@ polarized political contexts.’</p>
 </h2>
 <p>As with any data analysis, a little bit of housekeeping goes a long
 way… and ResIN is no exception! Let’s use the Lüders et.al. (2024) data
-– which comes for free with the R-package – to illustrate this
-process.</p>
+– which comes for free with the <a href="https://cran.r-project.org/web/packages/ResIN/index.html" class="external-link">R-package</a>
+– to illustrate this process.</p>
 <p>First, lets select the core set of eight issue items from the Lüders
 et.al. data and, as in the paper, re-code a few of these such that
 agreement always denotes the liberal position. (This step is not
@@ -188,17 +189,17 @@ telling labels to further improve visual interpretability.</p>
 <h2 id="create-your-first-resin-network">Create your first ResIN network!<a class="anchor" aria-label="anchor" href="#create-your-first-resin-network"></a>
 </h2>
 <p>Let’s get to the meat of it. For a first, bare-bones ResIN model, we
-can simply supply our <code>Core_Items</code> set to the
+can simply supply our set of <code>Core_Items</code> to the
 <code>ResIN</code> function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ResIN-VIGNETTE_files/figure-html/first%20ResIN-1.png" width="691.2"></p>
 <p>Not too bad! You’ll notice that the <code>ResIN</code> function
-produces and output a basic ggplot by default. This feature can be
+produces and plots a basic ggplot by default. The latter feature can be
 turned of by setting <code>plot_ggplot=FALSE</code> (something you
 definitely want to do if you need to bootstrapping thousands of
 networks, but we’ll get to that part later). You can always access and
-call the ResIN-plot object in the stored output (e.g.,
+call the ResIN-plot object in the stored output:
 <code>ResIN_output$ResIN_ggplot</code>. To suppress the off-the-shelf
 plot generation altogether, simply set
 <code>generate_ggplot=FALSE</code>.</p>
@@ -219,8 +220,9 @@ strongly wishing to preserve legal access to abortion appears as one of
 the most left-wing attitude in the starting plot. (Setting a
 <code>left_anchor</code> does not affect the network estimation or
 spatial positioning of the nodes - it simply flips the x-axis should the
-target node appear on the right-hand half of the grapth). We’ll also set
-a seed to avoid (minor) fluctuations in between runs.</p>
+target node appear on the right-hand half of the graph). We’ll also set
+the random <code>seed</code> to avoid (minor) fluctuations in-between
+runs.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">first_ResIN</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>, plot_responselabels<span class="op">=</span><span class="cn">FALSE</span>, plot_ggplot<span class="op">=</span><span class="cn">FALSE</span>, seed <span class="op">=</span> <span class="fl">22</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span><span class="op">)</span></span>
 <span></span>
@@ -236,10 +238,10 @@ welfare spending, protecting the environment, and protecting abortion
 rights on the left and their inverse positions on the political right.
 However, the graph also shows that the left-leaning attitude cluster
 appears much more consolidated; left-wingers (strongly) agree much more
-frequently and consistently than on the opposite end of the ideological
-aisle. But what about the moderates? Let’s try to reproduce figure 2a in
-<a href="https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665" class="external-link">Lüders
-et.al.’s (2024, p. 45)</a> to get some more clarity on that.</p>
+frequently and consistently than respondents on the opposite end of the
+ideological aisle. But what about the moderates? Let’s try to reproduce
+figure 2a in <a href="https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665" class="external-link">Lüders
+et.al.’s (2024, p. 45)</a> to get some more clarity on them.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>, plot_whichstat <span class="op">=</span> <span class="st">"choices"</span>, </span>
@@ -257,29 +259,31 @@ applies an alpha-numeric coding for qualitative response levels, you can
 supply the correct order (either from most to least or least to most
 agreement) with the <code>response_levels</code> argument. This should
 be a character vector of the same length of the response levels – just
-remember to put them in the correct order.</p>
+remember to set the response items in the correct order.</p>
 <p>As in the original paper, we omit the response labels in favor of
 dots for nodes. Finally, the <code>plot_title</code> argument lets you
 specify a custom title. Neat - ha?!</p>
 <p>The above plot shows that the neutral nodes are far more often
 co-endorsed with the moderate-right and strong-right choice options. All
-in all, the right wing attitude space appears more mixed as it
+in all, the right-wing attitude space appears more mixed as it
 incorporates both neutral and even some of the moderate-left leaning
-response options. How about visualizing node clusters next?</p>
+response options. How about estimating and visualizing node clusters
+next?</p>
 </div>
 <div class="section level2">
 <h2 id="cluster-detection-and-plotting">Cluster detection and plotting<a class="anchor" aria-label="anchor" href="#cluster-detection-and-plotting"></a>
 </h2>
-<p>The <code><a href="../reference/ResIN.html">ResIN()</a></code> function features several cluster detection
-methods that are enabled by default. To turn this feature off, simply
-set <code>detect_clusters=FALSE</code>. By default, ResIN obtains latent
+<p>The <code><a href="../reference/ResIN.html">ResIN()</a></code> function can natively call several <a href="https://igraph.org/r/doc/communities.html" class="external-link">cluster detection
+algorithms</a>. To turn this feature off, simply set
+<code>detect_clusters=FALSE</code>. By default, ResIN obtains latent
 cluster assignments based on the leading eigenvector method
-(<code>cluster_method="cluster_leading_eigen"</code>) but any if the
-cluster detection algorithms implemented in the the <a href="https://igraph.org/r/doc/communities.html" class="external-link">igrah-package</a> can
-be called. To avoid confusion with the above color scheme, we’ll specify
-a different <code>color_palette</code> below. The ResIN function
-supports all default <a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">ggplot
-scale-brewer palettes</a>. Now, let’s see this in action.</p>
+(<code>cluster_method="cluster_leading_eigen"</code>) but any of the
+cluster detection algorithms currently implemented in the the <a href="https://igraph.org/r/doc/communities.html" class="external-link">igrah-package</a> can
+be utilized.</p>
+<p>To avoid confusion with the above color scheme, we’ll also specify a
+different <code>color_palette</code> below. The ResIN function supports
+all default <a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">ggplot
+scale-brewer palettes</a>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Using leading eigenvalue by default:</span></span>
 <span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>, detect_clusters <span class="op">=</span> <span class="cn">TRUE</span>, plot_whichstat <span class="op">=</span> <span class="st">"cluster"</span>, </span>
@@ -294,7 +298,7 @@ scale-brewer palettes</a>. Now, let’s see this in action.</p>
 <span>                   plot_title <span class="op">=</span> <span class="st">"Fast and greedy community detection"</span>,</span>
 <span>                   color_palette <span class="op">=</span> <span class="st">"Set1"</span>, seed <span class="op">=</span> <span class="fl">22</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-2-2.png" width="691.2"></p>
-<p>The above networks showcase how different community detection
+<p>The above networks nicely showcase how different community detection
 algorithms can yield different solutions. However, both the
 leading-eigenvalue and fast-greedy examples indicate that the moderate
 node communities (1, and 4 above and 1 below) appears spatially more
@@ -324,8 +328,8 @@ for various node-level statistics, including the strength, closeness,
 and betweenness-centrality, as well as expected node influence. It also
 estimates a couple of graph-level quantities including the global
 clustering coefficient, average path length, and the network diameter.
-These quantities are estimated by default; to turn this feature off,
-simply specify <code>network_stats=FALSE</code>. The example below
+These quantities are always estimated by default; to turn this feature
+off, simply specify <code>network_stats=FALSE</code>. The example below
 visualizes differences in strength centrality (it is possible to set
 <code>plot_whichstat</code> to either “Strength”, “Closeness”,
 “Betweenness”, or “ExpectedInfluence”. The raw metrics for each
@@ -342,13 +346,12 @@ stored in <code>ResIN_out\$graph_stats</code>.</p>
 <div class="section level2">
 <h2 id="edge-centrality-and-adjustments-to-the-edge-width">Edge centrality and adjustments to the edge width<a class="anchor" aria-label="anchor" href="#edge-centrality-and-adjustments-to-the-edge-width"></a>
 </h2>
-<p><code><a href="../reference/ResIN.html">ResIN()</a></code> also natively supports visual adjustments to the
-edge width or thickness on the basis of either the bi-variate
-correlation weight (<code>plot_edgestat = "weights"</code>) or the edge
-betweenness centrality
-(<code>plot_edgestat = "cluster_edge_betweenness"</code>). The plot
-below showcases the latter while also visualizing the clusters detected
-with the edge betweenness algorithm.</p>
+<p><code><a href="../reference/ResIN.html">ResIN()</a></code> also supports visual adjustments to the edge
+thickness on the basis of either the bi-variate correlation weight
+(<code>plot_edgestat = "weights"</code>) or the edge betweenness
+centrality (<code>plot_edgestat = "cluster_edge_betweenness"</code>).
+The below example showcases the latter while also visualizing the
+clusters detected with the edge betweenness algorithm.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>, detect_clusters <span class="op">=</span> <span class="cn">TRUE</span>, plot_whichstat <span class="op">=</span> <span class="st">"cluster"</span>,</span>
@@ -363,7 +366,7 @@ with the edge betweenness algorithm.</p>
 <h2 id="using-covariates">Using covariates<a class="anchor" aria-label="anchor" href="#using-covariates"></a>
 </h2>
 <p>The ability to visualize various covariates of interest at the
-node-level is one of ResIN’s most powerful features. <a href="https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665" class="external-link">Lüders
+node-level is one of ResIN’s most powerful assets. <a href="https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665" class="external-link">Lüders
 et.al.’s (2024, p. 45)</a> employed this strategy to co-visualize ResIN
 node position and the node-level partisan-affective polarization among
 their sample (figure 2b.).</p>
@@ -372,14 +375,14 @@ our covariates of interest to the attitude frame. Then, we simply need
 to tell ResIN which data columns to treat as node variables by supplying
 a dedicated <code>node_vars</code> vector. Likewise we need to supply a
 separate string, <code>node_covars</code>, specifying the desired set of
-node-level covariates. Finally, we have to tell ResIN with
-<code>node_costats</code> which covariate statistic to calculate for
-which of the given covariates. Currently supported are
+node-level covariates. Finally, we have to tell ResIN using the argument
+<code>node_costats</code> which covariate statistic it should calculate
+for which of the given covariates. Currently supported are
 <code>"mean"</code>, <code>"median"</code>, <code>"sd"</code>,
 <code>"var"</code>, and several other, base-R functions. Just make sure
 that <code>node_costats</code> has the same length as the
 <code>node_covars</code> so that ResIN knows which statistic to extract
-based on which covariate.</p>
+from which covariate.</p>
 <p>Attached to the <code>ResIN_nodeframe</code>, the resulting ResIN
 object will feature a new set of variables with concatenated labels
 consisting of the original co-variate name and the desired statistic
@@ -404,7 +407,7 @@ measure in Lüders et.al. (2024) following this strategy.</p>
 <span>                   plot_title <span class="op">=</span> <span class="st">"Affective preference of Democrats over Republicans"</span>, </span>
 <span>                   color_palette <span class="op">=</span> <span class="st">"RdBu"</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-6-1.png" width="691.2"></p>
-<p>The above plot nicely visualizes the co-dependency between affective
+<p>Our latest plot nicely visualizes the co-dependency between affective
 and issue polarization which characterizes contemporary American
 political attitude space. However, it also shows that the relationship
 is not entirely symmetric; while all left-wing attitudes are associated
@@ -412,8 +415,8 @@ with approximately the same degree of affective bias, only select
 attitudes within the more diverse, center/ center-right attitude
 community are predominantly endorsed by affectively polarized
 individuals. Switching back to viewing the complete response labels,
-we’ll note that these respondents reject government aid to African
-Americans and environmental regulations in particular.</p>
+we’ll note that these respondents strongly reject government aid to
+African Americans and environmental regulations in particular.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>,</span>
 <span>                   node_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"legal_abort"</span>, <span class="st">"equalize_incomes"</span>, <span class="st">"keep_immigrants"</span>,</span>
@@ -429,7 +432,7 @@ Americans and environmental regulations in particular.</p>
 <h2 id="spacial-interpretation-and-individual-latent-space-scores">Spacial interpretation and individual latent space scores<a class="anchor" aria-label="anchor" href="#spacial-interpretation-and-individual-latent-space-scores"></a>
 </h2>
 <p>Finally, let’s turn our attention towards the latent space in which
-our ResIN network is embedded in. As indicated above, ResIN combines
+our ResIN networks are embedded in. As indicated above, ResIN combines
 belief network analysis with latent variable modeling in that the
 spatial location of the attitudes can be interpreted as an underlying
 latent spectrum. Following Lüders (2024) core hypothesis, if the
@@ -480,18 +483,19 @@ node location on the main spatial axis simply via
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  To see confidence intervals of the correlations, print with the short=FALSE option</span></span></code></pre></div>
-<p>Pearson correlation with the node location in the latent space with
-partisanship and democratic feelings thermometer bias of 0.86 and 0.88,
-respectively strongly suggest that ResIN captures some of the essence of
-the spatial-ideological divisions among the American public.</p>
-<p>But what about the respondents themselves? ResIN obtains scores for a
-given individual by taking the average of the node positions among the
-attitude nodes that this individual endorsed. (More fancy scoring
-methods that handle missing responses natively are in the works and will
-likely be published with the next package release.) The spatial scores
-are stored in a <code>n\*2</code> data-frame called
-<code>ResIN_out\$ResIN_scores</code>; the major axis scores appear as
-<code>scores_x</code> and the minor axis component as
+<p>The Pearson correlations with the node location in the latent space
+with partisanship and democratic feelings thermometer bias of 0.86 and
+0.88, respectively, strongly suggest that ResIN innately captures some
+of the essence of the spatial-ideological divisions among the American
+public.</p>
+<p>But what about the respondents themselves? The <code><a href="../reference/ResIN.html">ResIN()</a></code>
+function can obtain scores for all survey-takers by taking the average
+of the node positions among the attitude nodes that a given individual
+endorsed. (More fancy scoring methods that handle missing responses
+natively are in the works and will likely be published with the next
+package release.) The spatial scores are stored in a <code>n\*2</code>
+data-frame called <code>ResIN_out\$ResIN_scores</code>; the major axis
+scores appear as <code>scores_x</code> and the minor axis component as
 <code>scores_y</code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Partisanship at the individual level</span></span>
@@ -529,27 +533,27 @@ same postulate.</p>
 to determine node location in a theoretically interpretable latent
 space. As a non-parametric method, however, it cannot rely on
 closed-form probability distributions to derive uncertainty bounds for
-location estimates in the latent space. In fact, the same is true for
-all descriptive network statistics covered in this tutorial.</p>
+location estimates in the latent space.</p>
 <p>How can one nevertheless estimate the uncertainty around such
 quantities? The answer - as you might have guessed from the section
 header - is <em>bootstrapping</em>.</p>
 <p>DYI implementations for bootstrapping quantities generated with novel
-methods can be relatively daunting to, even for experienced statistical
-programmers. Thankfully, the <code>ResIN</code> package features a
-native workflow in the form of three functions that much-simplifies this
-process.</p>
-<p>A canned bootstrapping procedure with <code>ResIN</code> involves the
+methods can be relatively daunting, even for experienced statistical
+programmers. Thankfully, the ResIN package features a native workflow in
+the form of three neat little helper functions which can significantly
+simplify this process.</p>
+<p>A canned bootstrapping procedure with the ResIN package involves the
 following three steps:</p>
 <ol style="list-style-type: decimal">
 <li><p>The <code><a href="../reference/ResIN_boots_prepare.html">ResIN_boots_prepare()</a></code> function prepares a given
-ResIN-object for re-sampling. Additional parameters, such as
-<code>n</code> and <code>boots_type</code> determine the number of
-iterations and the basic type of bootstrapping analysis to be performed.
-Supported are <code>"resample"</code> and <code>"permute"</code>; the
-former can be used to estimate the uncertainty around a point estimate
-while the latter is reserved for deriving a null-hypothesis
-distributions for that parameter.</p></li>
+<code>ResIN</code>-class object for re-sampling. Additional parameters,
+such as <code>n</code> and <code>boots_type</code> determine the number
+of iterations and the basic type of bootstrapping procedure to be
+performed. Supported are <code>"resample"</code> and
+<code>"permute"</code>; the former can be used to estimate the
+uncertainty around a point estimate while the latter is reserved for
+deriving null-hypothesis distributions for parameters of
+interest.</p></li>
 <li><p>As the name implies, the <code><a href="../reference/ResIN_boots_execute.html">ResIN_boots_execute()</a></code>
 function executes a prepped bootstrapping procedure. If the
 <code>parallel</code> option is set to <code>TRUE</code>, the function
@@ -558,7 +562,7 @@ detect_cores is also set to <code>TRUE</code>, all available CPU cores
 will automatically be employed.</p></li>
 <li><p>Once the simulation has concluded, the
 <code><a href="../reference/ResIN_boots_extract.html">ResIN_boots_extract()</a></code> function delivers a handy
-search-and-grap utility for a particular quantity of interest. Simply
+search-and-grab utility for a particular quantity of interest. Simply
 specify a unique search term, such as <code>what = "x_scores"</code> and
 the function will grab, concatenate, and return all instances of the
 desired quantity. For an even lazier information retrieval, setting the
@@ -634,12 +638,12 @@ correlated.</p>
 <div class="section level2">
 <h2 id="export-resin-graphs-to-qgraph-igraph-and-gephi">Export ResIN graphs to qgraph, igraph, and gephi<a class="anchor" aria-label="anchor" href="#export-resin-graphs-to-qgraph-igraph-and-gephi"></a>
 </h2>
-<p>If you are familiar with some other software suits - either in R or
-elsewhere - you’ll likely appreciate the conversion functions that ship
-with the ResIN package. At the moment, <code><a href="../reference/ResIN_to_igraph.html">ResIN_to_igraph()</a></code>,
-<code><a href="../reference/ResIN_to_qgraph.html">ResIN_to_qgraph()</a></code>, and <code><a href="../reference/ResIN_to_gephi.html">ResIN_to_gephi()</a></code> handle
-conversion to <code>igraph</code>, <code>qgraph</code>, and Gephi,
-respectively.</p>
+<p>If you are familiar with some other statistical network software
+suits - either in R or elsewhere - you’ll likely appreciate the
+converter functions that ship with the ResIN package. At the moment,
+<code><a href="../reference/ResIN_to_igraph.html">ResIN_to_igraph()</a></code>, <code><a href="../reference/ResIN_to_qgraph.html">ResIN_to_qgraph()</a></code>, and
+<code><a href="../reference/ResIN_to_gephi.html">ResIN_to_gephi()</a></code> handle conversions to <code>igraph</code>,
+<code>qgraph</code>, and Gephi, respectively.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Easily convert a ResIN object to igraph:</span></span>
 <span><span class="va">ResIN_igraph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN_to_igraph.html">ResIN_to_igraph</a></span><span class="op">(</span><span class="va">ResIN_out</span><span class="op">)</span></span>
@@ -651,6 +655,20 @@ respectively.</p>
 <span><span class="co">#&gt; [1] "qgraph"</span></span>
 <span></span>
 <span><span class="co"># ResIN_to_gephi(ResIN_out, file = "ResIN_gephi.csv")</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="summary-other-features">Summary &amp; other features<a class="anchor" aria-label="anchor" href="#summary-other-features"></a>
+</h2>
+<p><code><a href="../reference/ResIN.html">ResIN()</a></code> has a lot more to offer and we hope that you’ll
+enjoy experimenting with some of the additional features not covered in
+this brief tutorial. For instance, <code><a href="../reference/ResIN.html">ResIN()</a></code> natively
+supports analysis with survey weights (see
+<code>weights</code>-argument), LASSO-regularization via
+<code>EBICglasso()</code>, automatic removal of non-significant edges
+(<code>remove_nonsignificant</code>), and more. Please feel free to
+reach out to the team of developers at <a href="https://www.resinmethod.net/" class="external-link uri">https://www.resinmethod.net/</a> and <a href="https://www.resinmethod.net/contact/" class="external-link">leave comments or
+feedback</a>. We hope you enjoyed this tutorial and that you’ll give
+<code><a href="../reference/ResIN.html">ResIN()</a></code> a try in your next project.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
