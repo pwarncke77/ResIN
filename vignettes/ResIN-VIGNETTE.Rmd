@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 
 ```{r silent intro, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 5}
-
+## Loading the required packages
 library(ResIN)
 library(dplyr, warn.conflicts = FALSE)
 
@@ -91,7 +91,7 @@ First, lets select the core set of eight issue items from the Lüders et.al. dat
 We'll also give each item and their respective response options more telling labels to further improve visual interpretability.
 
 ```{r recoding items, warning=FALSE, message = FALSE}
-
+## Loading the required packages
 library(ResIN)
 if(!require("dplyr")) install.packages('dplyr')
 library(dplyr, warn.conflicts = FALSE)

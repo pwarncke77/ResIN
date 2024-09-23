@@ -5,7 +5,7 @@ knitr::opts_chunk$set(
 )
 
 ## ----silent intro, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 5----
-
+## Loading the required packages
 library(ResIN)
 library(dplyr, warn.conflicts = FALSE)
 
@@ -58,7 +58,7 @@ ResIN_out$ResIN_ggplot + ggplot2::theme(legend.position = "none", plot.title = g
 
 
 ## ----recoding items, warning=FALSE, message = FALSE---------------------------
-
+## Loading the required packages
 library(ResIN)
 if(!require("dplyr")) install.packages('dplyr')
 library(dplyr, warn.conflicts = FALSE)
