@@ -57,23 +57,24 @@ ResIN_out <- ResIN(Core_Items,
 ResIN_out$ResIN_ggplot + ggplot2::theme(legend.position = "none", plot.title = ggplot2::element_blank())
 
 
-## ----import and data cleaning, echo = FALSE, warning = FALSE------------------
+## ----recoding items, warning=FALSE, message = FALSE---------------------------
+
 library(ResIN)
+if(!require("dplyr")) install.packages('dplyr')
 library(dplyr, warn.conflicts = FALSE)
 
 ## Loading the data
 BrJSocPsychol_2024 <- ResIN::BrJSocPsychol_2024
 
-## ----recoding items-----------------------------------------------------------
 ## Sub-setting and re-coding items in a liberal-conservative direction
 Core_Items <- BrJSocPsychol_2024 %>% dplyr::select(Q9_1, Q9_2, Q9_3, Q9_4, 
                                                    Q9_5, Q9_6, Q9_7, Q9_8) %>% 
-   dplyr::mutate(Q9_1 = recode(Q9_1, "Strongly Disagree" = "Strongly Agree",
+   dplyr::mutate(Q9_1 = dplyr::recode(Q9_1, "Strongly Disagree" = "Strongly Agree",
                                      "Somewhat Disagree" = "Somewhat Agree",
                                      "Neutral" = "Neutral",
                                      "Somewhat Agree" = "Somewhat Disagree",
                                      "Strongly Agree" = "Strongly Disagree"),
-                Q9_3 = recode(Q9_3,  "Strongly Disagree" = "Strongly Agree",
+                Q9_3 = dplyr::recode(Q9_3,  "Strongly Disagree" = "Strongly Agree",
                                      "Somewhat Disagree" = "Somewhat Agree",
                                      "Neutral" = "Neutral",
                                      "Somewhat Agree" = "Somewhat Disagree",
@@ -86,7 +87,7 @@ colnames(Core_Items) <- c("legal_abort", "equalize_incomes", "keep_immigrants",
 
 # Assigning response symbols for easier interpretation
 Core_Items <- Core_Items %>%
-  mutate(across(everything(), ~ recode(.,
+  mutate(across(everything(), ~ dplyr::recode(.,
     "Strongly Agree" = "++",
     "Somewhat Agree" = "+",
     "Neutral" = "+/-",
@@ -123,7 +124,7 @@ ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices",
 ## Using leading eigenvalue by default:
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster", 
                    plot_responselabels = FALSE, plot_title = "Leading eigenvalue community detection",
-                    color_palette = "Set2", seed = 22, left_anchor = "legal_abort_++")
+                   color_palette = "Set2", seed = 22, left_anchor = "legal_abort_++")
 
 ## Switching to edge-betweenness cluster detection:
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster",
@@ -181,7 +182,7 @@ ResIN_out <- ResIN(Core_Items,
 
 ## ----fig.width = 7.2, fig.height = 5------------------------------------------
 ## Further attaching partisan identification
-Core_Items <- Core_Items %>% mutate(partisan = as.numeric(recode(BrJSocPsychol_2024$Q13, 
+Core_Items <- Core_Items %>% dplyr::mutate(partisan = as.numeric(recode(BrJSocPsychol_2024$Q13, 
                                        "Democrat" = 2,
                                        "Independent" = 1,
                                        "Republican" = 0)))
@@ -194,6 +195,7 @@ ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes",
                    plot_ggplot = FALSE)
 
 ## Loading the psych package to run the correlation test.
+if(!require("psych")) install.packages('psych')
 library(psych)
 ## Partisanship
 corr.test(ResIN_out$ResIN_nodeframe$x, ResIN_out$ResIN_nodeframe$partisan_mean)
@@ -252,6 +254,7 @@ summary(correlations)
 correlations <- as.data.frame(correlations)
 prob_lines <- quantile(correlations$correlations, c(0.025,0.5, 0.975), na.rm=TRUE) 
 
+if(!require("ggplot2")) install.packages('ggplot2')
 library(ggplot2)
 ggplot(correlations, aes(x = correlations))+
   geom_density(fill = "lightblue")+
