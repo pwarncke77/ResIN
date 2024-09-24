@@ -59,7 +59,7 @@ ResIN_out$ResIN_ggplot + ggplot2::theme(legend.position = "none", plot.title = g
 
 ## ----recoding items, warning=FALSE, message = FALSE---------------------------
 ## Loading and installing the required packages
-if(!require("dplyr")) install.packages('dplyr')
+if(!require("ResIN")) install.packages('ResIN')
 library(ResIN)
 if(!require("dplyr")) install.packages('dplyr')
 library(dplyr, warn.conflicts = FALSE)
