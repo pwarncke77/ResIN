@@ -58,7 +58,8 @@ ResIN_out$ResIN_ggplot + ggplot2::theme(legend.position = "none", plot.title = g
 
 
 ## ----recoding items, warning=FALSE, message = FALSE---------------------------
-## Loading the required packages
+## Loading and installing the required packages
+if(!require("dplyr")) install.packages('dplyr')
 library(ResIN)
 if(!require("dplyr")) install.packages('dplyr')
 library(dplyr, warn.conflicts = FALSE)
@@ -96,7 +97,7 @@ Core_Items <- Core_Items %>%
   )))
 
 ## Setting the seed for consistency
-set.seed(42)
+set.seed(22)
 
 
 ## ----head data, echo=TRUE-----------------------------------------------------
@@ -107,12 +108,17 @@ head(Core_Items)
 ResIN_out <- ResIN(Core_Items)
 
 ## ----first ResIN with geom_ploint, fig.width = 7.2, fig.height = 5------------
-first_ResIN <- ResIN(Core_Items, plot_responselabels=FALSE, plot_ggplot=FALSE, seed = 22, left_anchor = "legal_abort_++")
+ResIN_out <- ResIN(Core_Items, plot_ggplot=FALSE,
+                  left_anchor = "legal_abort_++", seed = 22)
 
-first_ResIN$ResIN_ggplot
+ResIN_out$ResIN_ggplot
+
+## ----fig.width = 7.2, fig.height = 4------------------------------------------
+ResIN_out <- ResIN(Core_Items, left_anchor = "legal_abort_++",
+                   plot_responselabels=FALSE, seed = 22)
+
 
 ## ----figure 2a, fig.width = 7.2, fig.height = 5-------------------------------
-
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices", 
                    response_levels = c("--", "-", "+/-" , "+", "++"), 
                    plot_responselabels = FALSE, 
@@ -137,14 +143,12 @@ ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster
 head(ResIN_out$aux_objects$cluster_probabilities)
 
 ## ----fig.width = 7.2, fig.height = 5------------------------------------------
-
-ResIN_out <- ResIN(Core_Items, plot_whichstat = "Strength", plot_responselabels = FALSE, 
-                   plot_title = "Node strength centrality", seed = 22, color_palette = "Greens",
+ResIN_out <- ResIN(Core_Items, plot_whichstat = "Betweenness", plot_responselabels = TRUE, 
+                   plot_title = "ResIN node betweenness centrality", seed = 22, color_palette = "Greens",
                    left_anchor = "legal_abort_++")
 
 
 ## ----warning=FALSE, fig.width = 7.2, fig.height = 5---------------------------
-
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster",
                    cluster_method = "cluster_edge_betweenness", 
                    plot_edgestat = "edgebetweenness",
@@ -180,7 +184,10 @@ ResIN_out <- ResIN(Core_Items,
                    plot_title = "Affective preference of Democrats over Republicans", 
                    color_palette = "RdBu", seed = 22)
 
-## ----fig.width = 7.2, fig.height = 5------------------------------------------
+## ----warning=FALSE------------------------------------------------------------
+head(ResIN_out$ResIN_nodeframe[, 8:9], 10)
+
+## ----warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 5------------
 ## Further attaching partisan identification
 Core_Items <- Core_Items %>% dplyr::mutate(partisan = as.numeric(recode(BrJSocPsychol_2024$Q13, 
                                        "Democrat" = 2,
@@ -204,7 +211,7 @@ corr.test(ResIN_out$ResIN_nodeframe$x, ResIN_out$ResIN_nodeframe$partisan_mean)
 corr.test(ResIN_out$ResIN_nodeframe$x, ResIN_out$ResIN_nodeframe$dem_bias_mean)
 
 
-## ----echo=TRUE----------------------------------------------------------------
+## ----echo=TRUE, message=FALSE, warning=FALSE----------------------------------
 ## Partisanship at the individual level
 corr.test(Core_Items$partisan, ResIN_out$ResIN_scores$scores_x)
 
@@ -228,14 +235,14 @@ ResIN_prepped <- ResIN_boots_prepare(ResIN_out, n = 1000, boots_type = "resample
 ## Running the bootstrap might take a while; uncomment to try yourself
 # ResIN_executed <- ResIN_boots_execute(ResIN_prepped, parallel = TRUE, n_cores = 2L)
 # 
-# saveRDS(ResIN_executed, "ResIN_executed.RDS")
-ResIN_executed <- readRDS("ResIN_executed.RDS")
+# saveRDS(ResIN_executed, "Bootstrap_example.RDS")
+Bootstrap_example <- ResIN::Bootstrap_example
 
 ## Extracting the mean level partisanship per node across all iterations
-partisan_means <- ResIN_boots_extract(ResIN_executed, what = "partisan_mean")
+partisan_means <- ResIN_boots_extract(Bootstrap_example, what = "partisan_mean")
 
 ## Extracting the node-level latent space coordinate across all iterations
-x_postions <- ResIN_boots_extract(ResIN_executed, what = "x")
+x_postions <- ResIN_boots_extract(Bootstrap_example, what = "x")
 
 ## Correlating each list element and storing results in a new vector
 correlations <- list()
