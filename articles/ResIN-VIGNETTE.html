@@ -282,7 +282,7 @@ often co-endorsed with the moderate-right (orange) and strong-right
 (dark red) choice options. Note that at this point, we infer the meaning
 of the different political attitudes as either left-leaning or
 right-leaning intuitively, assuming for example that left-wingers should
-endorse pro choice and right-wingers pro-choice positions. We will
+endorse abortion rights while right-wingers oppose these. We will
 describe a more rigorous empirical approach based on covariates later in
 the vignette.</p>
 <p>Thus far, however, the right-wing attitude space appears more mixed
@@ -443,12 +443,12 @@ individuals. Toggeling back to the complete response labels, we’ll note
 that these respondents strongly reject government aid to African
 Americans and environmental regulations in particular.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>, neg_offset <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<code class="sourceCode R"><span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>,</span>
 <span>                   node_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"legal_abort"</span>, <span class="st">"equalize_incomes"</span>, <span class="st">"keep_immigrants"</span>,</span>
 <span>                                 <span class="st">"welfare_spending"</span>, <span class="st">"gay_marriage"</span>, <span class="st">"protect_environ"</span>,</span>
 <span>                                 <span class="st">"gun_control"</span>, <span class="st">"aid_blacks"</span><span class="op">)</span>, node_covars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dem_bias"</span><span class="op">)</span>,</span>
 <span>                   node_costats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span><span class="op">)</span>, plot_whichstat <span class="op">=</span> <span class="st">"dem_bias_mean"</span>,</span>
-<span>                   plot_responselabels <span class="op">=</span> <span class="cn">F</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>,</span>
+<span>                   plot_responselabels <span class="op">=</span> <span class="cn">TRUE</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>,</span>
 <span>                   plot_title <span class="op">=</span> <span class="st">"Affective preference of Democrats over Republicans"</span>, </span>
 <span>                   color_palette <span class="op">=</span> <span class="st">"RdBu"</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-8-1.png" width="691.2"></p>
