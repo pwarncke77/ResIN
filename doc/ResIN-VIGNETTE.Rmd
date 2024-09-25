@@ -280,7 +280,7 @@ ResIN_out <- ResIN(Core_Items,
                                  "welfare_spending", "gay_marriage", "protect_environ",
                                  "gun_control", "aid_blacks"), node_covars = c("dem_bias"),
                    node_costats = c("mean"), plot_whichstat = "dem_bias_mean",
-                   plot_responselabels = TRUE, left_anchor = "legal_abort_++",
+                   plot_responselabels = F, left_anchor = "legal_abort_++",
                    plot_title = "Affective preference of Democrats over Republicans", 
                    color_palette = "RdBu", seed = 22)
 ```
@@ -369,7 +369,6 @@ ResIN_prepped <- ResIN_boots_prepare(ResIN_out, n = 1000, boots_type = "resample
 ## Running the bootstrap might take a while; uncomment to try yourself
 # ResIN_executed <- ResIN_boots_execute(ResIN_prepped, parallel = TRUE, n_cores = 2L)
 # 
-# saveRDS(ResIN_executed, "Bootstrap_example.RDS")
 Bootstrap_example <- ResIN::Bootstrap_example
 
 ## Extracting the mean level partisanship per node across all iterations

@@ -187,7 +187,7 @@ In the above function call, you'll notice a couple of additional arguments. The 
 
 As in the original paper, we omit the response labels in favor of dots for nodes. Finally, the `plot_title` argument lets you specify a custom title. Neat - ha?!
 
-The above plot shows that the neutral nodes (white) are far more often co-endorsed with the moderate-right (orange) and strong-right (dark red) choice options. Note that at this point, we  infer the meaning of the different political attitudes as either left-leaning or right-leaning intuitively, assuming for example that left-wingers should endorse pro choice and right-wingers pro-choice positions. We will describe a more rigorous empirical approach based on covariates later in the vignette.
+The above plot shows that the neutral nodes (white) are far more often co-endorsed with the moderate-right (orange) and strong-right (dark red) choice options. Note that at this point, we  infer the meaning of the different political attitudes as either left-leaning or right-leaning intuitively, assuming for example that left-wingers should endorse abortion rights while right-wingers oppose these. We will describe a more rigorous empirical approach based on covariates later in the vignette.
 
 Thus far, however, the right-wing attitude space appears more mixed as it incorporates both neutral and even some of the moderate-left leaning response options. How about estimating and visualizing node clusters next?
 
@@ -275,12 +275,12 @@ Our latest plot nicely visualizes the co-dependency between affective and issue 
 
 
 ```{r, warning=FALSE, fig.width = 7.2, fig.height = 5}
-ResIN_out <- ResIN(Core_Items, neg_offset = 0.2,
+ResIN_out <- ResIN(Core_Items,
                    node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants",
                                  "welfare_spending", "gay_marriage", "protect_environ",
                                  "gun_control", "aid_blacks"), node_covars = c("dem_bias"),
                    node_costats = c("mean"), plot_whichstat = "dem_bias_mean",
-                   plot_responselabels = F, left_anchor = "legal_abort_++",
+                   plot_responselabels = TRUE, left_anchor = "legal_abort_++",
                    plot_title = "Affective preference of Democrats over Republicans", 
                    color_palette = "RdBu", seed = 22)
 ```
