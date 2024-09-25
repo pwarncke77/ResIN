@@ -9,6 +9,7 @@ ResIN_boots_prepare(
   n = 10000,
   boots_type = "resample",
   resample_size = NULL,
+  weights = NULL,
   save_input = FALSE,
   seed = 42
 )
@@ -21,6 +22,8 @@ ResIN_boots_prepare(
 \item{boots_type}{What kind of bootstrapping should be performed? If set to "resample", function performs row-wise re-sampling of raw data (useful for e.g., sensitivity or power analysis). If set to "permute", function will randomly reshuffle raw item responses (useful e.g., for simulating null-hypothesis distributions). Defaults to "resample".}
 
 \item{resample_size}{Optional parameter determining sample size when \code{boots_type} is set to "resample". Defaults of to number of rows in raw data.}
+
+\item{weights}{An optional weights vector that can be used to adjust the re-sampling of observations. Should either be NULL (default) or a positive numeric vector of the same length as the original data.}
 
 \item{save_input}{Should all input information for each bootstrap iteration (including re-sampled/permuted data) be stored. Set to FALSE by default to save a lot of memory and disk storage.}
 

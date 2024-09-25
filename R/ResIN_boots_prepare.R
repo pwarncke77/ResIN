@@ -4,6 +4,7 @@
 #'
 #' @param ResIN_object A ResIN object to prepare bootstrapping workflow.
 #' @param n Bootstrapping sample size. Defaults to 10.000.
+#' @param weights An optional weights vector that can be used to adjust the re-sampling of observations. Should either be NULL (default) or a positive numeric vector of the same length as the original data.
 #' @param boots_type What kind of bootstrapping should be performed? If set to "resample", function performs row-wise re-sampling of raw data (useful for e.g., sensitivity or power analysis). If set to "permute", function will randomly reshuffle raw item responses (useful e.g., for simulating null-hypothesis distributions). Defaults to "resample".
 #' @param resample_size Optional parameter determining sample size when \code{boots_type} is set to "resample". Defaults of to number of rows in raw data.
 #' @param save_input Should all input information for each bootstrap iteration (including re-sampled/permuted data) be stored. Set to FALSE by default to save a lot of memory and disk storage.
@@ -34,7 +35,7 @@
 #' @importFrom dplyr "sample_n" "select" "all_of"
 #'
 
-ResIN_boots_prepare <- function(ResIN_object, n=10000, boots_type="resample", resample_size=NULL, save_input=FALSE, seed = 42){
+ResIN_boots_prepare <- function(ResIN_object, n=10000, boots_type="resample", resample_size=NULL, weights = NULL, save_input=FALSE, seed = 42){
   ## Validation tests
   if(class(ResIN_object)[2] !=  "ResIN"){
     stop("Please supply a ResIN type list object.")
@@ -60,7 +61,7 @@ ResIN_boots_prepare <- function(ResIN_object, n=10000, boots_type="resample", re
   if(boots_type == "resample"){
     for(i in 1:n){
       mega_list[[i]] <- ResIN_object$aux_objects$ResIN_arglist
-      mega_list[[i]]$df <- dplyr::sample_n(df, resample_size)
+      mega_list[[i]]$df <- dplyr::sample_n(df, resample_size, weight=weights)
       }
     }
 

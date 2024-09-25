@@ -1,4 +1,12 @@
 url: ~
 template:
+  light-switch: true
   bootstrap: 5
+  extra_css:
+    - pkgdown/extra.css
 
+navbar:
+  logo:
+    src: "man/figures/logo.png"
+    height: "120px"  # Add this line
+    width: "auto"
