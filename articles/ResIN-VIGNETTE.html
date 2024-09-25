@@ -354,8 +354,8 @@ visualizes node-level differences in betweenness centrality (it is
 possible to set <code>plot_whichstat</code> to either “Strength”,
 “Closeness”, “Betweenness”, or “ExpectedInfluence”). The raw metrics for
 each node-level statistic can be found in
-<code>ResIN_out\$ResIN_nodeframe</code>. Graph-level statistics are
-stored in <code>ResIN_out\$graph_stats</code>.</p>
+<code>ResIN_out$ResIN_nodeframe</code>. Graph-level statistics are
+stored in <code>ResIN_out$graph_stats</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>, plot_whichstat <span class="op">=</span> <span class="st">"Betweenness"</span>, plot_responselabels <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                   plot_title <span class="op">=</span> <span class="st">"ResIN node betweenness centrality"</span>, seed <span class="op">=</span> <span class="fl">22</span>, color_palette <span class="op">=</span> <span class="st">"Greens"</span>,</span>
@@ -480,7 +480,7 @@ substantially with people’s partisan identities and animosities, there
 should be strong reason to believe that the ResIN network spatially
 captures the liberal-conservative attitude spectrum. You can access the
 node location on the main spatial axis simply via
-<code>ResIN_out\$ResIN_nodeframe\$x</code>.</p>
+<code>ResIN_out$ResIN_nodeframe$x</code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Further attaching partisan identification</span></span>
 <span><span class="va">Core_Items</span> <span class="op">&lt;-</span> <span class="va">Core_Items</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>partisan <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html" class="external-link">recode</a></span><span class="op">(</span><span class="va">BrJSocPsychol_2024</span><span class="op">$</span><span class="va">Q13</span>, </span>
@@ -533,8 +533,8 @@ function can obtain scores for all survey-takers by taking the average
 of the node positions among the attitude nodes that a given individual
 endorsed. (More fancy scoring methods that handle missing responses
 natively are in the works and will likely be published with the next
-package release.) The spatial scores are stored in a <code>n\*2</code>
-data-frame called <code>ResIN_out\$ResIN_scores</code>; the major axis
+package release.) The spatial scores are stored in a <code>n*2</code>
+data-frame called <code>ResIN_out$ResIN_scores</code>; the major axis
 scores appear as <code>scores_x</code> and the minor axis component as
 <code>scores_y</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
