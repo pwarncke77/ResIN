@@ -219,7 +219,7 @@ head(ResIN_out$aux_objects$cluster_probabilities)
 
 ## Node centrality
 
-The `ResIN()` function delivers off-the-shelve estimates for various node-level statistics, including the strength, closeness, and betweenness-centrality, as well as expected node influence. It also estimates a couple of graph-level quantities including the global clustering coefficient, average path length, and the network diameter. These quantities are always estimated by default; to turn this feature off, simply specify `network_stats=FALSE`. The example below visualizes node-level differences in betweenness centrality (it is possible to set `plot_whichstat` to either "Strength", "Closeness", "Betweenness", or "ExpectedInfluence"). The raw metrics for each node-level statistic can be found in `ResIN_out\$ResIN_nodeframe`. Graph-level statistics are stored in `ResIN_out\$graph_stats`.
+The `ResIN()` function delivers off-the-shelve estimates for various node-level statistics, including the strength, closeness, and betweenness-centrality, as well as expected node influence. It also estimates a couple of graph-level quantities including the global clustering coefficient, average path length, and the network diameter. These quantities are always estimated by default; to turn this feature off, simply specify `network_stats=FALSE`. The example below visualizes node-level differences in betweenness centrality (it is possible to set `plot_whichstat` to either "Strength", "Closeness", "Betweenness", or "ExpectedInfluence"). The raw metrics for each node-level statistic can be found in `ResIN_out$ResIN_nodeframe`. Graph-level statistics are stored in `ResIN_out$graph_stats`.
 
 ```{r, fig.width = 7.2, fig.height = 5}
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "Betweenness", plot_responselabels = TRUE, 
@@ -293,7 +293,7 @@ head(ResIN_out$ResIN_nodeframe[, 8:9], 10)
 
 ## Spacial interpretation and individual latent space scores
 
-Finally, let's turn our attention towards the latent space in which our ResIN networks are embedded in. As indicated above, ResIN combines belief network analysis with latent variable modeling in that the spatial location of the attitudes can be interpreted as an underlying latent spectrum. Following Lüders (2024) core hypothesis, if the left-right location of the abstract network space correlates substantially with people's partisan identities and animosities, there should be strong reason to believe that the ResIN network spatially captures the liberal-conservative attitude spectrum. You can access the node location on the main spatial axis simply via `ResIN_out\$ResIN_nodeframe\$x`.
+Finally, let's turn our attention towards the latent space in which our ResIN networks are embedded in. As indicated above, ResIN combines belief network analysis with latent variable modeling in that the spatial location of the attitudes can be interpreted as an underlying latent spectrum. Following Lüders (2024) core hypothesis, if the left-right location of the abstract network space correlates substantially with people's partisan identities and animosities, there should be strong reason to believe that the ResIN network spatially captures the liberal-conservative attitude spectrum. You can access the node location on the main spatial axis simply via `ResIN_out$ResIN_nodeframe$x`.
 
 ```{r, warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 5}
 ## Further attaching partisan identification
@@ -322,7 +322,7 @@ corr.test(ResIN_out$ResIN_nodeframe$x, ResIN_out$ResIN_nodeframe$dem_bias_mean)
 
 The Pearson correlations with the node location in the latent space with partisanship and democratic feelings thermometer bias of 0.86 and 0.88, respectively, strongly suggest that ResIN innately captures some of the essence of the spatial-ideological divisions among the American public.
 
-But what about the respondents themselves? The `ResIN()` function can obtain scores for all survey-takers by taking the average of the node positions among the attitude nodes that a given individual endorsed. (More fancy scoring methods that handle missing responses natively are in the works and will likely be published with the next package release.) The spatial scores are stored in a `n\*2` data-frame called `ResIN_out\$ResIN_scores`; the major axis scores appear as `scores_x` and the minor axis component as `scores_y`.
+But what about the respondents themselves? The `ResIN()` function can obtain scores for all survey-takers by taking the average of the node positions among the attitude nodes that a given individual endorsed. (More fancy scoring methods that handle missing responses natively are in the works and will likely be published with the next package release.) The spatial scores are stored in a `n*2` data-frame called `ResIN_out$ResIN_scores`; the major axis scores appear as `scores_x` and the minor axis component as `scores_y`.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 ## Partisanship at the individual level
