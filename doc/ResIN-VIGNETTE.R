@@ -180,7 +180,7 @@ ResIN_out <- ResIN(Core_Items,
                                  "welfare_spending", "gay_marriage", "protect_environ",
                                  "gun_control", "aid_blacks"), node_covars = c("dem_bias"),
                    node_costats = c("mean"), plot_whichstat = "dem_bias_mean",
-                   plot_responselabels = F, left_anchor = "legal_abort_++",
+                   plot_responselabels = TRUE, left_anchor = "legal_abort_++",
                    plot_title = "Affective preference of Democrats over Republicans", 
                    color_palette = "RdBu", seed = 22)
 
