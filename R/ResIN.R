@@ -108,15 +108,11 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto",
                                         remove_selected_columns=TRUE)
 
   ## Obtaining the choice level vector for plotting purposes
-  choices <- sapply(strsplit(colnames(df_dummies), "_"), function(parts) {
-    if (length(parts) > 2) {
-      paste(parts[-(1:2)], collapse = "_")
-    } else {""}})
+  choices <- sub(".*_", "", colnames(df_dummies))
 
-  if(! is.null(response_levels)) {
+  if(!is.null(response_levels)) {
     choices <- factor(choices, levels = response_levels)
   }
-
 
   ## Generating correlation matrices
   if(remove_nonsignificant==FALSE){
@@ -405,6 +401,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto",
   if(is.null(plot_edgestat)){
   ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_curve(ggplot2::aes(x = edgelist_frame$from.x, xend = edgelist_frame$to.x, y = edgelist_frame$from.y, yend = edgelist_frame$to.y), curvature = 0.2, color = "black", alpha = 0.25)
   }else{
+    edgelist_frame <- edgelist_frame[order(edgelist_frame[, plot_edgestat], decreasing = FALSE), ]
     ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_curve(ggplot2::aes(x = edgelist_frame$from.x, xend = edgelist_frame$to.x, y = edgelist_frame$from.y, yend = edgelist_frame$to.y, linewidth = edgelist_frame[, plot_edgestat]), curvature = 0.2, color = "black", alpha = 0.25)+
       ggplot2::scale_linewidth(range = c(0, 4))+
       ggplot2::labs(linewidth = paste(plot_edgestat))
@@ -475,6 +472,9 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto",
     if(network_stats==FALSE) {
       stop("You must set network_stats to TRUE in order to visualize a particular, node-level centrality metric.")
     }
+
+    node_frame <- node_frame[order(node_frame[, plot_whichstat], decreasing = FALSE), ]
+
     ResIN_ggplot <- remove_layer(ResIN_ggplot, c(2,3))
     if(plot_responselabels==FALSE){
       ResIN_ggplot <- ResIN_ggplot+
