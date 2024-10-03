@@ -116,11 +116,11 @@ latent space.</p>
 <p>More formally, ResIN models all possible interactions among a given
 set of attitudes as a statistical network, where responses form the
 nodes and the edge-weights (or connecting links) determines the strength
-of the attractive force between them. Unlike <a href="https://www.journals.uchicago.edu/doi/abs/10.1086/691274" class="external-link">classic
-belief network models</a>, ResIN takes explicit advantage of the latent
-space in which attitude nodes are embedded in. Given that only
-co-endorsed (i.e. positively correlated) nodes attract one another, a
-force simulation involving all survey response nodes (i.e. a <a href="https://en.wikipedia.org/wiki/Force-directed_graph_drawing" class="external-link">force-directed
+of the attractive force between them. Unlike <a href="https://doi.org/10.1086/691274" class="external-link">classic belief network models</a>,
+ResIN takes explicit advantage of the latent space in which attitude
+nodes are embedded in. Given that only co-endorsed (i.e. positively
+correlated) nodes attract one another, a force simulation involving all
+survey response nodes (i.e. a <a href="https://en.wikipedia.org/wiki/Force-directed_graph_drawing" class="external-link">force-directed
 algorithm</a>) results in an interpretable, theoretically meaningful <a href="https://osf.io/preprints/psyarxiv/uzdcg" class="external-link">latent space</a> in which
 both attitudes and people can be located.</p>
 <p>To see this in action, let’s replicate and extend the analysis in <a href="https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665" class="external-link">Lüders
@@ -133,8 +133,8 @@ polarized political contexts.’</p>
 </h2>
 <p>As with any data analysis, a little bit of housekeeping goes a long
 way… and ResIN is no exception! Let’s use the Lüders et.al. (2024) data
-– which comes for free with the <a href="https://cran.r-project.org/web/packages/ResIN/index.html" class="external-link">R-package</a>
-– to illustrate this process.</p>
+– which comes for free with the <a href="https://CRAN.R-project.org/package=ResIN" class="external-link">R-package</a> – to
+illustrate this process.</p>
 <p>First, lets select the core set of eight issue items from the Lüders
 et.al. data and, as in the paper, re-code a few of these such that
 agreement always denotes the liberal position. (This step is not

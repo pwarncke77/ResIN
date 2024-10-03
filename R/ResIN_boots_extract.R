@@ -36,9 +36,11 @@ ResIN_boots_extract <- function(ResIN_boots_executed, what, summarize_results = 
   search_list <- function(current_list, what) {
     result <- list()
     # Initialize a counter in the environment if it doesn't exist
-    if (!exists("match_counter", envir = .GlobalEnv)) {
-      assign("match_counter", 0, envir = .GlobalEnv)
-    }
+    # if (!exists("match_counter", envir = .GlobalEnv)) {
+    #   assign("match_counter", 0, envir = .GlobalEnv)
+    # }
+    match_counter <- 0
+
     for (i in seq_along(current_list)) {
       item <- current_list[[i]]
       # Get the name if it exists; otherwise, set to index
@@ -53,7 +55,9 @@ ResIN_boots_extract <- function(ResIN_boots_executed, what, summarize_results = 
       } else if (is.data.frame(item)) {
         if (what %in% colnames(item)) {
           # Increment the counter
-          match_counter <<- get("match_counter", envir = .GlobalEnv) + 1
+          # match_counter <<- get("match_counter", envir = .GlobalEnv) + 1
+          match_counter <- match_counter + 1
+
           # Add the matching column as a separate list element
           result[[length(result) + 1]] <- item[[what]]
           # Set a name for this element with the index
@@ -61,17 +65,17 @@ ResIN_boots_extract <- function(ResIN_boots_executed, what, summarize_results = 
         }
       } else if (!is.null(name) && name == what) {
         # Increment the counter
-        match_counter <<- get("match_counter", envir = .GlobalEnv) + 1
+        match_counter <- match_counter + 1
         # Add the matching item as a separate list element
         result[[length(result) + 1]] <- item
         # Set the name of this element with the index
         names(result)[length(result)] <- paste0(what, "_", match_counter)
       }
     }
-    # Remove the counter from the environment when the top-level call finishes
-    if (sys.nframe() == 1) {
-      rm("match_counter", envir = .GlobalEnv)
-    }
+    # # Remove the counter from the environment when the top-level call finishes
+    # if (sys.nframe() == 1) {
+    #   rm("match_counter", envir = .GlobalEnv)
+    # }
     return(result)
   }
 
