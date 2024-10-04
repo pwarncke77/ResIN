@@ -1,6 +1,6 @@
 Package: ResIN
 Type: Package
-Title: ResIN
+Title: Response Item Networks
 Version: 2.0.0
 Authors@R: c(person("Philip", "Warncke", email = "pwarncke@live.unc.edu", role = c("cre", "aut")), person("Dino", "Carpentras", role = "aut"), person("Adrian", "Lüders", role = "aut"))
 Maintainer: Philip Warncke <pwarncke@live.unc.edu>

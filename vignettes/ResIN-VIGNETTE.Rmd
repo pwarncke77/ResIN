@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 
-```{r silent intro, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 4.5}
+```{r silent intro, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 4}
 ## Loading the required packages
 library(ResIN)
 library(dplyr, warn.conflicts = FALSE)
@@ -145,7 +145,7 @@ head(Core_Items)
 
 Let's get to the meat of it. For a first, bare-bones ResIN model, we can simply supply our set of `Core_Items` to the `ResIN` function.
 
-```{r first ResIN, fig.width = 7.2, fig.height = 4.5}
+```{r first ResIN, fig.width = 7.2, fig.height = 4}
 ResIN_out <- ResIN(Core_Items)
 ```
 
@@ -155,7 +155,7 @@ One feat you might have noticed from the above plot is that ResIN does not innat
 
 If you are modeling concepts for which spatial orientation has a particular meaning, such as political ideology, you can specify a particular attitude node which should consistently appear on the left side of the resulting graph with the  `left_anchor` argument. Below, we'll set the `left_anchor = "legal_abort_++"` as strongly wishing to preserve legal access to abortion appears as one of the most left-wing attitude in the starting plot. (Setting a `left_anchor` does not affect the network estimation or spatial positioning of the nodes - it simply flips the x-axis should the target node appear on the right-hand half of the graph). We'll also set the random `seed` to avoid (minor) fluctuations in-between runs.
 
-```{r first ResIN with geom_ploint, fig.width = 7.2, fig.height = 4.5}
+```{r first ResIN with geom_ploint, fig.width = 7.2, fig.height = 4}
 ResIN_out <- ResIN(Core_Items, plot_ggplot=FALSE,
                   left_anchor = "legal_abort_++", seed = 22)
 
@@ -174,7 +174,7 @@ ResIN_out <- ResIN(Core_Items, left_anchor = "legal_abort_++",
 
 So far so good. The above plots nicely reveal the familiar unidimensional spectrum in US politics with item responses in favor of welfare spending, protecting the environment, and protecting abortion rights on the left and their inverse positions on the political right. However, the graph also shows that the left-leaning attitude cluster appears much more consolidated; left-wingers (strongly) agree much more frequently and consistently than respondents on the opposite end of the ideological aisle. But what about the moderates? Let's try to reproduce figure 2a in [Lüders et.al.'s (2024, p. 45)](https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665) to get some more clarity on them.
 
-```{r figure 2a, fig.width = 7.2, fig.height = 4.5}
+```{r figure 2a, fig.width = 7.2, fig.height = 4}
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices", 
                    response_levels = c("--", "-", "+/-" , "+", "++"), 
                    plot_responselabels = FALSE, 
@@ -197,7 +197,7 @@ The `ResIN()` function can natively call several [cluster detection algorithms](
 
 To avoid confusion with the above color scheme, we'll also specify a different `color_palette` below. The ResIN function supports all default [ggplot scale-brewer palettes](https://ggplot2.tidyverse.org/reference/scale_brewer.html).
 
-```{r, fig.width = 7.2, fig.height = 4.5}
+```{r, fig.width = 7.2, fig.height = 4}
 ## Using leading eigenvalue by default:
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster", 
                    plot_responselabels = FALSE, plot_title = "Leading eigenvalue community detection",
@@ -221,7 +221,7 @@ head(ResIN_out$aux_objects$cluster_probabilities)
 
 The `ResIN()` function delivers off-the-shelve estimates for various node-level statistics, including the strength, closeness, and betweenness-centrality, as well as expected node influence. It also estimates a couple of graph-level quantities including the global clustering coefficient, average path length, and the network diameter. These quantities are always estimated by default; to turn this feature off, simply specify `network_stats=FALSE`. The example below visualizes node-level differences in betweenness centrality (it is possible to set `plot_whichstat` to either "Strength", "Closeness", "Betweenness", or "ExpectedInfluence"). The raw metrics for each node-level statistic can be found in `ResIN_out$ResIN_nodeframe`. Graph-level statistics are stored in `ResIN_out$graph_stats`.
 
-```{r, fig.width = 7.2, fig.height = 4.5}
+```{r, fig.width = 7.2, fig.height = 4}
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "Betweenness", plot_responselabels = TRUE, 
                    plot_title = "ResIN node betweenness centrality", seed = 22, color_palette = "Greens",
                    left_anchor = "legal_abort_++")
@@ -234,7 +234,7 @@ The above output suggests that for the node with the highest [betweenness-centra
 
 `ResIN()` also supports visual adjustments to the edge thickness on the basis of either the bi-variate correlation weight (`plot_edgestat = "weight"`) or the edge betweenness centrality (`plot_edgestat = "cluster_edge_betweenness"`). The below example showcases the latter while also visualizing the clusters detected with the edge betweenness algorithm.
 
-```{r, warning=FALSE, fig.width = 7.2, fig.height = 4.5}
+```{r, warning=FALSE, fig.width = 7.2, fig.height = 4}
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster",
                    cluster_method = "cluster_edge_betweenness", 
                    plot_edgestat = "edgebetweenness",
@@ -253,7 +253,7 @@ To accomplish this with the ResIN function, we first need to attach our covariat
 Attached to the `ResIN_nodeframe`, the resulting ResIN object will feature a new set of variables with concatenated labels consisting of the original co-variate  name and the desired statistic (e.g., `ResIN_nodeframe$age_mean`). If you want to visualize these node-level covariates, you simply need to supply the concatenated covariate-statistic label to the `plot_whichstat` argument. The example below shows how to replicate the affective polarization measure in Lüders et.al. (2024) following this strategy.
 
 
-```{r, warning=FALSE, fig.width = 7.2, fig.height = 4.5}
+```{r, warning=FALSE, fig.width = 7.2, fig.height = 4}
 ## Calculating the relative preference of Democrats over Republicans 
   ##(Democrat feelings thermometer minus republican feelings thermometer)
 Core_Items$dem_bias  <- as.numeric(BrJSocPsychol_2024$Q15_1) - as.numeric(BrJSocPsychol_2024$Q15_2)
@@ -274,7 +274,7 @@ ResIN_out <- ResIN(Core_Items,
 Our latest plot nicely visualizes the co-dependency between affective and issue polarization which characterizes contemporary American political attitude space. However, it also shows that the relationship is not entirely symmetric; while all left-wing attitudes are associated with approximately the same degree of affective bias, only select attitudes within the more diverse, center/ center-right attitude community are predominantly endorsed by affectively polarized individuals. Toggeling back to the complete response labels, we'll note that these respondents strongly reject government aid to African Americans and environmental regulations in particular.
 
 
-```{r, warning=FALSE, fig.width = 7.2, fig.height = 4.5}
+```{r, warning=FALSE, fig.width = 7.2, fig.height = 4}
 ResIN_out <- ResIN(Core_Items,
                    node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants",
                                  "welfare_spending", "gay_marriage", "protect_environ",
@@ -295,7 +295,7 @@ head(ResIN_out$ResIN_nodeframe[, 8:9], 10)
 
 Finally, let's turn our attention towards the latent space in which our ResIN networks are embedded in. As indicated above, ResIN combines belief network analysis with latent variable modeling in that the spatial location of the attitudes can be interpreted as an underlying latent spectrum. Following Lüders (2024) core hypothesis, if the left-right location of the abstract network space correlates substantially with people's partisan identities and animosities, there should be strong reason to believe that the ResIN network spatially captures the liberal-conservative attitude spectrum. You can access the node location on the main spatial axis simply via `ResIN_out$ResIN_nodeframe$x`.
 
-```{r, warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 4.5}
+```{r, warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 4}
 ## Further attaching partisan identification
 Core_Items <- Core_Items %>% dplyr::mutate(partisan = as.numeric(recode(BrJSocPsychol_2024$Q13, 
                                        "Democrat" = 2,
@@ -352,7 +352,7 @@ A canned bootstrapping procedure with the ResIN package involves the following t
 
 Let's run a bootstrapping analysis to estimate the non-parametric uncertainty around the above estimated correlation coefficient between the attitude node location and the node-level mean partisan identification.
 
-```{r, warning=FALSE, message = FALSE, fig.width = 7.2, fig.height = 4.5}
+```{r, warning=FALSE, message = FALSE, fig.width = 7.2, fig.height = 4}
 ## Let's generate a new, more lean ResIN analysis by omitting network statistics calculations, 
 ## plot generation, and individual-level scoring. This will optimize the execution time.
 ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", 
