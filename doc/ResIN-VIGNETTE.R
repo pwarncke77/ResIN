@@ -4,7 +4,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-## ----silent intro, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 5----
+## ----silent intro, echo=FALSE, warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 4.5----
 ## Loading the required packages
 library(ResIN)
 library(dplyr, warn.conflicts = FALSE)
@@ -104,10 +104,10 @@ set.seed(22)
 head(Core_Items)
 
 
-## ----first ResIN, fig.width = 7.2, fig.height = 5-----------------------------
+## ----first ResIN, fig.width = 7.2, fig.height = 4.5---------------------------
 ResIN_out <- ResIN(Core_Items)
 
-## ----first ResIN with geom_ploint, fig.width = 7.2, fig.height = 5------------
+## ----first ResIN with geom_ploint, fig.width = 7.2, fig.height = 4.5----------
 ResIN_out <- ResIN(Core_Items, plot_ggplot=FALSE,
                   left_anchor = "legal_abort_++", seed = 22)
 
@@ -118,7 +118,7 @@ ResIN_out <- ResIN(Core_Items, left_anchor = "legal_abort_++",
                    plot_responselabels=FALSE, seed = 22)
 
 
-## ----figure 2a, fig.width = 7.2, fig.height = 5-------------------------------
+## ----figure 2a, fig.width = 7.2, fig.height = 4.5-----------------------------
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices", 
                    response_levels = c("--", "-", "+/-" , "+", "++"), 
                    plot_responselabels = FALSE, 
@@ -126,7 +126,7 @@ ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices",
                    left_anchor = "legal_abort_++", seed = 22)
 
 
-## ----fig.width = 7.2, fig.height = 5------------------------------------------
+## ----fig.width = 7.2, fig.height = 4.5----------------------------------------
 ## Using leading eigenvalue by default:
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster", 
                    plot_responselabels = FALSE, plot_title = "Leading eigenvalue community detection",
@@ -142,13 +142,13 @@ ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster
 ## -----------------------------------------------------------------------------
 head(ResIN_out$aux_objects$cluster_probabilities)
 
-## ----fig.width = 7.2, fig.height = 5------------------------------------------
+## ----fig.width = 7.2, fig.height = 4.5----------------------------------------
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "Betweenness", plot_responselabels = TRUE, 
                    plot_title = "ResIN node betweenness centrality", seed = 22, color_palette = "Greens",
                    left_anchor = "legal_abort_++")
 
 
-## ----warning=FALSE, fig.width = 7.2, fig.height = 5---------------------------
+## ----warning=FALSE, fig.width = 7.2, fig.height = 4.5-------------------------
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster",
                    cluster_method = "cluster_edge_betweenness", 
                    plot_edgestat = "edgebetweenness",
@@ -157,7 +157,7 @@ ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster
                    seed = 22, color_palette = "Set1", left_anchor = "legal_abort_++")
 
 
-## ----warning=FALSE, fig.width = 7.2, fig.height = 5---------------------------
+## ----warning=FALSE, fig.width = 7.2, fig.height = 4.5-------------------------
 ## Calculating the relative preference of Democrats over Republicans 
   ##(Democrat feelings thermometer minus republican feelings thermometer)
 Core_Items$dem_bias  <- as.numeric(BrJSocPsychol_2024$Q15_1) - as.numeric(BrJSocPsychol_2024$Q15_2)
@@ -174,7 +174,7 @@ ResIN_out <- ResIN(Core_Items,
                    color_palette = "RdBu", seed = 22)
 
 
-## ----warning=FALSE, fig.width = 7.2, fig.height = 5---------------------------
+## ----warning=FALSE, fig.width = 7.2, fig.height = 4.5-------------------------
 ResIN_out <- ResIN(Core_Items,
                    node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants",
                                  "welfare_spending", "gay_marriage", "protect_environ",
@@ -187,7 +187,7 @@ ResIN_out <- ResIN(Core_Items,
 ## ----warning=FALSE------------------------------------------------------------
 head(ResIN_out$ResIN_nodeframe[, 8:9], 10)
 
-## ----warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 5------------
+## ----warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 4.5----------
 ## Further attaching partisan identification
 Core_Items <- Core_Items %>% dplyr::mutate(partisan = as.numeric(recode(BrJSocPsychol_2024$Q13, 
                                        "Democrat" = 2,
@@ -218,7 +218,7 @@ corr.test(Core_Items$partisan, ResIN_out$ResIN_scores$scores_x)
 ## Affective polarization at the individual level
 corr.test(Core_Items$dem_bias, ResIN_out$ResIN_scores$scores_x)
 
-## ----warning=FALSE, message = FALSE, fig.width = 7.2, fig.height = 5----------
+## ----warning=FALSE, message = FALSE, fig.width = 7.2, fig.height = 4.5--------
 ## Let's generate a new, more lean ResIN analysis by omitting network statistics calculations, 
 ## plot generation, and individual-level scoring. This will optimize the execution time.
 ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", 
