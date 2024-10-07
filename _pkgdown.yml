@@ -1,6 +1,6 @@
 url: ~
 template:
-  light-switch: true
+  light_switch: true
   bootstrap: 5
   extra_css:
     - pkgdown/extra.css
@@ -8,5 +8,21 @@ template:
 navbar:
   logo:
     src: "man/figures/logo.png"
-    height: "120px"  # Add this line
+    height: "120px"
     width: "auto"
+  structure:
+    left:
+      - home
+      - get_started
+      - reference
+      - articles
+      - external_link  # This is your new menu item
+  components:
+    external_link:
+      text: "ResIN website"  # The display text for the link
+      href: "https://www.resinmethod.net/"  # The URL of the external site
+      target: "_blank"  # (Optional) Opens the link in a new tab
+    get_started:
+      text: "Get started"
+      href: articles/ResIN-VIGNETTE.html
+
