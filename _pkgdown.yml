@@ -1,9 +1,10 @@
 url: ~
+
 template:
   light_switch: true
   bootstrap: 5
-  extra_css:
-    - pkgdown/extra.css
+  # extra_css:
+  #   - pkgdown/extra.css
 
 navbar:
   logo:
