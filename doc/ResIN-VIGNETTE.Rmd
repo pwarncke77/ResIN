@@ -291,7 +291,7 @@ Here is a glimpse at the above results in tabular form:
 head(ResIN_out$ResIN_nodeframe[, 8:9], 10)
 ```
 
-## Spacial interpretation and individual latent space scores
+## Spatial interpretation and individual latent space scores
 
 Finally, let's turn our attention towards the latent space in which our ResIN networks are embedded in. As indicated above, ResIN combines belief network analysis with latent variable modeling in that the spatial location of the attitudes can be interpreted as an underlying latent spectrum. Following Lüders (2024) core hypothesis, if the left-right location of the abstract network space correlates substantially with people's partisan identities and animosities, there should be strong reason to believe that the ResIN network spatially captures the liberal-conservative attitude spectrum. You can access the node location on the main spatial axis simply via `ResIN_out$ResIN_nodeframe$x`.
 
