@@ -1,6 +1,9 @@
-pandoc: 3.1.11
-pkgdown: 2.1.1
+pandoc: '3.2'
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   ResIN-VIGNETTE: ResIN-VIGNETTE.html
-last_built: 2024-10-08T07:11Z
+last_built: 2025-06-13T19:25Z
+urls:
+  reference: https://pwarncke77.github.io/ResIN/reference
+  article: https://pwarncke77.github.io/ResIN/articles
