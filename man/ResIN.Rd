@@ -8,10 +8,10 @@ ResIN(
   df,
   node_vars = NULL,
   left_anchor = NULL,
-  cor_method = "auto",
+  cor_method = "pearson",
   weights = NULL,
-  method_wCorr = "Polychoric",
-  poly_ncor = 2,
+  method_wCorr = "Pearson",
+  poly_ncor = 1,
   neg_offset = 0,
   ResIN_scores = TRUE,
   remove_negative = TRUE,
@@ -26,7 +26,6 @@ ResIN(
   cluster_method = NULL,
   cluster_arglist = NULL,
   cluster_assignment = TRUE,
-  seed = NULL,
   generate_ggplot = TRUE,
   plot_ggplot = TRUE,
   plot_whichstat = NULL,
@@ -35,7 +34,9 @@ ResIN(
   plot_responselabels = TRUE,
   response_levels = NULL,
   plot_title = NULL,
-  save_input = TRUE
+  bipartite = FALSE,
+  save_input = TRUE,
+  seed = NULL
 )
 }
 \arguments{
@@ -49,7 +50,7 @@ ResIN(
 
 \item{weights}{An optional continuous vector of survey weights. Should have the same length as number of observations in df. If weights are provided, weighted correlation matrix will be estimated with the \code{weightedCorr} function from the \code{wCorr} package.}
 
-\item{method_wCorr}{If weights are supplied, which method for weighted correlations should be used? Defaults to \code{"Polychoric"}. See \code{wCorr::weightedCorr} for all correlation options.}
+\item{method_wCorr}{If weights are supplied, which method for weighted correlations should be used? Defaults to \code{"Pearson"}. See \code{wCorr::weightedCorr} for all correlation options.}
 
 \item{poly_ncor}{How many CPU cores should be used to estimate polychoric correlation matrix? Only used if \code{cor_method = "polychoric"}.}
 
@@ -81,8 +82,6 @@ ResIN(
 
 \item{cluster_assignment}{Should individual (survey) respondents be assigned to different clusters? If set to TRUE, function will generate an n*c matrix of probabilities for each respondent to be assigned to one of c clusters. Furthermore, a vector of length n is generated displaying the most likely cluster respondents belong to. In case of a tie between one or more clusters, a very small amount of random noise determines assignment. Both matrix and vectors are added to the \code{aux_objects} list. Defaults to FALSE and will be ignored if \code{detect_clusters} is set to FALSE.}
 
-\item{seed}{Random seed for force-directed algorithm. Defaults to NULL (no seed is set.) If scalar integer is supplied, that seed will be set prior to analysis.}
-
 \item{generate_ggplot}{Should a ggplot-based visualization of the ResIN network be generated? Defaults to TRUE.}
 
 \item{plot_ggplot}{Should a basic ggplot of the ResIN network be plotted? Defaults to TRUE. If set to FALSE, the ggplot object will not be directly returned to the console. (However, if generate_ggplot=TRUE, the plot will still be generated and stored alongside the other output objects.)}
@@ -99,10 +98,14 @@ ResIN(
 
 \item{plot_title}{Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".}
 
+\item{bipartite}{Should a bipartite graph be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) bipartite graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} are generated if set to TRUE.}
+
 \item{save_input}{Optionally, should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.}
+
+\item{seed}{Random seed for force-directed algorithm. Defaults to NULL (no seed is set.) If scalar integer is supplied, that seed will be set prior to analysis.}
 }
 \value{
-An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}) and centralization (\code{graph_centralization}), as well as a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}).
+An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}), and centralization (\code{graph_centralization}). Further, a \code{bipartite_output} list which includes an \code{igraph} class bipartite graph (\code{bipartite_igraph}), a data frame, \code{coordinate_df}, with spatial coordinates of respondents, and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} is optionally generated. Lastly, the output includes a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}).
 }
 \description{
 Performs Response Item-Network (ResIN) analysis
@@ -114,6 +117,5 @@ data(lik_data)
 
 # Apply the ResIN function to toy Likert data:
 ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, detect_clusters = TRUE)
-
 
 }

@@ -1,5 +1,5 @@
 ---
-title: "ResIN Tutorial-Vignette"
+title: "ResIN-VIGNETTE"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{ResIN-VIGNETTE}
@@ -75,7 +75,6 @@ This tutorial primarily introduces the [ResIN-R package](https://CRAN.R-project.
 
 
 ## Introducing ResIN
-
 ResIN is a model of co-endorsements of social attitudes. Broadly understood, attitudes denote sentiments towards a social or political issue, for instance, opposing cuts the minimum wage, being neutral on carbon taxes, or supporting equal pay for women and men. ResIN presumes that the more people co-endorse a given pair of attitudes (e.g. simultaneously supporting equal pay while opposing cuts to the minimum wage), the closer such attitudes are related to one another in a latent space.
 
 More formally, ResIN models all possible interactions among a given set of attitudes as a statistical network, where responses form the nodes and the edge-weights (or connecting links) determines the strength of the attractive force between them. Unlike [classic belief network models](https://doi.org/10.1086/691274), ResIN takes explicit advantage of the latent space in which attitude nodes are embedded in. Given that only co-endorsed (i.e. positively correlated) nodes attract one another, a force simulation involving all survey response nodes (i.e. a [force-directed algorithm](https://en.wikipedia.org/wiki/Force-directed_graph_drawing)) results in an interpretable, theoretically meaningful [latent space](https://osf.io/preprints/psyarxiv/uzdcg) in which both attitudes and people can be located.
@@ -322,20 +321,19 @@ corr.test(ResIN_out$ResIN_nodeframe$x, ResIN_out$ResIN_nodeframe$dem_bias_mean)
 
 The Pearson correlations with the node location in the latent space with partisanship and democratic feelings thermometer bias of 0.86 and 0.88, respectively, strongly suggest that ResIN innately captures some of the essence of the spatial-ideological divisions among the American public.
 
-But what about the respondents themselves? The `ResIN()` function can obtain scores for all survey-takers by taking the average of the node positions among the attitude nodes that a given individual endorsed. (More fancy scoring methods that handle missing responses natively are in the works and will likely be published with the next package release.) The spatial scores are stored in a `n*2` data-frame called `ResIN_out$ResIN_scores`; the major axis scores appear as `scores_x` and the minor axis component as `scores_y`.
+But what about the respondents themselves? The `ResIN()` function can obtain scores for all survey-takers by taking the average of the node positions among the attitude nodes that a given individual endorsed. (More fancy scoring methods that handle missing responses natively are in the works and will likely be published with the next package release.) The spatial scores are stored in a `n*2` data-frame called `ResIN_out$ResIN_scores`; the major axis scores appear as `raw_x` and the minor axis component as `raw_y`.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 ## Partisanship at the individual level
-corr.test(Core_Items$partisan, ResIN_out$ResIN_scores$scores_x)
+corr.test(Core_Items$partisan, ResIN_out$ResIN_scores$raw_x)
 
 ## Affective polarization at the individual level
-corr.test(Core_Items$dem_bias, ResIN_out$ResIN_scores$scores_x)
+corr.test(Core_Items$dem_bias, ResIN_out$ResIN_scores$raw_x)
 ```
 
-While these correlations are somewhat weaker, they still support the same postulate.
+Alternative score estimates that are based on partial pooling of item and individual level means are implemented with a simple heuristic approach, `heur_x`, weighted by relative item popularity, and `eb_x` which implements empirical Bayes shrinkage following Efron and Morris (1973). Either of the latter options are recommended if there are large discrepancies in item response popularity or if there is substantial missingness in the raw data.
 
 ## Bootstrapping
-
 What sets ResIN apart from other belief network models is its ability to determine node location in a theoretically interpretable latent space. As a non-parametric method, however, it cannot rely on closed-form probability distributions to derive uncertainty bounds for location estimates in the latent space.
 
 How can one nevertheless estimate the uncertainty around such quantities? The answer - as you might have guessed from the section header - is *bootstrapping*. 
@@ -411,6 +409,21 @@ ggplot(correlations, aes(x = correlations))+
 
 The bootstrapped distribution shows that the positions in latent space and partisan identities are indeed strongly and robustly correlated.
 
+## Bipartite graphs
+As of package version 2.1.0, it is possible to model attitude systems as bipartite graphs in which binary response nodes are connected via respondents who co-endorse the same attitudes. To built such graphs, simply set the option `bipartite` to `TRUE`. By default, `ResIN` determines the approximate location of each respondent within the basic, response-node graph, using the same force directed method described above. Crucially, the positions of the response nodes are held constant while respondent nodes freely circulate until a force equilibrium is found. `ResIN` outputs an node-frame type data frame, called `coordinate_df` which contains the x and y axis coordinates found for individual participants and a plot-able `ggraph`-object called `bipartite_ggraph`. The code snippet below shows how to extract and plot the bipartite graph:
+
+```{r, warning=FALSE, message = FALSE, fig.width = 7.2, fig.height = 4}
+ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", 
+                                             "keep_immigrants", "welfare_spending",
+                                             "gay_marriage", "protect_environ",
+                                             "gun_control", "aid_blacks"), 
+                   seed = 36,
+                   plot_ggplot = FALSE,
+                   bipartite = TRUE)
+
+ResIN_out$bipartite_output$bipartite_ggraph
+```
+
 ## Export ResIN graphs to qgraph, igraph, and gephi
 
 If you are familiar with some other statistical network software suits - either in R or elsewhere - you'll likely appreciate the converter functions that ship with the ResIN package. At the moment, `ResIN_to_igraph()`, `ResIN_to_qgraph()`, and `ResIN_to_gephi()` handle conversions to `igraph`, `qgraph`, and Gephi, respectively.
@@ -429,5 +442,11 @@ class(ResIN_qgraph)
 ## Summary & other features
 `ResIN()` has a lot more to offer and we hope that you'll enjoy experimenting with some of the additional features not covered in this brief tutorial. For instance, `ResIN()` natively supports analysis with survey weights (see `weights`-argument), LASSO-regularization via `EBICglasso()`, automatic removal of  non-significant edges (`remove_nonsignificant`), and more. Please feel free to reach out to the team of developers at https://www.resinmethod.net/ and [leave comments or feedback](https://www.resinmethod.net/contact/). We hope you enjoyed this tutorial and that you'll give `ResIN()` a try in your next project.
 
+## References
+Carpentras, D., Lüders, A., & Quayle, M. (2022). Mapping the global opinion space to explain anti-vaccine attraction. Scientific reports, 12(1), 6188.
+
+Efron, B., & Morris, C. (1973). Stein's estimation rule and its competitors—an empirical Bayes approach. Journal of the American Statistical Association, 68(341), 117-130.
+
+Lüders, A., Carpentras, D., & Quayle, M. (2024). Attitude networks as intergroup realities: Using network‐modelling to research attitude‐identity relationships in polarized political contexts. British Journal of Social Psychology, 63(1), 37-51.
 
 

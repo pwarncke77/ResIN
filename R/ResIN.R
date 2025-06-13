@@ -7,7 +7,7 @@
 #' @param left_anchor An optional character scalar indicating a particular response node which determines the spatial orientation of the ResIN latent space. If this response node does not appear on the left-hand side, the x-plane will be inverted. This ensures consistent interpretation of the latent space across multiple iterations (e.g. in bootstrapping analysis). Defaults to NULL (no adjustment to orientation is taken.)
 #' @param cor_method Which correlation method should be used? Defaults to "auto" which applies the \code{cor_auto} function from the \code{qgraph} package. Possible arguments are \code{"auto"}, \code{"pearson"}, \code{"kendall"}, and \code{"spearman"}.
 #' @param weights An optional continuous vector of survey weights. Should have the same length as number of observations in df. If weights are provided, weighted correlation matrix will be estimated with the \code{weightedCorr} function from the \code{wCorr} package.
-#' @param method_wCorr If weights are supplied, which method for weighted correlations should be used? Defaults to \code{"Polychoric"}. See \code{wCorr::weightedCorr} for all correlation options.
+#' @param method_wCorr If weights are supplied, which method for weighted correlations should be used? Defaults to \code{"Pearson"}. See \code{wCorr::weightedCorr} for all correlation options.
 #' @param poly_ncor How many CPU cores should be used to estimate polychoric correlation matrix? Only used if \code{cor_method = "polychoric"}.
 #' @param neg_offset Should negative correlations be offset to avoid small correlation pairs disappearing? Defaults to \code{0}. Any positive number between 0 and 1 may be supplied instead.
 #' @param ResIN_scores Should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Further versions of this package will include more sophisticated scoring techniques.
@@ -31,10 +31,11 @@
 #' @param plot_responselabels Should response labels be plotted via \code{geom_text}? Defaults to TRUE. It is recommended to set to FALSE if the network possesses a lot of nodes and/or long response choice names.
 #' @param response_levels An optional character vector specifying the correct order of global response levels. Only useful if all node-items follow the same convention (e.g. ranging from "strong disagreement" to "strong agreement"). The supplied vector should have the same length as the total number of response options and supply these (matching exactly) in the correct order. E.g. c("Strongly Agree", "Somewhat Agree", "Neutral", "Somewhat Disagree", "Strongly Disagree"). Defaults to NULL.
 #' @param plot_title Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".
+#' @param bipartite Should a bipartite graph be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) bipartite graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} are generated if set to TRUE.
 #' @param save_input Optionally, should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.
 #' @param seed Random seed for force-directed algorithm. Defaults to NULL (no seed is set.) If scalar integer is supplied, that seed will be set prior to analysis.
 #'
-#' @return An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}) and centralization (\code{graph_centralization}), as well as a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}).
+#' @return An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}), and centralization (\code{graph_centralization}). Further, a \code{bipartite_output} list which includes an \code{igraph} class bipartite graph (\code{bipartite_igraph}), a data frame, \code{coordinate_df}, with spatial coordinates of respondents, and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} is optionally generated. Lastly, the output includes a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}).
 #'
 #' @examples
 #'
@@ -44,33 +45,32 @@
 #' # Apply the ResIN function to toy Likert data:
 #' ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, detect_clusters = TRUE)
 #'
-#'
 #' @export
-#' @importFrom ggplot2 "ggplot" "geom_curve" "geom_point" "geom_text" "ggtitle" "scale_color_continuous" "scale_color_discrete" "aes" "element_blank" "element_text" "theme" "theme_classic" "coord_fixed"
-#' @importFrom dplyr "select" "left_join" "all_of" "mutate"
+#' @importFrom ggplot2 "ggplot" "geom_curve" "geom_point" "geom_text" "ggtitle" "scale_color_continuous" "scale_color_discrete" "scale_colour_manual" "aes" "element_blank" "element_text" "theme" "theme_classic" "theme_void" "coord_fixed"
+#' @importFrom dplyr "select" "left_join" "all_of" "mutate" "filter" "%>%" "row_number"
+#' @importFrom tidyr "pivot_longer"
 #' @importFrom stats "complete.cases" "cor" "sd" "prcomp" "cov" "princomp"
 #' @importFrom fastDummies "dummy_cols"
 #' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso" "qgraph.layout.fruchtermanreingold"
-#' @importFrom igraph "graph_from_adjacency_matrix" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership"
+#' @importFrom igraph "graph_from_adjacency_matrix" "graph_from_data_frame" "V" "vcount" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership"
 #' @importFrom wCorr "weightedCorr"
 #' @importFrom Matrix "nearPD"
 #' @importFrom DirectedClustering "ClustF"
 #' @importFrom psych "corr.test"
 #' @importFrom shadowtext "geom_shadowtext"
+#' @importFrom ggraph "ggraph" "geom_edge_link" "geom_node_point"
 #'
 
-ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto", weights = NULL,
-                      method_wCorr = "Polychoric", poly_ncor = 2, neg_offset = 0,
+ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearson", weights = NULL,
+                      method_wCorr = "Pearson", poly_ncor = 1, neg_offset = 0,
                       ResIN_scores = TRUE, remove_negative = TRUE,
                       EBICglasso = FALSE, EBICglasso_arglist = NULL,
                       remove_nonsignificant = FALSE, sign_threshold = 0.05,
                       node_covars = NULL, node_costats = NULL,
-                      network_stats = TRUE,
-                      detect_clusters = FALSE, cluster_method = NULL, cluster_arglist = NULL,
-                      cluster_assignment = TRUE,
-                      seed = NULL, generate_ggplot = TRUE, plot_ggplot = TRUE,
+                      network_stats = TRUE, detect_clusters = FALSE, cluster_method = NULL, cluster_arglist = NULL,
+                      cluster_assignment = TRUE, generate_ggplot = TRUE, plot_ggplot = TRUE,
                       plot_whichstat = NULL, plot_edgestat = NULL, color_palette = "RdBu", plot_responselabels = TRUE,
-                      response_levels = NULL, plot_title = NULL, save_input = TRUE) {
+                      response_levels = NULL, plot_title = NULL, bipartite = FALSE, save_input = TRUE, seed = NULL) {
 
   if(save_input==TRUE){
   ResIN_arglist <- list(df = df, node_vars = node_vars, cor_method = cor_method,
@@ -84,7 +84,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto",
                         cluster_assignment = cluster_assignment, seed = seed, generate_ggplot = generate_ggplot,
                         plot_ggplot = plot_ggplot, plot_whichstat = plot_whichstat, plot_edgestat = plot_edgestat,
                         color_palette = color_palette, plot_responselabels = plot_responselabels,
-                        response_levels = response_levels, plot_title = plot_title, save_input = save_input)
+                        response_levels = response_levels, plot_title = plot_title, bipartite = bipartite, save_input = save_input, seed = seed)
 
   } else {
     ResIN_arglist <- "not stored"
@@ -206,19 +206,6 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto",
   ResIN_igraph <- igraph::graph_from_adjacency_matrix(res_in_cor, mode = "undirected", weighted = TRUE, diag = FALSE)
   ResIN_qgraph <- qgraph::qgraph(res_in_cor, DoNotPlot = TRUE, layout = "spring", labels = rownames(res_in_cor))
 
-  ## Network statistics (common structuration and centralization metrics)
-  if(network_stats==TRUE) {
-    node_net_stats <- qgraph::centrality_auto(ResIN_qgraph, weighted = TRUE)
-    structuration <- apply(node_net_stats$node.centrality, 2, FUN = mean)
-    structuration[5] <- mean(node_net_stats$ShortestPathLengths)
-    structuration[6] <- DirectedClustering::ClustF(res_in_cor)$GlobalCC
-    names(structuration) <- c("average_betweenness", "average_closeness", "average_strength", "average_expected_influence", "average_path_length", "global_clustering")
-    centralization <- apply(node_net_stats$node.centrality, 2, FUN = sd)
-    names(centralization) <- c("betweenness_centralization", "closeness_centralization", "strength_centralization", "expected_influence_centralization")
-  } else {
-    structuration <- c("not estimated")
-    centralization <- c("not estimated")
-  }
 
   ## Force directed algorithm and principle component rotation
   if(remove_negative==FALSE) {
@@ -248,6 +235,22 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto",
 
   edgelist_frame <- dplyr::left_join(g, node_frame, by = "from")
 
+  ## Network statistics (common structuration and centralization metrics)
+  if(network_stats==TRUE) {
+    node_net_stats <- qgraph::centrality_auto(ResIN_qgraph, weighted = TRUE)
+    structuration <- apply(node_net_stats$node.centrality, 2, FUN = mean)
+    structuration[5] <- mean(node_net_stats$ShortestPathLengths)
+    structuration[6] <- DirectedClustering::ClustF(res_in_cor)$GlobalCC
+    structuration[7] <- sum(res_in_cor[lower.tri(res_in_cor)])/sum(lower.tri(res_in_cor))
+    structuration[8] <- (max(node_frame$x, na.rm = TRUE) - min(node_frame$x, na.rm = TRUE))/(max(node_frame$y, na.rm = TRUE) - min(node_frame$y, na.rm = TRUE))
+    names(structuration) <- c("average_betweenness", "average_closeness", "average_strength", "average_expected_influence", "average_path_length", "global_clustering", "link_density", "linearization")
+    centralization <- apply(node_net_stats$node.centrality, 2, FUN = sd)
+    names(centralization) <- c("betweenness_centralization", "closeness_centralization", "strength_centralization", "expected_influence_centralization")
+  } else {
+    structuration <- c("not estimated")
+    centralization <- c("not estimated")
+  }
+
   ### Adding edge-betweenness if desired
   if(network_stats==TRUE) {
     edgelist_frame$from_to <- paste(edgelist_frame$from, edgelist_frame$to, sep = "_")
@@ -257,7 +260,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto",
     node_net_stats$edge.betweenness.centrality$from <- NULL
     node_net_stats$edge.betweenness.centrality$to <- NULL
 
-    edgelist_frame <- left_join(edgelist_frame, node_net_stats$edge.betweenness.centrality, by = "from_to")
+    edgelist_frame <- dplyr::left_join(edgelist_frame, node_net_stats$edge.betweenness.centrality, by = "from_to")
   }
 
   ## Integrating node-level network stats only into node-frame
@@ -270,7 +273,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto",
     if(is.null(cluster_method)) {
       cluster <- do.call(igraph::cluster_leading_eigen, c(list(graph = ResIN_igraph), cluster_arglist))
     } else {
-      if(cluster_method=="cluster_leading_eigen") {
+      if(cluster_method=="cluster_leading_eigen") { ## THIS IS A BUG!
       }
       if(cluster_method=="cluster_fast_greedy") {
         cluster <- do.call(igraph::cluster_fast_greedy, c(list(graph = ResIN_igraph), cluster_arglist))
@@ -365,20 +368,75 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto",
   node_frame$choices <- as.factor(choices)
 
   ## Scoring
-  if(ResIN_scores==TRUE & remove_negative==TRUE){
+  if (ResIN_scores && remove_negative) {
+
     score_dummies_x <- as.matrix(df_dummies)
     score_dummies_y <- as.matrix(df_dummies)
-    for(i in 1:ncol(score_dummies_x)){
-      score_dummies_x[, node_frame$node_names[i]][score_dummies_x[, node_frame$node_names[i]]==1] <- node_frame$x[node_frame$node_names==node_frame$node_names[i]]
-      score_dummies_y[, node_frame$node_names[i]][score_dummies_y[, node_frame$node_names[i]]==1] <- node_frame$y[node_frame$node_names==node_frame$node_names[i]]
+
+    for (i in seq_along(node_frame$node_names)) {
+      item <- node_frame$node_names[i]
+      score_dummies_x[score_dummies_x[, item] == 1, item] <- node_frame$x[i]
+      score_dummies_y[score_dummies_y[, item] == 1, item] <- node_frame$y[i]
     }
-    score_dummies_x[score_dummies_x==0] <- NA
-    score_dummies_y[score_dummies_y==0] <- NA
+    score_dummies_x[score_dummies_x == 0] <- NA
+    score_dummies_y[score_dummies_y == 0] <- NA
 
-    scores_x <- apply(score_dummies_x, 1, FUN = function(x) {mean(x, na.rm=TRUE)})
-    scores_y <- apply(score_dummies_y, 1, FUN = function(x) {mean(x, na.rm=TRUE)})
+    raw_x <- rowMeans(score_dummies_x, na.rm = TRUE)
+    raw_y <- rowMeans(score_dummies_y, na.rm = TRUE)
 
-    scores <- as.data.frame(cbind(scores_x, scores_y))
+    ### helper vectors
+    n_items     <- rowSums(df_dummies)
+    popularity  <- colSums(df_dummies)
+    items_list  <- lapply(seq_len(nrow(df_dummies)),
+                          function(p) which(df_dummies[p, ] == 1))
+
+    ### Heuristic lambda  (rarer items -> more pooling)
+    k           <- median(popularity)
+    lambda_h    <- sapply(items_list, function(Ip) {
+      num <- sum(popularity[Ip])
+      1 - num / (num + k)
+    })
+
+    item_means_x <- colMeans(sweep(df_dummies, 1, raw_x, `*`), na.rm = TRUE)
+    item_means_y <- colMeans(sweep(df_dummies, 1, raw_y, `*`), na.rm = TRUE)
+
+    heur_x <- heur_y <- numeric(length(raw_x))
+    for (p in seq_along(items_list)) {
+      Ip       <- items_list[[p]]
+      if (length(Ip) == 0L) next
+      group_x  <- mean(item_means_x[Ip], na.rm = TRUE)
+      group_y  <- mean(item_means_y[Ip], na.rm = TRUE)
+      heur_x[p] <- (1 - lambda_h[p]) * raw_x[p] + lambda_h[p] * group_x
+      heur_y[p] <- (1 - lambda_h[p]) * raw_y[p] + lambda_h[p] * group_y
+    }
+
+    ### Empirical-Bayes lambda (James-Stein shrinkage)
+    #### Variance components for *x*
+    within_var_x <- rowMeans((score_dummies_x - raw_x)^2, na.rm = TRUE)
+    sigma2_x     <- mean(within_var_x, na.rm = TRUE)
+    mu_x         <- mean(raw_x, na.rm = TRUE)
+    tau2_x       <- max(0, var(raw_x, na.rm = TRUE) -
+                          sigma2_x * mean(1 / n_items, na.rm = TRUE))
+
+    lambda_eb_x  <- (sigma2_x / n_items) / (tau2_x + sigma2_x / n_items)
+    eb_x         <- (1 - lambda_eb_x) * raw_x + lambda_eb_x * mu_x
+
+    #### Variance components for *y*
+    within_var_y <- rowMeans((score_dummies_y - raw_y)^2, na.rm = TRUE)
+    sigma2_y     <- mean(within_var_y, na.rm = TRUE)
+    mu_y         <- mean(raw_y, na.rm = TRUE)
+    tau2_y       <- max(0, var(raw_y, na.rm = TRUE) -
+                          sigma2_y * mean(1 / n_items, na.rm = TRUE))
+
+    lambda_eb_y  <- (sigma2_y / n_items) / (tau2_y + sigma2_y / n_items)
+    eb_y         <- (1 - lambda_eb_y) * raw_y + lambda_eb_y * mu_y
+
+    ### Score output
+    scores <- data.frame(
+      raw_x  = raw_x,  raw_y  = raw_y,
+      heur_x = heur_x, heur_y = heur_y,
+      eb_x   = eb_x,   eb_y   = eb_y
+    )
   } else {
     scores <- "not estimated"
   }
@@ -512,8 +570,75 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto",
 
   ## Plotting ggplot graph:
   if(plot_ggplot==TRUE) {
-      print(ResIN_ggplot)
-    }
+    print(ResIN_ggplot)
+  }
+
+  ## Bipartite graph (new as of version 2.1.0)
+ if(bipartite==TRUE) {
+
+   if(!is.null(seed)){
+     set.seed(seed)
+   }
+
+   df_long <- df_dummies %>%
+     dplyr::mutate(participant = as.character(dplyr::row_number())) %>%
+     tidyr::pivot_longer(cols = -participant,
+                  names_to = "item",
+                  values_to = "value") %>%
+     dplyr::filter(value == 1)
+
+   anchors <- node_frame %>% dplyr::select(x, y, node_names)
+
+   vertex_df <- data.frame(
+     name = as.character(unique(c(df_long$participant, df_long$item, anchors$node_names))),
+     stringsAsFactors = FALSE
+   )
+
+   gt <- igraph::graph_from_data_frame(
+     df_long %>% dplyr::select(participant, item),
+     directed  = FALSE,
+     vertices  = vertex_df
+   )
+
+   idx_fix <- match(anchors$node_names, igraph::V(gt)$name)
+   n    <- igraph::vcount(gt)
+   minx <- rep(-Inf, n);  maxx <- rep( Inf, n)
+   miny <- rep(-Inf, n);  maxy <- rep( Inf, n)
+
+   lay <- igraph::layout_with_fr(
+     gt,
+     minx = minx, maxx = maxx,
+     miny = miny, maxy = maxy,
+     niter = 2000
+   )
+
+   bi_rot <- princomp(lay)$scores
+
+   vertex_df$x <- bi_rot[,1]
+   vertex_df$y <- bi_rot[,2]
+
+   bipartite_graph <- ggraph::ggraph(gt, layout = "manual",
+                             x = vertex_df$x, y = vertex_df$y) +
+     ggraph::geom_edge_link(alpha = .25, colour = "grey60") +
+     ggraph::geom_node_point(aes(colour = igraph::V(gt)$name %in% anchors$node_names), size = 2) +
+     ggplot2::scale_colour_manual(
+       name   = "Node type",
+       breaks = c("FALSE", "TRUE"),
+       labels = c("Participant", "Response node"),
+       values = c("FALSE" = "steelblue",
+                  "TRUE"  = "tomato")) +
+     ggplot2::theme_void(base_size = 11) +
+     ggplot2::theme(legend.position = "bottom")+
+     ggplot2::ggtitle("Bipartite ResIN graph")
+
+   vertex_df$node_type <- "Participant"
+   vertex_df$node_type[igraph::V(gt)$name %in% anchors$node_names] <- "Response node"
+
+   bipartite_output <- list(gt, vertex_df, bipartite_graph)
+   names(bipartite_output) <- c("bipartite_igraph", "coordinate_df", "bipartite_ggraph")
+ } else {
+   bipartite_output <- "not generated"
+ }
 
   ## Final bit of housekeeping
   node_frame$from <- NULL
@@ -525,14 +650,10 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "auto",
   graph_stats <- list(structuration, centralization)
   aux_objects <- list(res_in_cor, same_items, df_dummies, cluster_probs, max_cluster, ResIN_arglist)
   names(aux_objects) <- c("adj_matrix", "same_items", "df_dummies", "cluster_probabilities", "max_clusterprob", "ResIN_arglist")
-  output <- list(edgelist_frame, node_frame, ResIN_ggplot, scores, graph_stats, aux_objects)
-  names(output) <- c("ResIN_edgelist", "ResIN_nodeframe", "ResIN_ggplot", "ResIN_scores", "graph_stats", "aux_objects")
+  output <- list(edgelist_frame, node_frame, ResIN_ggplot, scores, graph_stats, aux_objects, bipartite_output)
+  names(output) <- c("ResIN_edgelist", "ResIN_nodeframe", "ResIN_ggplot", "ResIN_scores", "graph_stats", "aux_objects", "bipartite_output")
   class(output) <- c("list", "ResIN")
 
   return(output)
 }
-
-
-
-
 

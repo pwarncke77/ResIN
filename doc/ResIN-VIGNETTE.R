@@ -213,10 +213,10 @@ corr.test(ResIN_out$ResIN_nodeframe$x, ResIN_out$ResIN_nodeframe$dem_bias_mean)
 
 ## ----echo=TRUE, message=FALSE, warning=FALSE----------------------------------
 ## Partisanship at the individual level
-corr.test(Core_Items$partisan, ResIN_out$ResIN_scores$scores_x)
+corr.test(Core_Items$partisan, ResIN_out$ResIN_scores$raw_x)
 
 ## Affective polarization at the individual level
-corr.test(Core_Items$dem_bias, ResIN_out$ResIN_scores$scores_x)
+corr.test(Core_Items$dem_bias, ResIN_out$ResIN_scores$raw_x)
 
 ## ----warning=FALSE, message = FALSE, fig.width = 7.2, fig.height = 4----------
 ## Let's generate a new, more lean ResIN analysis by omitting network statistics calculations, 
@@ -273,6 +273,17 @@ ggplot(correlations, aes(x = correlations))+
   xlim(c(0.85, 0.87))+
   theme_classic() 
 
+
+## ----warning=FALSE, message = FALSE, fig.width = 7.2, fig.height = 4----------
+ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", 
+                                             "keep_immigrants", "welfare_spending",
+                                             "gay_marriage", "protect_environ",
+                                             "gun_control", "aid_blacks"), 
+                   seed = 36,
+                   plot_ggplot = FALSE,
+                   bipartite = TRUE)
+
+ResIN_out$bipartite_output$bipartite_ggraph
 
 ## -----------------------------------------------------------------------------
 ## Easily convert a ResIN object to igraph:
