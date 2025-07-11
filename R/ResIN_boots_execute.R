@@ -39,76 +39,39 @@
 #' @importFrom utils "setTxtProgressBar" "txtProgressBar"
 #'
 
-ResIN_boots_extract <- function(ResIN_boots_executed, what, summarize_results = FALSE) {
-
-  search_list <- function(current_list, what) {
-    result <- list()
-    # Initialize a counter in the environment if it doesn't exist
-    if (!exists("match_counter", envir = .GlobalEnv)) {
-      assign("match_counter", 0, envir = .GlobalEnv)
-    }
-    for (i in seq_along(current_list)) {
-      item <- current_list[[i]]
-      # Get the name if it exists; otherwise, set to index
-      name <- if (!is.null(names(current_list))) names(current_list)[i] else NULL
-
-      if (is.list(item)) {
-        # Recursively search the sublist and accumulate results
-        res <- search_list(item, what)
-        if (length(res) > 0) {
-          result <- c(result, res)
-        }
-      } else if (is.data.frame(item)) {
-        if (what %in% colnames(item)) {
-          # Increment the counter
-          match_counter <<- get("match_counter", envir = .GlobalEnv) + 1
-          # Add the matching column as a separate list element
-          result[[length(result) + 1]] <- item[[what]]
-          # Set a name for this element with the index
-          names(result)[length(result)] <- paste0(what, "_", match_counter)
-        }
-      } else if (!is.null(name) && name == what) {
-        # Increment the counter
-        match_counter <<- get("match_counter", envir = .GlobalEnv) + 1
-        # Add the matching item as a separate list element
-        result[[length(result) + 1]] <- item
-        # Set the name of this element with the index
-        names(result)[length(result)] <- paste0(what, "_", match_counter)
-      }
-    }
-    # Remove the counter from the environment when the top-level call finishes
-    if (sys.nframe() == 1) {
-      rm("match_counter", envir = .GlobalEnv)
-    }
-    return(result)
+ResIN_boots_execute <- function(ResIN_boots_prepped, parallel = FALSE, detect_cores = TRUE, core_offset = 0L, n_cores = 2L, inorder = FALSE) {
+  if(class(ResIN_boots_prepped)[2] !=  "ResIN_boots_prepped"){
+    stop("Please supply a 'ResIN_boots_prepped' type list object.")
   }
 
-  result <- search_list(ResIN_boots_executed, what = what)
-  rm("match_counter", envir = .GlobalEnv)
+  if(parallel==TRUE){
+    if(detect_cores==TRUE){
+      n_cores <- parallelly::availableCores()
+    }
 
-  ### Optional summarize function
-  sum_res <- function(result) {
-    res_sum <- c(min(result, na.rm = TRUE),
-                 quantile(result, 0.05, na.rm = TRUE),
-                 quantile(result, 0.25, na.rm = TRUE),
-                 median(result, na.rm = TRUE),
-                 mean(result, na.rm = TRUE),
-                 quantile(result, 0.75, na.rm = TRUE),
-                 quantile(result, 0.95, na.rm = TRUE),
-                 max(result, na.rm = TRUE),
-                 sqrt(var(result, na.rm = TRUE)))
+   cl <- parallel::makeCluster(n_cores[1])
+   doSNOW::registerDoSNOW(cl)
 
-    names(res_sum) <- c("min", "5th perct.", "25th perct.", "median", "mean",
-                        "75th perct.", "95th perct.", "max", "stdn. dev.")
-    return(res_sum)
+   pb <- txtProgressBar(max = length(ResIN_boots_prepped), style = 3)
+   progress <- function(n) setTxtProgressBar(pb, n)
+   opts <- list(progress = progress)
+
+   res_list <- foreach::foreach(i=1:length(ResIN_boots_prepped), .inorder = inorder, .options.snow = opts) %dopar% {
+     do.call(ResIN, ResIN_boots_prepped[[i]])
+   }
+
+   parallel::stopCluster(cl)
+
+  } else {
+   res_list <- vector("list", length(ResIN_boots_prepped))
+   for(i in 1:length(res_list)){
+     res_list[[i]] <- do.call(ResIN, ResIN_boots_prepped[[i]])
+   }
   }
 
-  ### Return the extracted quantities
-  if(summarize_results==FALSE) {
-    return(result)} else {
-      res_sum <-  sum_res(result)
-      return(res_sum)
-    }
+
+  class(res_list) <- c("list", "ResIN_boots_executed")
+  return(res_list)
 }
 
 

@@ -7,7 +7,7 @@
 ResIN_boots_extract(ResIN_boots_executed, what, summarize_results = FALSE)
 }
 \arguments{
-\item{ResIN_boots_executed}{A list of prepared ResIN objects for bootstrapping (outcome of the \code{ResIN_boots_executed} function)}
+\item{ResIN_boots_executed}{A list of prepared ResIN objects for bootstrapping (outcome of the \code{ResIN_boots_execute} function)}
 
 \item{what}{A character vector of length one specifying the target quantity of interest. This should be a one-to-one match with the corresponding output vector (or scalar) among the bootstrapped result list (see \code{ResIN_boots_execute}). For participants' position on the x-axis of the ResIN latent space, for example, specify "scores_x".}
 
