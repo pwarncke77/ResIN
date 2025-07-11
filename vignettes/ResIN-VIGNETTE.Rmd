@@ -69,13 +69,13 @@ ResIN_out$ResIN_ggplot + ggplot2::theme(legend.position = "none", plot.title = g
 
 ```
 
-Welcome to the **ResIN** tutorial-vignette! ResIN stands for '**Res**ponse **I**tem **N**etworks' and was first introduced by [Carpentras et.al. 2022](https://www.nature.com/articles/s41598-022-10069-3). If you are interested in all things ResIN-related, including news, papers, and the corresponding Python tutorial, please check out the [ResIN website](https://www.resinmethod.net/).
+Welcome to the **ResIN** tutorial! ResIN stands for '**Res**ponse **I**tem **N**etworks' and was first introduced by [Carpentras et.al. 2022](https://www.nature.com/articles/s41598-022-10069-3). If you are interested in all things ResIN-related, including news, papers, and the corresponding Python tutorial, please check out the [ResIN website](https://www.resinmethod.net/).
 
-This tutorial primarily introduces the [ResIN-R package](https://CRAN.R-project.org/package=ResIN) and provides an overview of the main functions, their capabilities, and some additional features.  A little bit of background knowledge in R and the Tidyverse is required to follow but you certainly do not need to have advanced skills either in R or network statistics. For an in-depth conceptual introduction to ResIN as a method, please refer to the [ResIN website](https://www.resinmethod.net/) or the above-referenced publication. The website also features [dates](https://www.resinmethod.net/conference-presentations/) for upcoming introductory talks by the [ResIN team](https://www.resinmethod.net/contact/) if you are instead interested in a live, hands-on, demonstration.
+This tutorial primarily introduces the [ResIN-R package](https://CRAN.R-project.org/package=ResIN) and provides an overview of the main functions and their capabilities. A bit of background knowledge in R and the Tidyverse is required to follow but you certainly do not need to have advanced skills either in R or network statistics. For an in-depth conceptual introduction to ResIN as a method, please refer to the [ResIN website](https://www.resinmethod.net/) or the above-referenced publication. The website also features [dates](https://www.resinmethod.net/conference-presentations/) for upcoming introductory talks by the [ResIN team](https://www.resinmethod.net/contact/) if you are instead interested in a live, hands-on, demonstration.
 
 
 ## Introducing ResIN
-ResIN is a model of co-endorsements of social attitudes. Broadly understood, attitudes denote sentiments towards a social or political issue, for instance, opposing cuts the minimum wage, being neutral on carbon taxes, or supporting equal pay for women and men. ResIN presumes that the more people co-endorse a given pair of attitudes (e.g. simultaneously supporting equal pay while opposing cuts to the minimum wage), the closer such attitudes are related to one another in a latent space.
+ResIN is a model of co-endorsement patterns within social attitudes. Broadly understood, attitudes denote sentiments towards a social or political issue, for instance, opposing cuts the minimum wage, being neutral on carbon taxes, or supporting equal pay for women and men. ResIN presumes that the more people co-endorse a given pair of attitudes (e.g. simultaneously supporting equal pay while opposing cuts to the minimum wage), the closer such attitudes are related to one another in a latent space.
 
 More formally, ResIN models all possible interactions among a given set of attitudes as a statistical network, where responses form the nodes and the edge-weights (or connecting links) determines the strength of the attractive force between them. Unlike [classic belief network models](https://doi.org/10.1086/691274), ResIN takes explicit advantage of the latent space in which attitude nodes are embedded in. Given that only co-endorsed (i.e. positively correlated) nodes attract one another, a force simulation involving all survey response nodes (i.e. a [force-directed algorithm](https://en.wikipedia.org/wiki/Force-directed_graph_drawing)) results in an interpretable, theoretically meaningful [latent space](https://osf.io/preprints/psyarxiv/uzdcg) in which both attitudes and people can be located.
 
@@ -83,9 +83,9 @@ To see this in action, let's replicate and extend the analysis in [Lüders et.al
 
 ## Data import and cleaning
 
-As with any data analysis, a little bit of housekeeping goes a long way... and ResIN is no exception! Let's use the Lüders et.al. (2024) data -- which comes for free with the [R-package](https://CRAN.R-project.org/package=ResIN) -- to illustrate this process.
+As with any data analysis, a little bit of housekeeping goes a long way, and ResIN is no exception! Let's use the Lüders et.al. (2024) data -- which comes for free with the [R-package](https://CRAN.R-project.org/package=ResIN) -- to illustrate this process.
 
-First, lets select the core set of eight issue items from the Lüders et.al. data and, as in the paper, re-code a few of these such that agreement always denotes the liberal position. (This step is not necessary but makes interpretation of the the results easier). These attitudes deal with the legality of abortion, reducing income inequality, deporting illegal immigrants, increasing welfare spending, increase welfare spending, gay marriage, protecting the environment, gun control, and government aid to African Americans.
+First, we select the core set of eight issue items from the Lüders et.al. data and, as in the paper, re-code a few of these such that agreement always denotes the liberal position. (This step is not necessary but makes interpretation of the the results easier). These attitudes deal with the legality of abortion, reducing income inequality, deporting illegal immigrants, increasing welfare spending, increase welfare spending, gay marriage, protecting the environment, gun control, and government aid to African Americans.
 
 We'll also give each item and their respective response options more telling labels to further improve visual interpretability.
 
@@ -150,7 +150,7 @@ ResIN_out <- ResIN(Core_Items)
 
 Not too bad! You'll notice that the `ResIN` function produces and plots a basic ggplot by default. The latter feature can be turned of by setting `plot_ggplot=FALSE` (something you definitely want to do if you need to bootstrapping thousands of networks, but we'll get to that part later). You can always access and call the ResIN-plot object in the stored output: `ResIN_output$ResIN_ggplot`. To suppress the off-the-shelf plot generation altogether, simply set `generate_ggplot=FALSE`.
 
-One feat you might have noticed from the above plot is that ResIN does not innately care if the politically left attitudes are also plotted on the left-hand side of the graph. In fact, the left-wing attitude cluster happens to appear on the right-hand-side in above plot.
+One feat you might have noticed from the above plot is that ResIN does not innately care if politically left-leaning attitudes are also plotted on the left-hand side of the graph. In fact, the left-wing attitude cluster happens to appear on the right-hand-side in above plot.
 
 If you are modeling concepts for which spatial orientation has a particular meaning, such as political ideology, you can specify a particular attitude node which should consistently appear on the left side of the resulting graph with the  `left_anchor` argument. Below, we'll set the `left_anchor = "legal_abort_++"` as strongly wishing to preserve legal access to abortion appears as one of the most left-wing attitude in the starting plot. (Setting a `left_anchor` does not affect the network estimation or spatial positioning of the nodes - it simply flips the x-axis should the target node appear on the right-hand half of the graph). We'll also set the random `seed` to avoid (minor) fluctuations in-between runs.
 
@@ -292,7 +292,7 @@ head(ResIN_out$ResIN_nodeframe[, 8:9], 10)
 
 ## Spatial interpretation and individual latent space scores
 
-Finally, let's turn our attention towards the latent space in which our ResIN networks are embedded in. As indicated above, ResIN combines belief network analysis with latent variable modeling in that the spatial location of the attitudes can be interpreted as an underlying latent spectrum. Following Lüders (2024) core hypothesis, if the left-right location of the abstract network space correlates substantially with people's partisan identities and animosities, there should be strong reason to believe that the ResIN network spatially captures the liberal-conservative attitude spectrum. You can access the node location on the main spatial axis simply via `ResIN_out$ResIN_nodeframe$x`.
+Finally, let's turn our attention towards the latent space in which our ResIN networks are embedded in. As indicated above, ResIN combines belief network analysis with latent variable modeling in that the spatial location of the attitudes can be interpreted as an underlying latent spectrum. Following Lüders et.al.'s core hypothesis, if the left-right location of the abstract network space correlates substantially with people's partisan identities and animosities, there should be strong reason to believe that the ResIN network spatially captures the liberal-conservative attitude spectrum. You can access the node location on the main spatial axis simply via `ResIN_out$ResIN_nodeframe$x`.
 
 ```{r, warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 4}
 ## Further attaching partisan identification
@@ -321,7 +321,7 @@ corr.test(ResIN_out$ResIN_nodeframe$x, ResIN_out$ResIN_nodeframe$dem_bias_mean)
 
 The Pearson correlations with the node location in the latent space with partisanship and democratic feelings thermometer bias of 0.86 and 0.88, respectively, strongly suggest that ResIN innately captures some of the essence of the spatial-ideological divisions among the American public.
 
-But what about the respondents themselves? The `ResIN()` function can obtain scores for all survey-takers by taking the average of the node positions among the attitude nodes that a given individual endorsed. (More fancy scoring methods that handle missing responses natively are in the works and will likely be published with the next package release.) The spatial scores are stored in a `n*2` data-frame called `ResIN_out$ResIN_scores`; the major axis scores appear as `raw_x` and the minor axis component as `raw_y`.
+But what about the respondents themselves? The `ResIN()` function can obtain scores for all survey-takers by taking the average of the node positions among the attitude nodes that a given individual endorsed. The spatial scores are stored in a `n*2` data-frame called `ResIN_out$ResIN_scores`; the major axis scores appear as `raw_x` and the minor axis component as `raw_y`.
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 ## Partisanship at the individual level
@@ -331,14 +331,14 @@ corr.test(Core_Items$partisan, ResIN_out$ResIN_scores$raw_x)
 corr.test(Core_Items$dem_bias, ResIN_out$ResIN_scores$raw_x)
 ```
 
-Alternative score estimates that are based on partial pooling of item and individual level means are implemented with a simple heuristic approach, `heur_x`, weighted by relative item popularity, and `eb_x` which implements empirical Bayes shrinkage following Efron and Morris (1973). Either of the latter options are recommended if there are large discrepancies in item response popularity or if there is substantial missingness in the raw data.
+Alternative score estimates that are based on partial pooling of item and individual level means are implemented with a simple heuristic approach, `heur_x`, weighted by relative item popularity, and `eb_x` which implements empirical Bayes shrinkage following Efron and Morris (1973). Either of these options are recommended if there are large discrepancies in item response popularity or if there is substantial missingness in the raw data.
 
 ## Bootstrapping
 What sets ResIN apart from other belief network models is its ability to determine node location in a theoretically interpretable latent space. As a non-parametric method, however, it cannot rely on closed-form probability distributions to derive uncertainty bounds for location estimates in the latent space.
 
 How can one nevertheless estimate the uncertainty around such quantities? The answer - as you might have guessed from the section header - is *bootstrapping*. 
 
-DIY implementations for bootstrapping quantities generated with novel methods can be relatively daunting, even for experienced statistical programmers. Thankfully, the ResIN package features a native workflow in the form of three neat little helper functions which can significantly simplify this process.
+DIY implementations for bootstrapping quantities generated with novel methods can be relatively daunting, even for experienced statistical programmers. This is why the ResIN package features a native workflow in the form of three helper functions which can significantly simplify this process.
 
 A canned bootstrapping procedure with the ResIN package involves the following three steps:
 
@@ -440,7 +440,7 @@ class(ResIN_qgraph)
 ```
 
 ## Summary & other features
-`ResIN()` has a lot more to offer and we hope that you'll enjoy experimenting with some of the additional features not covered in this brief tutorial. For instance, `ResIN()` natively supports analysis with survey weights (see `weights`-argument), LASSO-regularization via `EBICglasso()`, automatic removal of  non-significant edges (`remove_nonsignificant`), and more. Please feel free to reach out to the team of developers at https://www.resinmethod.net/ and [leave comments or feedback](https://www.resinmethod.net/contact/). We hope you enjoyed this tutorial and that you'll give `ResIN()` a try in your next project.
+`ResIN()` has a lot more to offer and we hope that you'll enjoy experimenting with some of the additional features not covered in this tutorial. For instance, `ResIN()` natively supports analysis with survey weights (see `weights`-argument), LASSO-regularization via `EBICglasso()`, automatic removal of  non-significant edges (`remove_nonsignificant`). Please feel free to reach out to the team of developers at https://www.resinmethod.net/ and [leave comments or feedback](https://www.resinmethod.net/contact/). We hope you enjoyed this tutorial and that you'll give `ResIN()` a try in your next project.
 
 ## References
 Carpentras, D., Lüders, A., & Quayle, M. (2022). Mapping the global opinion space to explain anti-vaccine attraction. Scientific reports, 12(1), 6188.
