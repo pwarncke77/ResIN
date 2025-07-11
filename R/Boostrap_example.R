@@ -5,7 +5,7 @@
 #'
 #' @usage data(Bootstrap_example)
 #'
-#' @format An object of class \code{"RDS"}
+#' @format An object of class \code{"rda"}
 #'
 #' @references This dataset was made available by Lüders et.al. 2024.
 #' @keywords datasets

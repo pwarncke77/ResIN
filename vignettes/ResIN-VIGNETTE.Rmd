@@ -255,7 +255,8 @@ Attached to the `ResIN_nodeframe`, the resulting ResIN object will feature a new
 ```{r, warning=FALSE, fig.width = 7.2, fig.height = 4}
 ## Calculating the relative preference of Democrats over Republicans 
   ##(Democrat feelings thermometer minus republican feelings thermometer)
-Core_Items$dem_bias  <- as.numeric(BrJSocPsychol_2024$Q15_1) - as.numeric(BrJSocPsychol_2024$Q15_2)
+Core_Items$dem_bias  <- as.numeric(BrJSocPsychol_2024$Q15_2) - 
+  as.numeric(BrJSocPsychol_2024$Q15_1)
 
 ## Separately specifying attitude nodes and covariate here:
 
@@ -266,7 +267,7 @@ ResIN_out <- ResIN(Core_Items,
                    node_costats = c("mean"), plot_whichstat = "dem_bias_mean",
                    plot_responselabels = FALSE, left_anchor = "legal_abort_++",
                    plot_title = "Affective preference of Democrats over Republicans", 
-                   color_palette = "RdBu", seed = 22)
+                   color_palette = "RdBu", direction = -1, seed = 22)
 
 ```
 
@@ -281,7 +282,7 @@ ResIN_out <- ResIN(Core_Items,
                    node_costats = c("mean"), plot_whichstat = "dem_bias_mean",
                    plot_responselabels = TRUE, left_anchor = "legal_abort_++",
                    plot_title = "Affective preference of Democrats over Republicans", 
-                   color_palette = "RdBu", seed = 22)
+                   color_palette = "RdBu", direction = -1, seed = 22)
 ```
 
 Here is a glimpse at the above results in tabular form:
@@ -297,16 +298,17 @@ Finally, let's turn our attention towards the latent space in which our ResIN ne
 ```{r, warning=FALSE, message=FALSE, fig.width = 7.2, fig.height = 4}
 ## Further attaching partisan identification
 Core_Items <- Core_Items %>% dplyr::mutate(partisan = as.numeric(recode(BrJSocPsychol_2024$Q13, 
-                                       "Democrat" = 2,
+                                       "Democrat" = 0,
                                        "Independent" = 1,
-                                       "Republican" = 0)))
+                                       "Republican" = 2)))
 
 ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", 
                                              "keep_immigrants", "welfare_spending",
                                              "gay_marriage", "protect_environ",
-                                             "gun_control", "aid_blacks"),
+                                             "gun_control", "aid_blacks"), 
+                   left_anchor = "legal_abort_++",
                    node_covars = c("dem_bias", "partisan"), node_costats = c("mean", "mean"),
-                   plot_ggplot = FALSE)
+                   plot_ggplot = F)
 
 ## Loading the psych package to run the correlation test.
 if(!require("psych")) install.packages('psych')
@@ -359,15 +361,15 @@ ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes",
                                              "gun_control", "aid_blacks"), 
                    node_covars = c("partisan"), node_costats = c("mean"), 
                    left_anchor = "legal_abort_++", network_stats = FALSE,
-                   generate_ggplot = FALSE, plot_ggplot = FALSE,
+                   generate_ggplot = FALSE, plot_ggplot = FALSE, save_input = T,
                    ResIN_scores = FALSE, detect_clusters = FALSE)
 
-ResIN_prepped <- ResIN_boots_prepare(ResIN_out, n = 1000, boots_type = "resample")
+ResIN_prepped <- ResIN_boots_prepare(ResIN_out, n = 150, boots_type = "resample")
 
 ## Running the bootstrap might take a while; uncomment to try yourself
 # ResIN_executed <- ResIN_boots_execute(ResIN_prepped, parallel = TRUE, n_cores = 2L)
-# 
-Bootstrap_example <- ResIN::Bootstrap_example
+
+data("Bootstrap_example")
 
 ## Extracting the mean level partisanship per node across all iterations
 partisan_means <- ResIN_boots_extract(Bootstrap_example, what = "partisan_mean")
@@ -382,9 +384,6 @@ for(i in 1:length(partisan_means)){
 }
 
 correlations <- unlist(correlations)
-
-## Ignoring a handful few results where left and right are still flipped
-correlations[correlations<(-0.75)] <- NA
 
 summary(correlations)
 
@@ -402,7 +401,7 @@ ggplot(correlations, aes(x = correlations))+
   geom_vline(xintercept = prob_lines[1], color = "darkred",linetype = 2)+
   geom_vline(xintercept = prob_lines[2], color = "black",linetype = 2, size = 1)+
   geom_vline(xintercept = prob_lines[3], color = "darkred",linetype = 2)+
-  xlim(c(0.85, 0.87))+
+  xlim(c(0.75, 0.92))+
   theme_classic() 
 
 ```

@@ -5,7 +5,7 @@
 \alias{Bootstrap_example}
 \title{Output example for a bootstrapping analysis conducted with the ResIN package.}
 \format{
-An object of class \code{"RDS"}
+An object of class \code{"rda"}
 }
 \usage{
 data(Bootstrap_example)
