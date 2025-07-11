@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ResIN</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,30 +72,31 @@
     
     
 <p><img src="ResIN-VIGNETTE_files/figure-html/silent%20intro-1.png" width="691.2"></p>
-<p>Welcome to the <strong>ResIN</strong> tutorial-vignette! ResIN stands
-for ‘<strong>Res</strong>ponse <strong>I</strong>tem
+<p>Welcome to the <strong>ResIN</strong> tutorial! ResIN stands for
+‘<strong>Res</strong>ponse <strong>I</strong>tem
 <strong>N</strong>etworks’ and was first introduced by <a href="https://www.nature.com/articles/s41598-022-10069-3" class="external-link">Carpentras
 et.al. 2022</a>. If you are interested in all things ResIN-related,
 including news, papers, and the corresponding Python tutorial, please
 check out the <a href="https://www.resinmethod.net/" class="external-link">ResIN
 website</a>.</p>
 <p>This tutorial primarily introduces the <a href="https://CRAN.R-project.org/package=ResIN" class="external-link">ResIN-R package</a> and
-provides an overview of the main functions, their capabilities, and some
-additional features. A little bit of background knowledge in R and the
-Tidyverse is required to follow but you certainly do not need to have
-advanced skills either in R or network statistics. For an in-depth
-conceptual introduction to ResIN as a method, please refer to the <a href="https://www.resinmethod.net/" class="external-link">ResIN website</a> or the
-above-referenced publication. The website also features <a href="https://www.resinmethod.net/conference-presentations/" class="external-link">dates</a>
+provides an overview of the main functions and their capabilities. A bit
+of background knowledge in R and the Tidyverse is required to follow but
+you certainly do not need to have advanced skills either in R or network
+statistics. For an in-depth conceptual introduction to ResIN as a
+method, please refer to the <a href="https://www.resinmethod.net/" class="external-link">ResIN
+website</a> or the above-referenced publication. The website also
+features <a href="https://www.resinmethod.net/conference-presentations/" class="external-link">dates</a>
 for upcoming introductory talks by the <a href="https://www.resinmethod.net/contact/" class="external-link">ResIN team</a> if you are
 instead interested in a live, hands-on, demonstration.</p>
 <div class="section level2">
 <h2 id="introducing-resin">Introducing ResIN<a class="anchor" aria-label="anchor" href="#introducing-resin"></a>
 </h2>
-<p>ResIN is a model of co-endorsements of social attitudes. Broadly
-understood, attitudes denote sentiments towards a social or political
-issue, for instance, opposing cuts the minimum wage, being neutral on
-carbon taxes, or supporting equal pay for women and men. ResIN presumes
-that the more people co-endorse a given pair of attitudes
+<p>ResIN is a model of co-endorsement patterns within social attitudes.
+Broadly understood, attitudes denote sentiments towards a social or
+political issue, for instance, opposing cuts the minimum wage, being
+neutral on carbon taxes, or supporting equal pay for women and men.
+ResIN presumes that the more people co-endorse a given pair of attitudes
 (e.g. simultaneously supporting equal pay while opposing cuts to the
 minimum wage), the closer such attitudes are related to one another in a
 latent space.</p>
@@ -118,10 +119,10 @@ polarized political contexts.’</p>
 <h2 id="data-import-and-cleaning">Data import and cleaning<a class="anchor" aria-label="anchor" href="#data-import-and-cleaning"></a>
 </h2>
 <p>As with any data analysis, a little bit of housekeeping goes a long
-way… and ResIN is no exception! Let’s use the Lüders et.al. (2024) data
+way, and ResIN is no exception! Let’s use the Lüders et.al. (2024) data
 – which comes for free with the <a href="https://CRAN.R-project.org/package=ResIN" class="external-link">R-package</a> – to
 illustrate this process.</p>
-<p>First, lets select the core set of eight issue items from the Lüders
+<p>First, we select the core set of eight issue items from the Lüders
 et.al. data and, as in the paper, re-code a few of these such that
 agreement always denotes the liberal position. (This step is not
 necessary but makes interpretation of the the results easier). These
@@ -206,7 +207,7 @@ call the ResIN-plot object in the stored output:
 plot generation altogether, simply set
 <code>generate_ggplot=FALSE</code>.</p>
 <p>One feat you might have noticed from the above plot is that ResIN
-does not innately care if the politically left attitudes are also
+does not innately care if politically left-leaning attitudes are also
 plotted on the left-hand side of the graph. In fact, the left-wing
 attitude cluster happens to appear on the right-hand-side in above
 plot.</p>
@@ -466,7 +467,7 @@ Americans and environmental regulations in particular.</p>
 our ResIN networks are embedded in. As indicated above, ResIN combines
 belief network analysis with latent variable modeling in that the
 spatial location of the attitudes can be interpreted as an underlying
-latent spectrum. Following Lüders (2024) core hypothesis, if the
+latent spectrum. Following Lüders et.al.’s core hypothesis, if the
 left-right location of the abstract network space correlates
 substantially with people’s partisan identities and animosities, there
 should be strong reason to believe that the ResIN network spatially
@@ -523,11 +524,9 @@ public.</p>
 <p>But what about the respondents themselves? The <code><a href="../reference/ResIN.html">ResIN()</a></code>
 function can obtain scores for all survey-takers by taking the average
 of the node positions among the attitude nodes that a given individual
-endorsed. (More fancy scoring methods that handle missing responses
-natively are in the works and will likely be published with the next
-package release.) The spatial scores are stored in a <code>n*2</code>
-data-frame called <code>ResIN_out$ResIN_scores</code>; the major axis
-scores appear as <code>raw_x</code> and the minor axis component as
+endorsed. The spatial scores are stored in a <code>n*2</code> data-frame
+called <code>ResIN_out$ResIN_scores</code>; the major axis scores appear
+as <code>raw_x</code> and the minor axis component as
 <code>raw_y</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Partisanship at the individual level</span></span>
@@ -559,7 +558,7 @@ scores appear as <code>raw_x</code> and the minor axis component as
 and individual level means are implemented with a simple heuristic
 approach, <code>heur_x</code>, weighted by relative item popularity, and
 <code>eb_x</code> which implements empirical Bayes shrinkage following
-Efron and Morris (1973). Either of the latter options are recommended if
+Efron and Morris (1973). Either of these options are recommended if
 there are large discrepancies in item response popularity or if there is
 substantial missingness in the raw data.</p>
 </div>
@@ -576,9 +575,9 @@ quantities? The answer - as you might have guessed from the section
 header - is <em>bootstrapping</em>.</p>
 <p>DIY implementations for bootstrapping quantities generated with novel
 methods can be relatively daunting, even for experienced statistical
-programmers. Thankfully, the ResIN package features a native workflow in
-the form of three neat little helper functions which can significantly
-simplify this process.</p>
+programmers. This is why the ResIN package features a native workflow in
+the form of three helper functions which can significantly simplify this
+process.</p>
 <p>A canned bootstrapping procedure with the ResIN package involves the
 following three steps:</p>
 <ol style="list-style-type: decimal">
@@ -727,12 +726,11 @@ converter functions that ship with the ResIN package. At the moment,
 </h2>
 <p><code><a href="../reference/ResIN.html">ResIN()</a></code> has a lot more to offer and we hope that you’ll
 enjoy experimenting with some of the additional features not covered in
-this brief tutorial. For instance, <code><a href="../reference/ResIN.html">ResIN()</a></code> natively
-supports analysis with survey weights (see
-<code>weights</code>-argument), LASSO-regularization via
-<code>EBICglasso()</code>, automatic removal of non-significant edges
-(<code>remove_nonsignificant</code>), and more. Please feel free to
-reach out to the team of developers at <a href="https://www.resinmethod.net/" class="external-link uri">https://www.resinmethod.net/</a> and <a href="https://www.resinmethod.net/contact/" class="external-link">leave comments or
+this tutorial. For instance, <code><a href="../reference/ResIN.html">ResIN()</a></code> natively supports
+analysis with survey weights (see <code>weights</code>-argument),
+LASSO-regularization via <code>EBICglasso()</code>, automatic removal of
+non-significant edges (<code>remove_nonsignificant</code>). Please feel
+free to reach out to the team of developers at <a href="https://www.resinmethod.net/" class="external-link uri">https://www.resinmethod.net/</a> and <a href="https://www.resinmethod.net/contact/" class="external-link">leave comments or
 feedback</a>. We hope you enjoyed this tutorial and that you’ll give
 <code><a href="../reference/ResIN.html">ResIN()</a></code> a try in your next project.</p>
 </div>
