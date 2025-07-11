@@ -273,8 +273,12 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
     if(is.null(cluster_method)) {
       cluster <- do.call(igraph::cluster_leading_eigen, c(list(graph = ResIN_igraph), cluster_arglist))
     } else {
+<<<<<<< HEAD
       if(cluster_method=="cluster_leading_eigen") {
         cluster <- do.call(igraph::cluster_leading_eigen, c(list(graph = ResIN_igraph), cluster_arglist))
+=======
+      if(cluster_method=="cluster_leading_eigen") { ## THIS IS A BUG!
+>>>>>>> 32145c809f4a3c7ad2fb2baa1eaec129702fd65e
       }
       if(cluster_method=="cluster_fast_greedy") {
         cluster <- do.call(igraph::cluster_fast_greedy, c(list(graph = ResIN_igraph), cluster_arglist))
@@ -575,6 +579,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
   }
 
   ## Bipartite graph (new as of version 2.1.0)
+<<<<<<< HEAD
   if (bipartite) {
     if (!is.null(seed)) set.seed(seed)
 
@@ -666,6 +671,73 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
   } else {
     bipartite_output <- "not generated"
   }
+=======
+ if(bipartite==TRUE) {
+
+   if(!is.null(seed)){
+     set.seed(seed)
+   }
+
+   df_long <- df_dummies %>%
+     dplyr::mutate(participant = as.character(dplyr::row_number())) %>%
+     tidyr::pivot_longer(cols = -participant,
+                  names_to = "item",
+                  values_to = "value") %>%
+     dplyr::filter(value == 1)
+
+   anchors <- node_frame %>% dplyr::select(x, y, node_names)
+
+   vertex_df <- data.frame(
+     name = as.character(unique(c(df_long$participant, df_long$item, anchors$node_names))),
+     stringsAsFactors = FALSE
+   )
+
+   gt <- igraph::graph_from_data_frame(
+     df_long %>% dplyr::select(participant, item),
+     directed  = FALSE,
+     vertices  = vertex_df
+   )
+
+   idx_fix <- match(anchors$node_names, igraph::V(gt)$name)
+   n    <- igraph::vcount(gt)
+   minx <- rep(-Inf, n);  maxx <- rep( Inf, n)
+   miny <- rep(-Inf, n);  maxy <- rep( Inf, n)
+
+   lay <- igraph::layout_with_fr(
+     gt,
+     minx = minx, maxx = maxx,
+     miny = miny, maxy = maxy,
+     niter = 2000
+   )
+
+   bi_rot <- princomp(lay)$scores
+
+   vertex_df$x <- bi_rot[,1]
+   vertex_df$y <- bi_rot[,2]
+
+   bipartite_graph <- ggraph::ggraph(gt, layout = "manual",
+                             x = vertex_df$x, y = vertex_df$y) +
+     ggraph::geom_edge_link(alpha = .25, colour = "grey60") +
+     ggraph::geom_node_point(aes(colour = igraph::V(gt)$name %in% anchors$node_names), size = 2) +
+     ggplot2::scale_colour_manual(
+       name   = "Node type",
+       breaks = c("FALSE", "TRUE"),
+       labels = c("Participant", "Response node"),
+       values = c("FALSE" = "steelblue",
+                  "TRUE"  = "tomato")) +
+     ggplot2::theme_void(base_size = 11) +
+     ggplot2::theme(legend.position = "bottom")+
+     ggplot2::ggtitle("Bipartite ResIN graph")
+
+   vertex_df$node_type <- "Participant"
+   vertex_df$node_type[igraph::V(gt)$name %in% anchors$node_names] <- "Response node"
+
+   bipartite_output <- list(gt, vertex_df, bipartite_graph)
+   names(bipartite_output) <- c("bipartite_igraph", "coordinate_df", "bipartite_ggraph")
+ } else {
+   bipartite_output <- "not generated"
+ }
+>>>>>>> 32145c809f4a3c7ad2fb2baa1eaec129702fd65e
 
   ## Final bit of housekeeping
   node_frame$from <- NULL
