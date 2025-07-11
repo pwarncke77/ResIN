@@ -28,6 +28,7 @@
 #' @param plot_whichstat Should a particular node-level metric be color-visualized in the ggplot output? For node cluster, specify "cluster". For the same Likert response choices or options, specify "choices". For a particular node-level co-variate please specify the name of the particular element in \code{node_covars} followed by a "_" and the specific \code{node_costats} you would like to visualize. For instance if you want the visualize average age at the node-level, you should specify "age_mean". To colorize by node centrality statistics, possible choices are "Strength", "Betweenness", "Closeness", and "ExpectedInfluence". Defaults to NULL. Make sure to supply appropriate choices to \code{node_covars}, \code{node_costats}, \code{detect_clusters}, and/or \code{network_stats} prior to setting this argument.
 #' @param plot_edgestat Should the thickness of the edges be adjusted according to a particular co-statistic? Defaults to NULL. Possible choices are "weight" for the bi-variate correlation strength, and "edgebetweenness"
 #' @param color_palette Optionally, you may specify the ggplot2 color palette to be applied to the plot. All options contained in [\code{RColorBrewer}](https://cran.r-project.org/web/packages/RColorBrewer/RColorBrewer.pdf) (for discrete colors such as cluster assignments) and [\code{ggplot2::scale_colour_distiller}](https://ggplot2.tidyverse.org/reference/scale_brewer.html) are supported. Defaults to "RdBu".
+#' @param direction Which direction should the color palette be applied in? Defaults to 1. Set to -1 if the palette should appear in reverse order.
 #' @param plot_responselabels Should response labels be plotted via \code{geom_text}? Defaults to TRUE. It is recommended to set to FALSE if the network possesses a lot of nodes and/or long response choice names.
 #' @param response_levels An optional character vector specifying the correct order of global response levels. Only useful if all node-items follow the same convention (e.g. ranging from "strong disagreement" to "strong agreement"). The supplied vector should have the same length as the total number of response options and supply these (matching exactly) in the correct order. E.g. c("Strongly Agree", "Somewhat Agree", "Neutral", "Somewhat Disagree", "Strongly Disagree"). Defaults to NULL.
 #' @param plot_title Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".
@@ -69,11 +70,11 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
                       node_covars = NULL, node_costats = NULL,
                       network_stats = TRUE, detect_clusters = FALSE, cluster_method = NULL, cluster_arglist = NULL,
                       cluster_assignment = TRUE, generate_ggplot = TRUE, plot_ggplot = TRUE,
-                      plot_whichstat = NULL, plot_edgestat = NULL, color_palette = "RdBu", plot_responselabels = TRUE,
+                      plot_whichstat = NULL, plot_edgestat = NULL, color_palette = "RdBu", direction = 1, plot_responselabels = TRUE,
                       response_levels = NULL, plot_title = NULL, bipartite = FALSE, save_input = TRUE, seed = NULL) {
 
   if(save_input==TRUE){
-  ResIN_arglist <- list(df = df, node_vars = node_vars, cor_method = cor_method,
+  ResIN_arglist <- list(df = df, node_vars = node_vars, left_anchor = left_anchor, cor_method = cor_method,
                         weights = weights, method_wCorr = method_wCorr, poly_ncor = poly_ncor, neg_offset = neg_offset,
                         ResIN_scores = ResIN_scores, remove_negative = remove_negative,
                         EBICglasso = EBICglasso, EBICglasso_arglist = EBICglasso_arglist,
@@ -83,7 +84,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
                         cluster_method = cluster_method, cluster_arglist = cluster_arglist,
                         cluster_assignment = cluster_assignment, generate_ggplot = generate_ggplot,
                         plot_ggplot = plot_ggplot, plot_whichstat = plot_whichstat, plot_edgestat = plot_edgestat,
-                        color_palette = color_palette, plot_responselabels = plot_responselabels,
+                        color_palette = color_palette, direction = direction, plot_responselabels = plot_responselabels,
                         response_levels = response_levels, plot_title = plot_title, bipartite = bipartite, save_input = save_input, seed = seed)
 
   } else {
@@ -214,7 +215,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
     graph_layout <- as.data.frame(prcomp(igraph::layout_with_fr(ResIN_igraph))$x)
     rownames(graph_layout) <- rownames(res_in_cor)
     if(!is.null(left_anchor)) {
-      if(graph_layout[left_anchor,][1]>0) {
+      if(graph_layout[left_anchor,][1] > mean(graph_layout[,1], na.rm = T)) {
       graph_layout[,1] <- -1*graph_layout[,1]
       }
     }
@@ -504,8 +505,8 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
         shadowtext::geom_shadowtext(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
                                       color = as.factor(node_frame$cluster)), size = 3.8, bg.r = 0.1)
       }
-    ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_brewer(palette = color_palette) +
-      ggplot2::scale_fill_brewer(palette = color_palette) +
+    ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_brewer(palette = color_palette, direction = direction) +
+      ggplot2::scale_fill_brewer(palette = color_palette, direction = direction) +
       ggplot2::labs(color = "Cluster membership", fill = "Cluster membership")+
       ggplot2::theme(legend.text = ggplot2::element_text(size=10))
   }
@@ -520,8 +521,8 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
         shadowtext::geom_shadowtext(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
                                       color = node_frame$choices), size = 3.8, bg.r = 0.1)
       }
-  ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_brewer(palette = color_palette) +
-    ggplot2::scale_fill_brewer(palette = color_palette) +
+  ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_brewer(palette = color_palette, direction = direction) +
+    ggplot2::scale_fill_brewer(palette = color_palette, direction = direction) +
     ggplot2::labs(color = "Response choices", fill = "Response choices")+
     ggplot2::theme(legend.text = ggplot2::element_text(size=10))
   }
@@ -542,8 +543,8 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
       ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y,
                                               label = node_frame$node_names, color = node_frame[, plot_whichstat]), size = 3.8)
         }
-    ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_distiller(palette = color_palette, direction = 1) +
-      ggplot2::scale_fill_distiller(palette = color_palette, direction = 1)+
+    ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_distiller(palette = color_palette, direction = direction) +
+      ggplot2::scale_fill_distiller(palette = color_palette, direction = direction)+
       ggplot2::labs(color = plot_whichstat, fill = plot_whichstat)+
       ggplot2::theme(legend.text = ggplot2::element_text(size=10))
     }
@@ -561,8 +562,8 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
       ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
                                                                        color = node_frame[, plot_whichstat]), size = 3.8)
       }
-      ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_distiller(palette = color_palette, direction = 1) +
-        ggplot2::scale_fill_distiller(palette = color_palette, direction = 1)+
+      ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_distiller(palette = color_palette, direction = direction) +
+        ggplot2::scale_fill_distiller(palette = color_palette, direction = direction)+
         ggplot2::labs(color = plot_whichstat, fill = plot_whichstat)+
         ggplot2::theme(legend.text = ggplot2::element_text(size=10))
     }

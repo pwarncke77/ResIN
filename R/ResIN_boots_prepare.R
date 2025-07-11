@@ -61,7 +61,7 @@ ResIN_boots_prepare <- function(ResIN_object, n=10000, boots_type="resample", re
   if(boots_type == "resample"){
     for(i in 1:n){
       mega_list[[i]] <- ResIN_object$aux_objects$ResIN_arglist
-      mega_list[[i]]$df <- dplyr::sample_n(df, resample_size, weight=weights)
+      mega_list[[i]]$df <- dplyr::sample_n(df, replace = TRUE, resample_size, weight=weights)
       }
     }
 

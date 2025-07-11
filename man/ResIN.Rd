@@ -31,6 +31,7 @@ ResIN(
   plot_whichstat = NULL,
   plot_edgestat = NULL,
   color_palette = "RdBu",
+  direction = 1,
   plot_responselabels = TRUE,
   response_levels = NULL,
   plot_title = NULL,
@@ -91,6 +92,8 @@ ResIN(
 \item{plot_edgestat}{Should the thickness of the edges be adjusted according to a particular co-statistic? Defaults to NULL. Possible choices are "weight" for the bi-variate correlation strength, and "edgebetweenness"}
 
 \item{color_palette}{Optionally, you may specify the ggplot2 color palette to be applied to the plot. All options contained in [\code{RColorBrewer}](https://cran.r-project.org/web/packages/RColorBrewer/RColorBrewer.pdf) (for discrete colors such as cluster assignments) and [\code{ggplot2::scale_colour_distiller}](https://ggplot2.tidyverse.org/reference/scale_brewer.html) are supported. Defaults to "RdBu".}
+
+\item{direction}{Which direction should the color palette be applied in? Defaults to 1. Set to -1 if the palette should appear in reverse order.}
 
 \item{plot_responselabels}{Should response labels be plotted via \code{geom_text}? Defaults to TRUE. It is recommended to set to FALSE if the network possesses a lot of nodes and/or long response choice names.}
 

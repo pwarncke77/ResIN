@@ -11,7 +11,7 @@ ResIN_boots_prepare(
   resample_size = NULL,
   weights = NULL,
   save_input = FALSE,
-  seed = 42
+  seed_boots = 42
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ ResIN_boots_prepare(
 
 \item{save_input}{Should all input information for each bootstrap iteration (including re-sampled/permuted data) be stored. Set to FALSE by default to save a lot of memory and disk storage.}
 
-\item{seed}{Random seed for bootstrap samples}
+\item{seed_boots}{Random seed for bootstrap samples}
 }
 \value{
 A list object containing n re-sampled or permuted copies of the raw data, along with a list of instructions for how to perform the ResIN analysis and what outputs to generate.
