@@ -70,6 +70,7 @@
 <span>  plot_whichstat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  plot_edgestat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  color_palette <span class="op">=</span> <span class="st">"RdBu"</span>,</span>
+<span>  direction <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  plot_responselabels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  response_levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  plot_title <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -185,6 +186,10 @@
 
 <dt id="arg-color-palette">color_palette<a class="anchor" aria-label="anchor" href="#arg-color-palette"></a></dt>
 <dd><p>Optionally, you may specify the ggplot2 color palette to be applied to the plot. All options contained in [<code>RColorBrewer</code>](https://cran.r-project.org/web/packages/RColorBrewer/RColorBrewer.pdf) (for discrete colors such as cluster assignments) and [<code><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">ggplot2::scale_colour_distiller</a></code>](https://ggplot2.tidyverse.org/reference/scale_brewer.html) are supported. Defaults to "RdBu".</p></dd>
+
+
+<dt id="arg-direction">direction<a class="anchor" aria-label="anchor" href="#arg-direction"></a></dt>
+<dd><p>Which direction should the color palette be applied in? Defaults to 1. Set to -1 if the palette should appear in reverse order.</p></dd>
 
 
 <dt id="arg-plot-responselabels">plot_responselabels<a class="anchor" aria-label="anchor" href="#arg-plot-responselabels"></a></dt>
