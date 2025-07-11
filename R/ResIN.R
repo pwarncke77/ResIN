@@ -81,7 +81,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
                         node_covars = node_covars, node_costats = node_costats,
                         network_stats = network_stats, detect_clusters = detect_clusters,
                         cluster_method = cluster_method, cluster_arglist = cluster_arglist,
-                        cluster_assignment = cluster_assignment, seed = seed, generate_ggplot = generate_ggplot,
+                        cluster_assignment = cluster_assignment, generate_ggplot = generate_ggplot,
                         plot_ggplot = plot_ggplot, plot_whichstat = plot_whichstat, plot_edgestat = plot_edgestat,
                         color_palette = color_palette, plot_responselabels = plot_responselabels,
                         response_levels = response_levels, plot_title = plot_title, bipartite = bipartite, save_input = save_input, seed = seed)
