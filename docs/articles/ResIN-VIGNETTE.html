@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ResIN</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,30 +72,31 @@
     
     
 <p><img src="ResIN-VIGNETTE_files/figure-html/silent%20intro-1.png" width="691.2"></p>
-<p>Welcome to the <strong>ResIN</strong> tutorial-vignette! ResIN stands
-for ‘<strong>Res</strong>ponse <strong>I</strong>tem
+<p>Welcome to the <strong>ResIN</strong> tutorial! ResIN stands for
+‘<strong>Res</strong>ponse <strong>I</strong>tem
 <strong>N</strong>etworks’ and was first introduced by <a href="https://www.nature.com/articles/s41598-022-10069-3" class="external-link">Carpentras
 et.al. 2022</a>. If you are interested in all things ResIN-related,
 including news, papers, and the corresponding Python tutorial, please
 check out the <a href="https://www.resinmethod.net/" class="external-link">ResIN
 website</a>.</p>
 <p>This tutorial primarily introduces the <a href="https://CRAN.R-project.org/package=ResIN" class="external-link">ResIN-R package</a> and
-provides an overview of the main functions, their capabilities, and some
-additional features. A little bit of background knowledge in R and the
-Tidyverse is required to follow but you certainly do not need to have
-advanced skills either in R or network statistics. For an in-depth
-conceptual introduction to ResIN as a method, please refer to the <a href="https://www.resinmethod.net/" class="external-link">ResIN website</a> or the
-above-referenced publication. The website also features <a href="https://www.resinmethod.net/conference-presentations/" class="external-link">dates</a>
+provides an overview of the main functions and their capabilities. A bit
+of background knowledge in R and the Tidyverse is required to follow but
+you certainly do not need to have advanced skills either in R or network
+statistics. For an in-depth conceptual introduction to ResIN as a
+method, please refer to the <a href="https://www.resinmethod.net/" class="external-link">ResIN
+website</a> or the above-referenced publication. The website also
+features <a href="https://www.resinmethod.net/conference-presentations/" class="external-link">dates</a>
 for upcoming introductory talks by the <a href="https://www.resinmethod.net/contact/" class="external-link">ResIN team</a> if you are
 instead interested in a live, hands-on, demonstration.</p>
 <div class="section level2">
 <h2 id="introducing-resin">Introducing ResIN<a class="anchor" aria-label="anchor" href="#introducing-resin"></a>
 </h2>
-<p>ResIN is a model of co-endorsements of social attitudes. Broadly
-understood, attitudes denote sentiments towards a social or political
-issue, for instance, opposing cuts the minimum wage, being neutral on
-carbon taxes, or supporting equal pay for women and men. ResIN presumes
-that the more people co-endorse a given pair of attitudes
+<p>ResIN is a model of co-endorsement patterns within social attitudes.
+Broadly understood, attitudes denote sentiments towards a social or
+political issue, for instance, opposing cuts the minimum wage, being
+neutral on carbon taxes, or supporting equal pay for women and men.
+ResIN presumes that the more people co-endorse a given pair of attitudes
 (e.g. simultaneously supporting equal pay while opposing cuts to the
 minimum wage), the closer such attitudes are related to one another in a
 latent space.</p>
@@ -118,10 +119,10 @@ polarized political contexts.’</p>
 <h2 id="data-import-and-cleaning">Data import and cleaning<a class="anchor" aria-label="anchor" href="#data-import-and-cleaning"></a>
 </h2>
 <p>As with any data analysis, a little bit of housekeeping goes a long
-way… and ResIN is no exception! Let’s use the Lüders et.al. (2024) data
+way, and ResIN is no exception! Let’s use the Lüders et.al. (2024) data
 – which comes for free with the <a href="https://CRAN.R-project.org/package=ResIN" class="external-link">R-package</a> – to
 illustrate this process.</p>
-<p>First, lets select the core set of eight issue items from the Lüders
+<p>First, we select the core set of eight issue items from the Lüders
 et.al. data and, as in the paper, re-code a few of these such that
 agreement always denotes the liberal position. (This step is not
 necessary but makes interpretation of the the results easier). These
@@ -206,7 +207,7 @@ call the ResIN-plot object in the stored output:
 plot generation altogether, simply set
 <code>generate_ggplot=FALSE</code>.</p>
 <p>One feat you might have noticed from the above plot is that ResIN
-does not innately care if the politically left attitudes are also
+does not innately care if politically left-leaning attitudes are also
 plotted on the left-hand side of the graph. In fact, the left-wing
 attitude cluster happens to appear on the right-hand-side in above
 plot.</p>
@@ -411,7 +412,8 @@ measure in Lüders et.al. (2024) following this strategy.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Calculating the relative preference of Democrats over Republicans </span></span>
 <span>  <span class="co">##(Democrat feelings thermometer minus republican feelings thermometer)</span></span>
-<span><span class="va">Core_Items</span><span class="op">$</span><span class="va">dem_bias</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">BrJSocPsychol_2024</span><span class="op">$</span><span class="va">Q15_1</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">BrJSocPsychol_2024</span><span class="op">$</span><span class="va">Q15_2</span><span class="op">)</span></span>
+<span><span class="va">Core_Items</span><span class="op">$</span><span class="va">dem_bias</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">BrJSocPsychol_2024</span><span class="op">$</span><span class="va">Q15_2</span><span class="op">)</span> <span class="op">-</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">BrJSocPsychol_2024</span><span class="op">$</span><span class="va">Q15_1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Separately specifying attitude nodes and covariate here:</span></span>
 <span></span>
@@ -422,7 +424,7 @@ measure in Lüders et.al. (2024) following this strategy.</p>
 <span>                   node_costats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span><span class="op">)</span>, plot_whichstat <span class="op">=</span> <span class="st">"dem_bias_mean"</span>,</span>
 <span>                   plot_responselabels <span class="op">=</span> <span class="cn">FALSE</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>,</span>
 <span>                   plot_title <span class="op">=</span> <span class="st">"Affective preference of Democrats over Republicans"</span>, </span>
-<span>                   color_palette <span class="op">=</span> <span class="st">"RdBu"</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span></code></pre></div>
+<span>                   color_palette <span class="op">=</span> <span class="st">"RdBu"</span>, direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-7-1.png" width="691.2"></p>
 <p>Our latest plot nicely visualizes the co-dependency between affective
 and issue polarization which characterizes contemporary American
@@ -442,22 +444,22 @@ Americans and environmental regulations in particular.</p>
 <span>                   node_costats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span><span class="op">)</span>, plot_whichstat <span class="op">=</span> <span class="st">"dem_bias_mean"</span>,</span>
 <span>                   plot_responselabels <span class="op">=</span> <span class="cn">TRUE</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>,</span>
 <span>                   plot_title <span class="op">=</span> <span class="st">"Affective preference of Democrats over Republicans"</span>, </span>
-<span>                   color_palette <span class="op">=</span> <span class="st">"RdBu"</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span></code></pre></div>
+<span>                   color_palette <span class="op">=</span> <span class="st">"RdBu"</span>, direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-8-1.png" width="691.2"></p>
 <p>Here is a glimpse at the above results in tabular form:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ResIN_out</span><span class="op">$</span><span class="va">ResIN_nodeframe</span><span class="op">[</span>, <span class="fl">8</span><span class="op">:</span><span class="fl">9</span><span class="op">]</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                      dem_bias_mean           node_label</span></span>
-<span><span class="co">#&gt; legal_abort_-            -6.500000        legal_abort_-</span></span>
-<span><span class="co">#&gt; legal_abort_--           -2.489362       legal_abort_--</span></span>
-<span><span class="co">#&gt; legal_abort_+            21.222222        legal_abort_+</span></span>
-<span><span class="co">#&gt; legal_abort_+/-           5.100000      legal_abort_+/-</span></span>
-<span><span class="co">#&gt; legal_abort_++           50.717300       legal_abort_++</span></span>
-<span><span class="co">#&gt; equalize_incomes_-        5.159091   equalize_incomes_-</span></span>
-<span><span class="co">#&gt; equalize_incomes_--     -41.571429  equalize_incomes_--</span></span>
-<span><span class="co">#&gt; equalize_incomes_+       39.619048   equalize_incomes_+</span></span>
-<span><span class="co">#&gt; equalize_incomes_+/-     11.122449 equalize_incomes_+/-</span></span>
-<span><span class="co">#&gt; equalize_incomes_++      56.335821  equalize_incomes_++</span></span></code></pre></div>
+<span><span class="co">#&gt; legal_abort_-             6.500000        legal_abort_-</span></span>
+<span><span class="co">#&gt; legal_abort_--            2.489362       legal_abort_--</span></span>
+<span><span class="co">#&gt; legal_abort_+           -21.222222        legal_abort_+</span></span>
+<span><span class="co">#&gt; legal_abort_+/-          -5.100000      legal_abort_+/-</span></span>
+<span><span class="co">#&gt; legal_abort_++          -50.717300       legal_abort_++</span></span>
+<span><span class="co">#&gt; equalize_incomes_-       -5.159091   equalize_incomes_-</span></span>
+<span><span class="co">#&gt; equalize_incomes_--      41.571429  equalize_incomes_--</span></span>
+<span><span class="co">#&gt; equalize_incomes_+      -39.619048   equalize_incomes_+</span></span>
+<span><span class="co">#&gt; equalize_incomes_+/-    -11.122449 equalize_incomes_+/-</span></span>
+<span><span class="co">#&gt; equalize_incomes_++     -56.335821  equalize_incomes_++</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="spatial-interpretation-and-individual-latent-space-scores">Spatial interpretation and individual latent space scores<a class="anchor" aria-label="anchor" href="#spatial-interpretation-and-individual-latent-space-scores"></a>
@@ -466,7 +468,7 @@ Americans and environmental regulations in particular.</p>
 our ResIN networks are embedded in. As indicated above, ResIN combines
 belief network analysis with latent variable modeling in that the
 spatial location of the attitudes can be interpreted as an underlying
-latent spectrum. Following Lüders (2024) core hypothesis, if the
+latent spectrum. Following Lüders et.al.’s core hypothesis, if the
 left-right location of the abstract network space correlates
 substantially with people’s partisan identities and animosities, there
 should be strong reason to believe that the ResIN network spatially
@@ -476,16 +478,17 @@ node location on the main spatial axis simply via
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Further attaching partisan identification</span></span>
 <span><span class="va">Core_Items</span> <span class="op">&lt;-</span> <span class="va">Core_Items</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>partisan <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html" class="external-link">recode</a></span><span class="op">(</span><span class="va">BrJSocPsychol_2024</span><span class="op">$</span><span class="va">Q13</span>, </span>
-<span>                                       <span class="st">"Democrat"</span> <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                                       <span class="st">"Democrat"</span> <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>                                       <span class="st">"Independent"</span> <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                                       <span class="st">"Republican"</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>                                       <span class="st">"Republican"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>, node_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"legal_abort"</span>, <span class="st">"equalize_incomes"</span>, </span>
 <span>                                             <span class="st">"keep_immigrants"</span>, <span class="st">"welfare_spending"</span>,</span>
 <span>                                             <span class="st">"gay_marriage"</span>, <span class="st">"protect_environ"</span>,</span>
-<span>                                             <span class="st">"gun_control"</span>, <span class="st">"aid_blacks"</span><span class="op">)</span>,</span>
+<span>                                             <span class="st">"gun_control"</span>, <span class="st">"aid_blacks"</span><span class="op">)</span>, </span>
+<span>                   left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>,</span>
 <span>                   node_covars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dem_bias"</span>, <span class="st">"partisan"</span><span class="op">)</span>, node_costats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"mean"</span><span class="op">)</span>,</span>
-<span>                   plot_ggplot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>                   plot_ggplot <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Loading the psych package to run the correlation test.</span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://personality-project.org/r/psych/" class="external-link">"psych"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'psych'</span><span class="op">)</span></span>
@@ -523,11 +526,9 @@ public.</p>
 <p>But what about the respondents themselves? The <code><a href="../reference/ResIN.html">ResIN()</a></code>
 function can obtain scores for all survey-takers by taking the average
 of the node positions among the attitude nodes that a given individual
-endorsed. (More fancy scoring methods that handle missing responses
-natively are in the works and will likely be published with the next
-package release.) The spatial scores are stored in a <code>n*2</code>
-data-frame called <code>ResIN_out$ResIN_scores</code>; the major axis
-scores appear as <code>raw_x</code> and the minor axis component as
+endorsed. The spatial scores are stored in a <code>n*2</code> data-frame
+called <code>ResIN_out$ResIN_scores</code>; the major axis scores appear
+as <code>raw_x</code> and the minor axis component as
 <code>raw_y</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Partisanship at the individual level</span></span>
@@ -559,7 +560,7 @@ scores appear as <code>raw_x</code> and the minor axis component as
 and individual level means are implemented with a simple heuristic
 approach, <code>heur_x</code>, weighted by relative item popularity, and
 <code>eb_x</code> which implements empirical Bayes shrinkage following
-Efron and Morris (1973). Either of the latter options are recommended if
+Efron and Morris (1973). Either of these options are recommended if
 there are large discrepancies in item response popularity or if there is
 substantial missingness in the raw data.</p>
 </div>
@@ -576,9 +577,9 @@ quantities? The answer - as you might have guessed from the section
 header - is <em>bootstrapping</em>.</p>
 <p>DIY implementations for bootstrapping quantities generated with novel
 methods can be relatively daunting, even for experienced statistical
-programmers. Thankfully, the ResIN package features a native workflow in
-the form of three neat little helper functions which can significantly
-simplify this process.</p>
+programmers. This is why the ResIN package features a native workflow in
+the form of three helper functions which can significantly simplify this
+process.</p>
 <p>A canned bootstrapping procedure with the ResIN package involves the
 following three steps:</p>
 <ol style="list-style-type: decimal">
@@ -620,15 +621,15 @@ identification.</p>
 <span>                                             <span class="st">"gun_control"</span>, <span class="st">"aid_blacks"</span><span class="op">)</span>, </span>
 <span>                   node_covars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"partisan"</span><span class="op">)</span>, node_costats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span><span class="op">)</span>, </span>
 <span>                   left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>, network_stats <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                   generate_ggplot <span class="op">=</span> <span class="cn">FALSE</span>, plot_ggplot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                   generate_ggplot <span class="op">=</span> <span class="cn">FALSE</span>, plot_ggplot <span class="op">=</span> <span class="cn">FALSE</span>, save_input <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>                   ResIN_scores <span class="op">=</span> <span class="cn">FALSE</span>, detect_clusters <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ResIN_prepped</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN_boots_prepare.html">ResIN_boots_prepare</a></span><span class="op">(</span><span class="va">ResIN_out</span>, n <span class="op">=</span> <span class="fl">1000</span>, boots_type <span class="op">=</span> <span class="st">"resample"</span><span class="op">)</span></span>
+<span><span class="va">ResIN_prepped</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN_boots_prepare.html">ResIN_boots_prepare</a></span><span class="op">(</span><span class="va">ResIN_out</span>, n <span class="op">=</span> <span class="fl">150</span>, boots_type <span class="op">=</span> <span class="st">"resample"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Running the bootstrap might take a while; uncomment to try yourself</span></span>
 <span><span class="co"># ResIN_executed &lt;- ResIN_boots_execute(ResIN_prepped, parallel = TRUE, n_cores = 2L)</span></span>
-<span><span class="co"># </span></span>
-<span><span class="va">Bootstrap_example</span> <span class="op">&lt;-</span> <span class="fu">ResIN</span><span class="fu">::</span><span class="va"><a href="../reference/Bootstrap_example.html">Bootstrap_example</a></span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Bootstrap_example"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Extracting the mean level partisanship per node across all iterations</span></span>
 <span><span class="va">partisan_means</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN_boots_extract.html">ResIN_boots_extract</a></span><span class="op">(</span><span class="va">Bootstrap_example</span>, what <span class="op">=</span> <span class="st">"partisan_mean"</span><span class="op">)</span></span>
@@ -644,12 +645,9 @@ identification.</p>
 <span></span>
 <span><span class="va">correlations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">correlations</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## Ignoring a handful few results where left and right are still flipped</span></span>
-<span><span class="va">correlations</span><span class="op">[</span><span class="va">correlations</span><span class="op">&lt;</span><span class="op">(</span><span class="op">-</span><span class="fl">0.75</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
-<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">correlations</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's </span></span>
-<span><span class="co">#&gt;  0.8539  0.8576  0.8592  0.8591  0.8607  0.8643       9</span></span>
+<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span><span class="co">#&gt;  0.6881  0.8305  0.8555  0.8492  0.8758  0.9242</span></span>
 <span></span>
 <span><span class="co">## Let's plot the result with 95% CI lines:</span></span>
 <span><span class="va">correlations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">correlations</span><span class="op">)</span></span>
@@ -665,7 +663,7 @@ identification.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">prob_lines</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"darkred"</span>,linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">prob_lines</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"black"</span>,linetype <span class="op">=</span> <span class="fl">2</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">prob_lines</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"darkred"</span>,linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.85</span>, <span class="fl">0.87</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.75</span>, <span class="fl">0.92</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-12-1.png" width="691.2"></p>
 <p>The bootstrapped distribution shows that the positions in latent
@@ -727,12 +725,11 @@ converter functions that ship with the ResIN package. At the moment,
 </h2>
 <p><code><a href="../reference/ResIN.html">ResIN()</a></code> has a lot more to offer and we hope that you’ll
 enjoy experimenting with some of the additional features not covered in
-this brief tutorial. For instance, <code><a href="../reference/ResIN.html">ResIN()</a></code> natively
-supports analysis with survey weights (see
-<code>weights</code>-argument), LASSO-regularization via
-<code>EBICglasso()</code>, automatic removal of non-significant edges
-(<code>remove_nonsignificant</code>), and more. Please feel free to
-reach out to the team of developers at <a href="https://www.resinmethod.net/" class="external-link uri">https://www.resinmethod.net/</a> and <a href="https://www.resinmethod.net/contact/" class="external-link">leave comments or
+this tutorial. For instance, <code><a href="../reference/ResIN.html">ResIN()</a></code> natively supports
+analysis with survey weights (see <code>weights</code>-argument),
+LASSO-regularization via <code>EBICglasso()</code>, automatic removal of
+non-significant edges (<code>remove_nonsignificant</code>). Please feel
+free to reach out to the team of developers at <a href="https://www.resinmethod.net/" class="external-link uri">https://www.resinmethod.net/</a> and <a href="https://www.resinmethod.net/contact/" class="external-link">leave comments or
 feedback</a>. We hope you enjoyed this tutorial and that you’ll give
 <code><a href="../reference/ResIN.html">ResIN()</a></code> a try in your next project.</p>
 </div>
