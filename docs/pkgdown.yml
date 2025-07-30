@@ -3,7 +3,7 @@ pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   ResIN-VIGNETTE: ResIN-VIGNETTE.html
-last_built: 2025-07-12T07:26Z
+last_built: 2025-07-30T10:51Z
 urls:
   reference: https://pwarncke77.github.io/ResIN/reference
   article: https://pwarncke77.github.io/ResIN/articles

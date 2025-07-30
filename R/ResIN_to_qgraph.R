@@ -25,7 +25,7 @@
 
 ResIN_to_qgraph <- function(ResIN_object, qgraph_arglist = NULL) {
   ## Test for ResIN object
-  if(class(ResIN_object)[2] !=  "ResIN"){
+  if(class(ResIN_object)[1] !=  "ResIN"){
     stop("Please supply a ResIN type list object.")
   }
   if(is.null(qgraph_arglist)) {

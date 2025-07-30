@@ -24,7 +24,7 @@
 
 ResIN_to_gephi <- function(ResIN_object, file = "ResIN_gephi.csv") {
   ## Test for ResIN object
-  if(class(ResIN_object)[2] !=  "ResIN"){
+  if(class(ResIN_object)[1] !=  "ResIN"){
     stop("Please supply a ResIN type list object.")
   }
     dataframe <- ResIN_object$ResIN_edgelist

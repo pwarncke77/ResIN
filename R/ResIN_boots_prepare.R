@@ -37,7 +37,7 @@
 
 ResIN_boots_prepare <- function(ResIN_object, n=10000, boots_type="resample", resample_size=NULL, weights = NULL, save_input=FALSE, seed_boots = 42){
   ## Validation tests
-  if(class(ResIN_object)[2] !=  "ResIN"){
+  if(class(ResIN_object)[1] !=  "ResIN"){
     stop("Please supply a ResIN type list object.")
   }
   if(! boots_type %in% c("resample", "permute")){
@@ -75,7 +75,7 @@ ResIN_boots_prepare <- function(ResIN_object, n=10000, boots_type="resample", re
     }
   }
 
-  class(mega_list) <- c("list", "ResIN_boots_prepped")
+  class(mega_list) <- c("ResIN_boots_prepped", "list")
   return(mega_list)
 }
 

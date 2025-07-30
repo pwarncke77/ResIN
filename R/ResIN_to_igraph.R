@@ -28,7 +28,7 @@
 
 ResIN_to_igraph <- function(ResIN_object, igraph_arglist = NULL) {
   ## Test for ResIN object
-  if(class(ResIN_object)[2] !=  "ResIN"){
+  if(class(ResIN_object)[1] !=  "ResIN"){
     stop("Please supply a ResIN type list object.")
   }
   ## Generating the igraph object

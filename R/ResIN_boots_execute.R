@@ -40,7 +40,7 @@
 #'
 
 ResIN_boots_execute <- function(ResIN_boots_prepped, parallel = FALSE, detect_cores = TRUE, core_offset = 0L, n_cores = 2L, inorder = FALSE) {
-  if(class(ResIN_boots_prepped)[2] !=  "ResIN_boots_prepped"){
+  if(class(ResIN_boots_prepped)[1] !=  "ResIN_boots_prepped"){
     stop("Please supply a 'ResIN_boots_prepped' type list object.")
   }
 

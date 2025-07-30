@@ -638,14 +638,17 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
     vertex_df$y <- bi_rot[, 2]
     vertex_df$node_type <- igraph::vertex_attr(gt, "node_type")
 
-    ## Plot with ggraph ------------------------------------------------------
+    ## Plot with ggraph
     bipartite_graph <- ggraph::ggraph(
       gt, layout = "manual",
       x = vertex_df$x, y = vertex_df$y
     ) +
       ggraph::geom_edge_link(alpha = 0.25, colour = "grey60") +
       ggraph::geom_node_point(
-        ggplot2::aes(colour = .data[["node_type"]]),  # ← USE bare .data
+        ggplot2::aes(
+          colour = .data[["node_type"]],
+          shape  = .data[["node_type"]]
+        ),
         size = 2
       ) +
       ggplot2::scale_colour_manual(
@@ -653,11 +656,16 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
         values = c("Participant"   = "steelblue",
                    "Response node" = "tomato")
       ) +
+      ggplot2::scale_shape_manual(
+        name   = "Node type",
+        values = c("Participant"   = 16,
+                   "Response node" = 17)
+      ) +
       ggplot2::theme_void(base_size = 11) +
       ggplot2::theme(legend.position = "bottom") +
       ggplot2::ggtitle("Bipartite ResIN graph")
 
-    ## 9 · Return tidy output ----------------------------------------------------
+    ## Return tidy output
     bipartite_output <- list(
       bipartite_igraph = gt,
       coordinate_df    = vertex_df,
@@ -680,7 +688,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
   names(aux_objects) <- c("adj_matrix", "same_items", "df_dummies", "cluster_probabilities", "max_clusterprob", "ResIN_arglist")
   output <- list(edgelist_frame, node_frame, ResIN_ggplot, scores, graph_stats, aux_objects, bipartite_output)
   names(output) <- c("ResIN_edgelist", "ResIN_nodeframe", "ResIN_ggplot", "ResIN_scores", "graph_stats", "aux_objects", "bipartite_output")
-  class(output) <- c("list", "ResIN")
+  class(output) <- c("ResIN", "list")
 
   return(output)
 }
