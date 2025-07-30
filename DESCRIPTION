@@ -3,7 +3,7 @@ Type: Package
 Title: Response Item Networks
 Version: 2.2.1
 Authors@R: c(person("Philip", "Warncke", email = "pwarncke@live.unc.edu", role = c("cre", "aut")), person("Dino", "Carpentras", role = "aut"), person("Adrian", "Lüders", role = "aut"))
-Maintainer: Philip Warncke <pwarncke@live.unc.edu>
+Maintainer: Philip Warncke <philip.warncke@ul.ie>
 Description: Contains various tools to perform and visualize Response Item Networks ('ResIN's'). 'ResIN' binarizes ordered-categorical and qualitative response choices from (survey) data, calculates pairwise associations and maps the location of each item response as a node in a force-directed network. Please refer to <https://www.resinmethod.net/> for more details.
 License: GPL-3
 URL: https://pwarncke77.github.io/ResIN/
@@ -11,6 +11,8 @@ BugReports: https://github.com/pwarncke77/ResIN/issues
 Depends:
     R (>= 4.2.0)
 Imports:
+    utils,
+    graphics,
     psych,
     ggplot2 (>= 3.4.4),
     dplyr (>= 1.1.3),

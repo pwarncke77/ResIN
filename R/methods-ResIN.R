@@ -99,26 +99,44 @@ plot.ResIN <- function(x, which = c("network", "bipartite"), print_plot = TRUE, 
   invisible(p)
 }
 
+#' Autoplot for ResIN objects
+#'
+#' Produces the ggplot stored in \code{$ResIN_ggplot}.
+#'
+#' @param object A ResIN object.
+#' @param ... Passed on (currently ignored).
+#' @return A \code{ggplot} object.
+#' @importFrom ggplot2 autoplot
 #' @export
 autoplot.ResIN <- function(object, ...) {
-  if (!inherits(object$ResIN_ggplot, "ggplot"))
-    stop("No ggplot stored in $ResIN_ggplot.")
+  if (!inherits(object$ResIN_ggplot, "ggplot")) {
+    stop("No ggplot stored in $ResIN_ggplot.", call. = FALSE)
+  }
   object$ResIN_ggplot
 }
 
 #' @export
-as.data.frame.ResIN <- function(x, which = c("nodes", "edges","scores"), ...) {
+as.data.frame.ResIN <- function(x,
+                                row.names = NULL,
+                                optional = FALSE,
+                                which = c("edges", "nodes", "scores"),
+                                ...) {
+  if (length(which) > 1L) {
+    stop("Please supply a single value for 'which': 'edges', 'nodes', or 'scores'.", call. = FALSE)
+  }
   which <- match.arg(which)
   out <- switch(which,
                 nodes  = x$ResIN_nodeframe,
                 edges  = x$ResIN_edgelist,
                 scores = x$ResIN_scores
   )
-  if (!is.data.frame(out))
+  if (!is.data.frame(out)) {
     stop(sprintf("Component '%s' is not available as a data frame.", which), call. = FALSE)
+  }
   out
 }
 
+#' @importFrom utils head
 #' @export
 head.ResIN <- function(x, n = 6L, which = c("nodes","edges","scores"), ...) {
   which <- match.arg(which)
@@ -126,6 +144,7 @@ head.ResIN <- function(x, n = 6L, which = c("nodes","edges","scores"), ...) {
   utils::head(df, n)
 }
 
+#' @importFrom utils tail
 #' @export
 tail.ResIN <- function(x, n = 6L, which = c("edges","nodes","scores"), ...) {
   which <- match.arg(which)
