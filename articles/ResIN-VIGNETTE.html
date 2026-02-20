@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>ResIN-VIGNETTE • ResIN</title>
+<title>Getting started with ResIN • ResIN</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -16,7 +16,7 @@
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="ResIN-VIGNETTE">
+<meta property="og:title" content="Getting started with ResIN">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -40,7 +40,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/ResIN-VIGNETTE.html">ResIN-VIGNETTE</a></li>
+<li><a class="dropdown-item" href="../articles/ResIN-VIGNETTE.html">Getting started with ResIN</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="external-link nav-link" href="https://www.resinmethod.net/" target="_blank">ResIN website</a></li>
@@ -62,7 +62,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>ResIN-VIGNETTE</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Getting started with ResIN</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/pwarncke77/ResIN/blob/master/vignettes/ResIN-VIGNETTE.Rmd" class="external-link"><code>vignettes/ResIN-VIGNETTE.Rmd</code></a></small>
@@ -71,7 +71,7 @@
 
     
     
-<p><img src="ResIN-VIGNETTE_files/figure-html/silent%20intro-1.png" width="691.2"></p>
+<p><img src="ResIN-VIGNETTE_files/figure-html/silent%20intro-1.png" class="r-plt" alt="" width="691.2"></p>
 <p>Welcome to the <strong>ResIN</strong> tutorial! ResIN stands for
 ‘<strong>Res</strong>ponse <strong>I</strong>tem
 <strong>N</strong>etworks’ and was first introduced by <a href="https://www.nature.com/articles/s41598-022-10069-3" class="external-link">Carpentras
@@ -196,7 +196,7 @@ can simply supply our set of <code>Core_Items</code> to the
 <code>ResIN</code> function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/first%20ResIN-1.png" width="691.2"></p>
+<p><img src="ResIN-VIGNETTE_files/figure-html/first%20ResIN-1.png" class="r-plt" alt="" width="691.2"></p>
 <p>Not too bad! You’ll notice that the <code>ResIN</code> function
 produces and plots a basic ggplot by default. The latter feature can be
 turned of by setting <code>plot_ggplot=FALSE</code> (something you
@@ -228,14 +228,14 @@ runs.</p>
 <span>                  left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ResIN_out</span><span class="op">$</span><span class="va">ResIN_ggplot</span></span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/first%20ResIN%20with%20geom_ploint-1.png" width="691.2"></p>
+<p><img src="ResIN-VIGNETTE_files/figure-html/first%20ResIN%20with%20geom_ploint-1.png" class="r-plt" alt="" width="691.2"></p>
 <p>If you would like to produce a less busy looking plot, you can
 replace the node labels with a simpler <code>geom_point</code>-aesthetic
 by specifying <code>plot_responselabels=FALSE</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>,</span>
 <span>                   plot_responselabels<span class="op">=</span><span class="cn">FALSE</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-2-1.png" width="691.2"></p>
+<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="" width="691.2"></p>
 </div>
 <div class="section level2">
 <h2 id="node-coloring-options-visual-enhancements">Node coloring options &amp; visual enhancements<a class="anchor" aria-label="anchor" href="#node-coloring-options-visual-enhancements"></a>
@@ -255,8 +255,10 @@ et.al.’s (2024, p. 45)</a> to get some more clarity on them.</p>
 <span>                   response_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"--"</span>, <span class="st">"-"</span>, <span class="st">"+/-"</span> , <span class="st">"+"</span>, <span class="st">"++"</span><span class="op">)</span>, </span>
 <span>                   plot_responselabels <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                   plot_title <span class="op">=</span> <span class="st">"BrJSocPsychol 2024 ResIN Network"</span>,</span>
-<span>                   left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/figure%202a-1.png" width="691.2"></p>
+<span>                   left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">"Response choices"</span></span></span></code></pre></div>
+<p><img src="ResIN-VIGNETTE_files/figure-html/figure%202a-1.png" class="r-plt" alt="" width="691.2"></p>
 <p>In the above function call, you’ll notice a couple of additional
 arguments. The most important one, <code>plot_whichstat</code>,
 determines which piece of information we’d like to visually enhance. As
@@ -301,16 +303,20 @@ scale-brewer palettes</a>.</p>
 <code class="sourceCode R"><span><span class="co">## Using leading eigenvalue by default:</span></span>
 <span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>, detect_clusters <span class="op">=</span> <span class="cn">TRUE</span>, plot_whichstat <span class="op">=</span> <span class="st">"cluster"</span>, </span>
 <span>                   plot_responselabels <span class="op">=</span> <span class="cn">FALSE</span>, plot_title <span class="op">=</span> <span class="st">"Leading eigenvalue community detection"</span>,</span>
-<span>                   color_palette <span class="op">=</span> <span class="st">"Set2"</span>, seed <span class="op">=</span> <span class="fl">22</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-3-1.png" width="691.2"></p>
+<span>                   color_palette <span class="op">=</span> <span class="st">"Set2"</span>, seed <span class="op">=</span> <span class="fl">22</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">"Cluster membership"</span></span></span></code></pre></div>
+<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="691.2"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">## Switching to edge-betweenness cluster detection:</span></span>
 <span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>, detect_clusters <span class="op">=</span> <span class="cn">TRUE</span>, plot_whichstat <span class="op">=</span> <span class="st">"cluster"</span>,</span>
 <span>                   cluster_method <span class="op">=</span> <span class="st">"cluster_fast_greedy"</span>, plot_responselabels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                   plot_title <span class="op">=</span> <span class="st">"Fast and greedy community detection"</span>,</span>
-<span>                   color_palette <span class="op">=</span> <span class="st">"Set1"</span>, seed <span class="op">=</span> <span class="fl">22</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-3-2.png" width="691.2"></p>
+<span>                   color_palette <span class="op">=</span> <span class="st">"Set1"</span>, seed <span class="op">=</span> <span class="fl">22</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">"Cluster membership"</span></span></span></code></pre></div>
+<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-3-2.png" class="r-plt" alt="" width="691.2"></p>
 <p>The above networks nicely showcase how different community detection
 algorithms can yield different solutions. However, both the
 leading-eigenvalue and fast-greedy examples indicate that the moderate
@@ -352,8 +358,10 @@ stored in <code>ResIN_out$graph_stats</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ResIN_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">Core_Items</span>, plot_whichstat <span class="op">=</span> <span class="st">"Betweenness"</span>, plot_responselabels <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>                   plot_title <span class="op">=</span> <span class="st">"ResIN node betweenness centrality"</span>, seed <span class="op">=</span> <span class="fl">22</span>, color_palette <span class="op">=</span> <span class="st">"Greens"</span>,</span>
-<span>                   left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-5-1.png" width="691.2"></p>
+<span>                   left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">fill</span> : <span style="color: #0000BB;">"Betweenness"</span></span></span></code></pre></div>
+<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="691.2"></p>
 <p>The above output suggests that for the node with the highest <a href="https://en.wikipedia.org/wiki/Betweenness_centrality" class="external-link">betweenness-centrality</a>
 among the left-wing attitude cluster deals with gay marriage, implying
 that pro-LGTBQ attitudes possess the highest bridging capacity between
@@ -377,8 +385,10 @@ clusters detected with the edge betweenness algorithm.</p>
 <span>                   plot_edgestat <span class="op">=</span> <span class="st">"edgebetweenness"</span>,</span>
 <span>                   plot_responselabels <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>                   plot_title <span class="op">=</span> <span class="st">"Edge weight based on edge-betweenness centrality"</span>,</span>
-<span>                   seed <span class="op">=</span> <span class="fl">22</span>, color_palette <span class="op">=</span> <span class="st">"Set1"</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-6-1.png" width="691.2"></p>
+<span>                   seed <span class="op">=</span> <span class="fl">22</span>, color_palette <span class="op">=</span> <span class="st">"Set1"</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">"Cluster membership"</span></span></span></code></pre></div>
+<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="691.2"></p>
 </div>
 <div class="section level2">
 <h2 id="using-covariates">Using covariates<a class="anchor" aria-label="anchor" href="#using-covariates"></a>
@@ -424,8 +434,10 @@ measure in Lüders et.al. (2024) following this strategy.</p>
 <span>                   node_costats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span><span class="op">)</span>, plot_whichstat <span class="op">=</span> <span class="st">"dem_bias_mean"</span>,</span>
 <span>                   plot_responselabels <span class="op">=</span> <span class="cn">FALSE</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>,</span>
 <span>                   plot_title <span class="op">=</span> <span class="st">"Affective preference of Democrats over Republicans"</span>, </span>
-<span>                   color_palette <span class="op">=</span> <span class="st">"RdBu"</span>, direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-7-1.png" width="691.2"></p>
+<span>                   color_palette <span class="op">=</span> <span class="st">"RdBu"</span>, direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">colour</span> : <span style="color: #0000BB;">"dem_bias_mean"</span></span></span></code></pre></div>
+<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="691.2"></p>
 <p>Our latest plot nicely visualizes the co-dependency between affective
 and issue polarization which characterizes contemporary American
 political attitude space. However, it also shows that the relationship
@@ -444,8 +456,10 @@ Americans and environmental regulations in particular.</p>
 <span>                   node_costats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span><span class="op">)</span>, plot_whichstat <span class="op">=</span> <span class="st">"dem_bias_mean"</span>,</span>
 <span>                   plot_responselabels <span class="op">=</span> <span class="cn">TRUE</span>, left_anchor <span class="op">=</span> <span class="st">"legal_abort_++"</span>,</span>
 <span>                   plot_title <span class="op">=</span> <span class="st">"Affective preference of Democrats over Republicans"</span>, </span>
-<span>                   color_palette <span class="op">=</span> <span class="st">"RdBu"</span>, direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-8-1.png" width="691.2"></p>
+<span>                   color_palette <span class="op">=</span> <span class="st">"RdBu"</span>, direction <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, seed <span class="op">=</span> <span class="fl">22</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">fill</span> : <span style="color: #0000BB;">"dem_bias_mean"</span></span></span></code></pre></div>
+<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="691.2"></p>
 <p>Here is a glimpse at the above results in tabular form:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ResIN_out</span><span class="op">$</span><span class="va">ResIN_nodeframe</span><span class="op">[</span>, <span class="fl">8</span><span class="op">:</span><span class="fl">9</span><span class="op">]</span>, <span class="fl">10</span><span class="op">)</span></span>
@@ -601,7 +615,7 @@ will automatically be employed.</p></li>
 <li><p>Once the simulation has concluded, the
 <code><a href="../reference/ResIN_boots_extract.html">ResIN_boots_extract()</a></code> function delivers a handy
 search-and-grab utility for a particular quantity of interest. Simply
-specify a unique search term, such as <code>what = "x_scores"</code> and
+specify a unique search term, such as <code>what = "raw_x"</code> and
 the function will grab, concatenate, and return all instances of the
 desired quantity. For an even lazier information retrieval, setting the
 <code>summarize_results = TRUE</code> lets you summarize the
@@ -665,7 +679,7 @@ identification.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">prob_lines</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"darkred"</span>,linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.75</span>, <span class="fl">0.92</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-12-1.png" width="691.2"></p>
+<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="691.2"></p>
 <p>The bootstrapped distribution shows that the positions in latent
 space and partisan identities are indeed strongly and robustly
 correlated.</p>
@@ -697,7 +711,7 @@ extract and plot the bipartite graph:</p>
 <span>                   bipartite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ResIN_out</span><span class="op">$</span><span class="va">bipartite_output</span><span class="op">$</span><span class="va">bipartite_ggraph</span></span></code></pre></div>
-<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-13-1.png" width="691.2"></p>
+<p><img src="ResIN-VIGNETTE_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="691.2"></p>
 </div>
 <div class="section level2">
 <h2 id="export-resin-graphs-to-qgraph-igraph-and-gephi">Export ResIN graphs to qgraph, igraph, and gephi<a class="anchor" aria-label="anchor" href="#export-resin-graphs-to-qgraph-igraph-and-gephi"></a>
@@ -758,7 +772,7 @@ Journal of Social Psychology, 63(1), 37-51.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
