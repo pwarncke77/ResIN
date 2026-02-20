@@ -1,4 +1,4 @@
-#' @title ResIN_to_gephi
+#' @title Convert ResIN networks to a Gephi-readable csv tables
 #'
 #' @description Saves a ResIN graph as a series of csv files readable by Gephi. Source code taken from RMHogervorst / gephi
 #'

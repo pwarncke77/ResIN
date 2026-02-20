@@ -1,0 +1,38 @@
+#' Prepared bootstrap plan
+#'
+#' The \code{"ResIN_boots_prepped"} object is created by
+#' \code{\link{ResIN_boots_prepare}} and provides a reproducible specification
+#' for running a bootstrap with \code{\link{ResIN_boots_execute}}.
+#'
+#' @details
+#' A \code{"ResIN_boots_prepped"} object is a list with (at least) the following elements:
+#' \describe{
+#'   \item{call}{The matched call used to create the plan.}
+#'   \item{boots_type}{Character; \code{"resample"} or \code{"permute"}.}
+#'   \item{n}{Integer; number of bootstrap iterations.}
+#'   \item{resample_size}{Integer; sample size used when resampling rows.}
+#'   \item{weights}{Optional numeric vector of sampling weights (or \code{NULL}).}
+#'   \item{save_input}{Logical; whether to store bootstrap inputs during execution.}
+#'   \item{seed_boots}{Integer; seed used to generate per-iteration seeds.}
+#'   \item{iter_seeds}{Integer vector; per-iteration RNG seeds (useful for parallel execution).}
+#'   \item{arglist}{A list of arguments passed to \code{\link{ResIN}} for each re-fit
+#'                 (typically based on the original ResIN call, with plotting disabled).}
+#'   \item{df_id}{Character; MD5 hash identifying the raw data used to create the plan.}
+#'   \item{ResIN_version}{Character; ResIN package version used to create the plan.}
+#' }
+#'
+#' @section Methods:
+#' \describe{
+#'   \item{\code{print(x)}}{Print a compact summary of the bootstrap plan.}
+#'   \item{\code{summary(object)}}{Return a structured summary of the plan.}
+#'   \item{\code{length(x)}}{Return the number of iterations \code{n}.}
+#'   \item{\code{x[i]}}{Subset the plan to selected iteration indices (also updates \code{n}).}
+#' }
+#'
+#' @seealso
+#' \code{\link{ResIN_boots_prepare}}, \code{\link{ResIN_boots_execute}},
+#' \code{\link{ResIN_boots_extract}}
+#'
+#' @name ResIN_boots_prepped
+#' @aliases ResIN_boots_prepped
+NULL

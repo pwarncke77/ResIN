@@ -2,7 +2,7 @@
 % Please edit documentation in R/ResIN.R
 \name{ResIN}
 \alias{ResIN}
-\title{ResIN}
+\title{Flagship function that implements Response Item Network (ResIN) analysis}
 \usage{
 ResIN(
   df,
@@ -57,15 +57,15 @@ ResIN(
 
 \item{neg_offset}{Should negative correlations be offset to avoid small correlation pairs disappearing? Defaults to \code{0}. Any positive number between 0 and 1 may be supplied instead.}
 
-\item{ResIN_scores}{Should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Further versions of this package will include more sophisticated scoring techniques.}
+\item{ResIN_scores}{Logical; should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Current package implementation also provides empirical Bayesian scores via James-Stein shrinkage (\code{eb_x}) and heuristic shrinkage (\code{heur_x}) scores. Please refer to the package [vignette]https://pwarncke77.github.io/ResIN/articles/ResIN-VIGNETTE.html#spatial-interpretation-and-individual-latent-space-scores for further details.}
 
-\item{remove_negative}{Should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.}
+\item{remove_negative}{Logical; should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.}
 
-\item{EBICglasso}{Should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.}
+\item{EBICglasso}{Logical; should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.}
 
 \item{EBICglasso_arglist}{An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE.}
 
-\item{remove_nonsignificant}{Optionally, should non-significant edges be removed from the ResIN network? Defaults to FALSE. Note that this option is incompatible with EBICglasso and weighted correlations.}
+\item{remove_nonsignificant}{Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. Note that this option is incompatible with EBICglasso and weighted correlations.}
 
 \item{sign_threshold}{At what p-value threshold should non-significant edges be removed? Defaults to 0.05.}
 
@@ -83,9 +83,9 @@ ResIN(
 
 \item{cluster_assignment}{Should individual (survey) respondents be assigned to different clusters? If set to TRUE, function will generate an n*c matrix of probabilities for each respondent to be assigned to one of c clusters. Furthermore, a vector of length n is generated displaying the most likely cluster respondents belong to. In case of a tie between one or more clusters, a very small amount of random noise determines assignment. Both matrix and vectors are added to the \code{aux_objects} list. Defaults to FALSE and will be ignored if \code{detect_clusters} is set to FALSE.}
 
-\item{generate_ggplot}{Should a ggplot-based visualization of the ResIN network be generated? Defaults to TRUE.}
+\item{generate_ggplot}{Logical; should a ggplot-based visualization of the ResIN network be generated? Defaults to TRUE.}
 
-\item{plot_ggplot}{Should a basic ggplot of the ResIN network be plotted? Defaults to TRUE. If set to FALSE, the ggplot object will not be directly returned to the console. (However, if generate_ggplot=TRUE, the plot will still be generated and stored alongside the other output objects.)}
+\item{plot_ggplot}{Logical; should a basic ggplot of the ResIN network be plotted? Defaults to TRUE. If set to FALSE, the ggplot object will not be directly returned to the console. (However, if generate_ggplot=TRUE, the plot will still be generated and stored alongside the other output objects.)}
 
 \item{plot_whichstat}{Should a particular node-level metric be color-visualized in the ggplot output? For node cluster, specify "cluster". For the same Likert response choices or options, specify "choices". For a particular node-level co-variate please specify the name of the particular element in \code{node_covars} followed by a "_" and the specific \code{node_costats} you would like to visualize. For instance if you want the visualize average age at the node-level, you should specify "age_mean". To colorize by node centrality statistics, possible choices are "Strength", "Betweenness", "Closeness", and "ExpectedInfluence". Defaults to NULL. Make sure to supply appropriate choices to \code{node_covars}, \code{node_costats}, \code{detect_clusters}, and/or \code{network_stats} prior to setting this argument.}
 
@@ -101,17 +101,17 @@ ResIN(
 
 \item{plot_title}{Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".}
 
-\item{bipartite}{Should a bipartite graph be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) bipartite graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} are generated if set to TRUE.}
+\item{bipartite}{Logical; should a bipartite graph be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) bipartite graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} are generated if set to TRUE.}
 
-\item{save_input}{Optionally, should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.}
+\item{save_input}{Logical; should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.}
 
 \item{seed}{Random seed for force-directed algorithm. Defaults to NULL (no seed is set.) If scalar integer is supplied, that seed will be set prior to analysis.}
 }
 \value{
-An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}), and centralization (\code{graph_centralization}). Further, a \code{bipartite_output} list which includes an \code{igraph} class bipartite graph (\code{bipartite_igraph}), a data frame, \code{coordinate_df}, with spatial coordinates of respondents, and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} is optionally generated. Lastly, the output includes a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}).
+An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}), and centralization (\code{graph_centralization}). Further, a \code{bipartite_output} list which includes an \code{igraph} class bipartite graph (\code{bipartite_igraph}), a data frame, \code{coordinate_df}, with spatial coordinates of respondents, and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} is optionally generated. Lastly, the output includes a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}). For reproducibility, (\code{aux_objects$meta} stores a numeric dataframe identifier (\code{df_id}, the random seed, call, and the (\code{ResIN} package version used to create the object.”
 }
 \description{
-Performs Response Item-Network (ResIN) analysis
+Performs Response Item-Network (ResIN) analysis in one go. Users minimally need to supply a dataframe or matrix of discrete response data. If needed for step-wise analysis, all intermediate outputs can still be accessed as part of the aux_objects output list.
 }
 \examples{
 

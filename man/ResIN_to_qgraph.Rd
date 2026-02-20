@@ -2,7 +2,7 @@
 % Please edit documentation in R/ResIN_to_qgraph.R
 \name{ResIN_to_qgraph}
 \alias{ResIN_to_qgraph}
-\title{ResIN_to_qgraph}
+\title{Convert a ResIN network into an qgraph object}
 \usage{
 ResIN_to_qgraph(ResIN_object, qgraph_arglist = NULL)
 }
@@ -15,17 +15,17 @@ ResIN_to_qgraph(ResIN_object, qgraph_arglist = NULL)
 A [qgraph]https://cran.r-project.org/web/packages/qgraph/index.html graph object.
 }
 \description{
-Transforms the output of the ResIN function into an \code{qgraph} object
+Transforms the output of the \code{ResIN} function into an \code{qgraph} object
 }
 \examples{
 
-\donttest{
+
 ## Load the 12-item simulated Likert-type ResIN toy dataset
 data(lik_data)
 
 ## Run the function:
 ResIN_qgraph <-  ResIN_to_qgraph(ResIN(lik_data))
-}
+
 
 }
 \references{

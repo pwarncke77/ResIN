@@ -1,6 +1,6 @@
-#' @title ResIN_to_igraph
+#' @title Convert a ResIN network into an igraph object
 #'
-#' @description Transforms the output of the ResIN function into an [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) object
+#' @description Transforms the output of the \code{ResIN} function into an [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) object
 #'
 #' @param ResIN_object the output of the ResIN function (a list with class ResIN).
 #' @param igraph_arglist an optional argument list to be supplied to the igraph::graph_from_adjacency_matrix function. If NULL, default is: list(mode = "undirected", weighted = TRUE, diag = FALSE).

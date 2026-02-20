@@ -2,22 +2,33 @@
 % Please edit documentation in R/ResIN_boots_extract.R
 \name{ResIN_boots_extract}
 \alias{ResIN_boots_extract}
-\title{ResIN_boots_extract}
+\title{Extract and summarize the results of a bootstrap simulation undertaken on a ResIN object}
 \usage{
-ResIN_boots_extract(ResIN_boots_executed, what, summarize_results = FALSE)
+ResIN_boots_extract(
+  ResIN_boots_executed,
+  what,
+  summarize_results = FALSE,
+  allow_missing = FALSE
+)
 }
 \arguments{
-\item{ResIN_boots_executed}{A list of prepared ResIN objects for bootstrapping (outcome of the \code{ResIN_boots_execute} function)}
+\item{ResIN_boots_executed}{An object of class \code{"ResIN_boots_executed"} (output of \code{\link{ResIN_boots_execute}}).}
 
-\item{what}{A character vector of length one specifying the target quantity of interest. This should be a one-to-one match with the corresponding output vector (or scalar) among the bootstrapped result list (see \code{ResIN_boots_execute}). For participants' position on the x-axis of the ResIN latent space, for example, specify "scores_x".}
+\item{what}{Character scalar naming the quantity to extract (e.g., \code{"global_clustering"}).}
 
-\item{summarize_results}{Should the extracted quantities be summarized through a series of descriptive statistics? If set to true, the minimum, maximum, mean, selected quantiles, and the standard deviation are reported. If set to FALSE (default), extracted quantities are instead returned as a list.}
+\item{summarize_results}{Logical; if TRUE return a small summary table, otherwise return draws.}
+
+\item{allow_missing}{Logical; if FALSE (default) the function errors if \code{what} is missing in any successful fit.
+If TRUE, missing iterations are kept as \code{NULL} and summaries are computed from available values.}
 }
 \value{
-A list object containing n (bootstrapped) \code{ResIN} list objects.
+If the extracted quantity is scalar per iteration, returns an object of class
+\code{"ResIN_boots_draws"} (a numeric vector with attributes). If \code{summarize_results = TRUE},
+returns a one-row data.frame of summary statistics.
 }
 \description{
-Extract and summarize quantities from bootstrapped ResIN objects
+Extract bootstrap draws from \code{"ResIN_boots_executed"} results. Failed iterations
+(stored as \code{NULL}) are skipped automatically.
 }
 \examples{
 ## Load the 12-item simulated Likert-type toy dataset
@@ -25,11 +36,11 @@ data(lik_data)
 
 # Apply the ResIN function to toy Likert data:
 ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE,
-                      generate_ggplot = FALSE)
+                      generate_ggplot = FALSE, plot_ggplot = FALSE)
 
-\dontrun{
+\donttest{
 # Prepare for bootstrapping
-prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=5000, boots_type="permute")
+prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=100, boots_type="resample")
 
 # Execute the prepared bootstrap list
 executed_boots <-  ResIN_boots_execute(prepped_boots, parallel = TRUE, detect_cores = TRUE)
@@ -37,5 +48,6 @@ executed_boots <-  ResIN_boots_execute(prepped_boots, parallel = TRUE, detect_co
 # Extract results - here for example, the network (global)-clustering coefficient
 ResIN_boots_extract(executed_boots, what = "global_clustering", summarize_results = TRUE)
 }
+
 
 }

@@ -1,0 +1,30 @@
+#' Bootstrapped results
+#'
+#' The \code{"ResIN_boots_executed"} object is returned by
+#' \code{\link{ResIN_boots_execute}}. It contains a list of fitted \code{"ResIN"} objects,
+#' typically produced by refitting ResIN on resampled/permuted versions of the original data.
+#'
+#' @details
+#' The object is a list of length \code{n} where each element is (typically) a
+#' \code{\link{ResIN}} fit. For reproducibility, the following attributes may be present:
+#' \describe{
+#'   \item{\code{plan}}{A \code{"ResIN_boots_prepped"} plan used to generate the results.}
+#'   \item{\code{boot_inputs}}{Optional list of bootstrap input data sets (only if \code{save_input = TRUE} in the plan).}
+#'   \item{\code{created}}{Time stamp when the executed object was created.}
+#' }
+#'
+#' @section Methods:
+#' \describe{
+#'   \item{\code{print(x)}}{Print a compact overview of the bootstrap results.}
+#'   \item{\code{summary(object)}}{Summarize the results (iterations, successes/failures, plan details).}
+#'   \item{\code{length(x)}}{Return the number of iterations.}
+#'   \item{\code{x[i]}}{Subset the results while preserving attached attributes.}
+#' }
+#'
+#' @seealso
+#' \code{\link{ResIN_boots_prepare}}, \code{\link{ResIN_boots_execute}},
+#' \code{\link{ResIN_boots_extract}}, \code{\link{ResIN_boots_prepped}}
+#'
+#' @name ResIN_boots_executed
+#' @aliases ResIN_boots_executed
+NULL

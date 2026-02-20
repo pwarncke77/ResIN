@@ -3,7 +3,7 @@
 \docType{data}
 \name{lik_data}
 \alias{lik_data}
-\title{Likert-type simulated data for "ResIN" package examples}
+\title{Likert-type, mock-response data for "ResIN" package examples}
 \format{
 An object of class \code{"data.frame"}
 }

@@ -1,6 +1,6 @@
 Package: ResIN
 Type: Package
-Title: Response Item Networks
+Title: Conduct Response Item Network (ResIN) analysis with social response data
 Version: 2.2.1
 Authors@R: c(person("Philip", "Warncke", email = "philip.warncke@ul.ie", role = c("cre", "aut")), person("Dino", "Carpentras", role = "aut"), person("Adrian", "Lüders", role = "aut"))
 Maintainer: Philip Warncke <philip.warncke@ul.ie>
@@ -33,7 +33,7 @@ Imports:
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests: 
     knitr,
     rmarkdown

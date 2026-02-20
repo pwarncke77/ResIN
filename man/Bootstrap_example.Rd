@@ -3,7 +3,7 @@
 \docType{data}
 \name{Bootstrap_example}
 \alias{Bootstrap_example}
-\title{Output example for a bootstrapping analysis conducted with the ResIN package.}
+\title{Output example for a bootstrapping analysis conducted with the ResIN package}
 \format{
 An object of class \code{"rda"}
 }
@@ -11,7 +11,7 @@ An object of class \code{"rda"}
 data(Bootstrap_example)
 }
 \description{
-Output example for a bootstrapping analysis conducted with the ResIN package.
+Output example for a bootstrapping analysis conducted with the ResIN package
 }
 \examples{
 

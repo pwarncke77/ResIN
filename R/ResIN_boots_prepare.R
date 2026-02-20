@@ -1,6 +1,6 @@
-#' @title ResIN_boots_prepare
+#' @title Create a bootstrap plan for re-estimating ResIN objects to derive statistical uncertainty estimates
 #'
-#' @description Prepare a ResIN-based bootstrap analysis
+#' @description Provides instructions for how to bootstrap a ResIN network to derive uncertainty estimates around core quantities of interest. Requires output of \code{ResIN} function.
 #'
 #' @param ResIN_object A ResIN object to prepare bootstrapping workflow.
 #' @param n Bootstrapping sample size. Defaults to 10.000.
@@ -10,7 +10,11 @@
 #' @param save_input Should all input information for each bootstrap iteration (including re-sampled/permuted data) be stored. Set to FALSE by default to save a lot of memory and disk storage.
 #' @param seed_boots Random seed for bootstrap samples
 #'
-#' @return A list object containing n re-sampled or permuted copies of the raw data, along with a list of instructions for how to perform the ResIN analysis and what outputs to generate.
+#' @return
+#' An object of class \code{"ResIN_boots_prepped"} containing a bootstrap plan
+#' (specification) used by \code{\link{ResIN_boots_execute}}.
+#' Use \code{print()}, \code{summary()}, \code{length()}, and \code{[}
+#' to inspect or subset the plan. See \code{\link{ResIN_boots_prepped}} for details.
 #'
 #' @examples
 #' ## Load the 12-item simulated Likert-type toy dataset
@@ -18,11 +22,11 @@
 #'
 #' # Apply the ResIN function to toy Likert data:
 #' ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE,
-#'                       generate_ggplot = FALSE)
+#'                       generate_ggplot = FALSE, plot_ggplot = FALSE)
 #'
-#'\dontrun{
+#'\donttest{
 #' # Prepare for bootstrapping
-#' prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=5000, boots_type="permute")
+#' prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=100, boots_type="resample")
 #'
 #' # Execute the prepared bootstrap list
 #' executed_boots <-  ResIN_boots_execute(prepped_boots, parallel = TRUE, detect_cores = TRUE)
@@ -35,49 +39,73 @@
 #' @importFrom dplyr "sample_n" "select" "all_of"
 #'
 
-ResIN_boots_prepare <- function(ResIN_object, n=10000, boots_type="resample", resample_size=NULL, weights = NULL, save_input=FALSE, seed_boots = 42){
-  ## Validation tests
-  if(class(ResIN_object)[1] !=  "ResIN"){
-    stop("Please supply a ResIN type list object.")
-  }
-  if(! boots_type %in% c("resample", "permute")){
-    stop("Please speficy either 'resample' or 'permute' for boots_type.")
-  }
-  if(is.null(resample_size)){
-    resample_size <- nrow(ResIN_object$aux_objects$df_dummies)
-  }
-  if(save_input==FALSE){
-    ResIN_object$aux_objects$ResIN_arglist$save_input <- FALSE
-  }
-  ## Assuming no-one wants to print 10k plots
-  ResIN_object$aux_objects$ResIN_arglist$plot_ggplot <- FALSE
+ResIN_boots_prepare <- function(ResIN_object,
+                                n = 10000,
+                                boots_type = "resample",
+                                resample_size = NULL,
+                                weights = NULL,
+                                save_input = FALSE,
+                                seed_boots = 42) {
 
-  ## Setting up base data frame and outcome list
-  set.seed(seed_boots)
+  # Validation
+  if (!inherits(ResIN_object, "ResIN")) {
+    stop("Please supply a ResIN object.")
+  }
+  if (!boots_type %in% c("resample", "permute")) {
+    stop("boots_type must be either 'resample' or 'permute'.")
+  }
+
   df <- ResIN_object$aux_objects$ResIN_arglist$df
-  mega_list <- vector("list", length = n)
+  if (is.null(resample_size)) resample_size <- nrow(df)
 
-  ## Re-sampling type bootstrap
-  if(boots_type == "resample"){
-    for(i in 1:n){
-      mega_list[[i]] <- ResIN_object$aux_objects$ResIN_arglist
-      mega_list[[i]]$df <- dplyr::sample_n(df, replace = TRUE, resample_size, weight=weights)
-      }
+  if (!is.null(weights)) {
+    if (!is.numeric(weights) || any(weights < 0) || length(weights) != nrow(df)) {
+      stop("weights must be NULL or a non-negative numeric vector of length nrow(df).")
     }
-
-  ## Permutation bootstrap
-  if(boots_type == "permute"){
-    for(i in 1:n){
-      mega_list[[i]] <- ResIN_object$aux_objects$ResIN_arglist
-      for(j in 1:ncol(df)){
-        mega_list[[i]]$df[, j] <- sample(df[, j])
-      }
-    }
+    if (all(weights == 0)) stop("weights cannot be all zero.")
   }
 
-  class(mega_list) <- c("ResIN_boots_prepped", "list")
-  return(mega_list)
+  # Prepare ResIN arglist for repeated fitting
+  arglist <- ResIN_object$aux_objects$ResIN_arglist
+  arglist$plot_ggplot <- FALSE
+  if (isFALSE(save_input)) arglist$save_input <- FALSE
+
+  ## Reproducibility metadata
+  # Stable ID for the underlying data used to build the plan
+  tmp <- tempfile("ResIN_df_", fileext = ".rds")
+  saveRDS(df, tmp, compress = FALSE)
+  df_id <- unname(tools::md5sum(tmp))
+  unlink(tmp)
+
+  # Keep track of package version used to create the plan
+  resin_version <- as.character(utils::packageVersion("ResIN"))
+
+  # Create per-iteration seeds (parallel-friendly)
+  old_seed <- .Random.seed
+  on.exit({ if (!is.null(old_seed)) .Random.seed <<- old_seed }, add = TRUE)
+
+  set.seed(seed_boots)
+  iter_seeds <- sample.int(.Machine$integer.max, n)
+
+  out <- list(
+    call = match.call(),
+    boots_type = boots_type,
+    n = n,
+    resample_size = resample_size,
+    weights = weights,
+    save_input = save_input,
+    seed_boots = seed_boots,
+    iter_seeds = iter_seeds,
+    arglist = arglist,
+    base_n = nrow(df),
+    base_p = ncol(df),
+
+    # Reproducibility fields
+    df_id = df_id,
+    ResIN_version = resin_version
+  )
+
+  class(out) <- c("ResIN_boots_prepped", "list")
+  out
 }
-
-
 

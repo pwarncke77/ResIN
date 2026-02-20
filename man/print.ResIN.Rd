@@ -2,7 +2,7 @@
 % Please edit documentation in R/methods-ResIN.R
 \name{print.ResIN}
 \alias{print.ResIN}
-\title{Print a ResIN object}
+\title{ResIN object S3 methods}
 \usage{
 \method{print}{ResIN}(x, ...)
 }
@@ -12,5 +12,5 @@
 \item{...}{Ignored.}
 }
 \description{
-Print a ResIN object
+ResIN object S3 methods
 }

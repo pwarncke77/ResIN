@@ -1,4 +1,4 @@
-#' Output example for a bootstrapping analysis conducted with the ResIN package.
+#' Output example for a bootstrapping analysis conducted with the ResIN package
 #'
 #'
 #' @docType data

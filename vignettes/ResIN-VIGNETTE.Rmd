@@ -1,8 +1,8 @@
 ---
-title: "ResIN-VIGNETTE"
+title: "Getting started with ResIN"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{ResIN-VIGNETTE}
+  %\VignetteIndexEntry{Getting started with ResIN}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -348,7 +348,7 @@ A canned bootstrapping procedure with the ResIN package involves the following t
 
 2.  As the name implies, the `ResIN_boots_execute()` function executes a prepped bootstrapping procedure. If the `parallel` option is set to `TRUE`, the function exploits CPU parallelism via the `doSNOW` engine. If detect_cores is also set to `TRUE`, all available CPU cores will automatically be employed.
 
-3.  Once the simulation has concluded, the `ResIN_boots_extract()` function delivers a handy search-and-grab utility for a particular quantity of interest. Simply specify a unique search term, such as `what = "x_scores"` and the function will grab, concatenate, and return all instances of the desired quantity. For an even lazier information retrieval, setting the `summarize_results = TRUE` lets you summarize the distribution of the extracted quantity across all bootstrap iterations.
+3.  Once the simulation has concluded, the `ResIN_boots_extract()` function delivers a handy search-and-grab utility for a particular quantity of interest. Simply specify a unique search term, such as `what = "raw_x"` and the function will grab, concatenate, and return all instances of the desired quantity. For an even lazier information retrieval, setting the `summarize_results = TRUE` lets you summarize the distribution of the extracted quantity across all bootstrap iterations.
 
 Let's run a bootstrapping analysis to estimate the non-parametric uncertainty around the above estimated correlation coefficient between the attitude node location and the node-level mean partisan identification.
 

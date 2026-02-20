@@ -2,7 +2,7 @@
 % Please edit documentation in R/ResIN_to_igraph.R
 \name{ResIN_to_igraph}
 \alias{ResIN_to_igraph}
-\title{ResIN_to_igraph}
+\title{Convert a ResIN network into an igraph object}
 \usage{
 ResIN_to_igraph(ResIN_object, igraph_arglist = NULL)
 }
@@ -15,7 +15,7 @@ ResIN_to_igraph(ResIN_object, igraph_arglist = NULL)
 A class \code{igraph} object.
 }
 \description{
-Transforms the output of the ResIN function into an [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) object
+Transforms the output of the \code{ResIN} function into an [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) object
 }
 \examples{
 

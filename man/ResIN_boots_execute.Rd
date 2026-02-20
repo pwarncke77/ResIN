@@ -2,7 +2,7 @@
 % Please edit documentation in R/ResIN_boots_execute.R
 \name{ResIN_boots_execute}
 \alias{ResIN_boots_execute}
-\title{ResIN_boots_execute}
+\title{Carry out prepared bootstrap analyses on ResIN networks}
 \usage{
 ResIN_boots_execute(
   ResIN_boots_prepped,
@@ -14,23 +14,27 @@ ResIN_boots_execute(
 )
 }
 \arguments{
-\item{ResIN_boots_prepped}{A list of prepared ResIN objects for bootstrapping (outcome of the \code{ResIN_boots_prepare} function)}
+\item{ResIN_boots_prepped}{A \code{"ResIN_boots_prepped"} bootstrap plan (output of \code{\link{ResIN_boots_prepare}}).}
 
-\item{parallel}{Should the function be executed in parallel using the \code{foreach} package? Defaults to FALSE. If FALSE, function will execute sequentially in a simple for loop.}
+\item{parallel}{Should execution use parallelism via \code{foreach} + a PSOCK cluster? Defaults to FALSE.}
 
-\item{detect_cores}{Should the number of available CPU cores be automatically detected? Defaults to TRUE and is ignored when parallel is set to FALSE.}
+\item{detect_cores}{Should available CPU cores be detected automatically? Defaults to TRUE (ignored when \code{parallel = FALSE}).}
 
-\item{core_offset}{Optionally, specify a positive integer offset that is subtracted from the number of automatically detected cores. Defaults to 0L.}
+\item{core_offset}{Integer offset subtracted from the number of detected cores. Defaults to 0L.}
 
-\item{n_cores}{Manually specify the number of available CPU cores. Defaults to 2L and is ignored if detect_cores is set to TRUE or if parallel is set to FALSE.}
+\item{n_cores}{Manually specify number of cores (ignored if \code{detect_cores = TRUE} or \code{parallel = FALSE}).}
 
-\item{inorder}{Should parallel execution be done in sequential order of the \code{ResIN_boots_prepped} object?}
+\item{inorder}{Should parallel execution preserve sequential ordering? Defaults to FALSE.}
 }
 \value{
-A list object containing n (bootstrapped) \code{ResIN} list objects.
+An object of class \code{"ResIN_boots_executed"} containing \code{n} bootstrapped
+\code{ResIN} fits. Use \code{print()}, \code{summary()}, \code{length()}, and \code{[}
+to inspect or subset results. See \code{\link{ResIN_boots_executed}} for details.
 }
 \description{
-Execute prepared ResIN bootstrap analysis
+Executes a bootstrap plan created by \code{\link{ResIN_boots_prepare}} by repeatedly
+re-estimating ResIN on resampled or permuted versions of the original data.
+Can optionally leverage CPU parallelism.
 }
 \examples{
 ## Load the 12-item simulated Likert-type toy dataset
@@ -38,11 +42,11 @@ data(lik_data)
 
 # Apply the ResIN function to toy Likert data:
 ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE,
-                      generate_ggplot = FALSE)
+                      generate_ggplot = FALSE, plot_ggplot = FALSE)
 
-\dontrun{
+\donttest{
 # Prepare for bootstrapping
-prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=5000, boots_type="permute")
+prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=100, boots_type="resample")
 
 # Execute the prepared bootstrap list
 executed_boots <-  ResIN_boots_execute(prepped_boots, parallel = TRUE, detect_cores = TRUE)

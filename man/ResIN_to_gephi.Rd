@@ -2,7 +2,7 @@
 % Please edit documentation in R/ResIN_to_gephi.R
 \name{ResIN_to_gephi}
 \alias{ResIN_to_gephi}
-\title{ResIN_to_gephi}
+\title{Convert ResIN networks to a Gephi-readable csv tables}
 \usage{
 ResIN_to_gephi(ResIN_object, file = "ResIN_gephi.csv")
 }

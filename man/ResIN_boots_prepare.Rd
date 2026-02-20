@@ -2,7 +2,7 @@
 % Please edit documentation in R/ResIN_boots_prepare.R
 \name{ResIN_boots_prepare}
 \alias{ResIN_boots_prepare}
-\title{ResIN_boots_prepare}
+\title{Create a bootstrap plan for re-estimating ResIN objects to derive statistical uncertainty estimates}
 \usage{
 ResIN_boots_prepare(
   ResIN_object,
@@ -30,10 +30,13 @@ ResIN_boots_prepare(
 \item{seed_boots}{Random seed for bootstrap samples}
 }
 \value{
-A list object containing n re-sampled or permuted copies of the raw data, along with a list of instructions for how to perform the ResIN analysis and what outputs to generate.
+An object of class \code{"ResIN_boots_prepped"} containing a bootstrap plan
+(specification) used by \code{\link{ResIN_boots_execute}}.
+Use \code{print()}, \code{summary()}, \code{length()}, and \code{[}
+to inspect or subset the plan. See \code{\link{ResIN_boots_prepped}} for details.
 }
 \description{
-Prepare a ResIN-based bootstrap analysis
+Provides instructions for how to bootstrap a ResIN network to derive uncertainty estimates around core quantities of interest. Requires output of \code{ResIN} function.
 }
 \examples{
 ## Load the 12-item simulated Likert-type toy dataset
@@ -41,11 +44,11 @@ data(lik_data)
 
 # Apply the ResIN function to toy Likert data:
 ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE,
-                      generate_ggplot = FALSE)
+                      generate_ggplot = FALSE, plot_ggplot = FALSE)
 
-\dontrun{
+\donttest{
 # Prepare for bootstrapping
-prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=5000, boots_type="permute")
+prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=100, boots_type="resample")
 
 # Execute the prepared bootstrap list
 executed_boots <-  ResIN_boots_execute(prepped_boots, parallel = TRUE, detect_cores = TRUE)

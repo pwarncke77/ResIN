@@ -1,4 +1,4 @@
-#' Likert-type simulated data for "ResIN" package examples
+#' Likert-type, mock-response data for "ResIN" package examples
 #'
 #' An artificially created data-set (n=1000) of 12, 5-point Likert data. Modeled on the basis of a standard normal data-generating process. Likert scales contain 20 percent uncorrelated, homoscedastic measurement error. This data-set is used for the examples in the "ResIN" package vignette.
 #'

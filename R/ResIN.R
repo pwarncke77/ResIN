@@ -1,6 +1,6 @@
-#' @title ResIN
+#' @title Flagship function that implements Response Item Network (ResIN) analysis
 #'
-#' @description Performs Response Item-Network (ResIN) analysis
+#' @description Performs Response Item-Network (ResIN) analysis in one go. Users minimally need to supply a dataframe or matrix of discrete response data. If needed for step-wise analysis, all intermediate outputs can still be accessed as part of the aux_objects output list.
 #'
 #' @param df A data-frame object containing the raw data.
 #' @param node_vars An optional character vector detailing the attitude item columns to be selected for ResIN analysis (i.e. the subset of attitude variables in df).
@@ -10,11 +10,11 @@
 #' @param method_wCorr If weights are supplied, which method for weighted correlations should be used? Defaults to \code{"Pearson"}. See \code{wCorr::weightedCorr} for all correlation options.
 #' @param poly_ncor How many CPU cores should be used to estimate polychoric correlation matrix? Only used if \code{cor_method = "polychoric"}.
 #' @param neg_offset Should negative correlations be offset to avoid small correlation pairs disappearing? Defaults to \code{0}. Any positive number between 0 and 1 may be supplied instead.
-#' @param ResIN_scores Should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Further versions of this package will include more sophisticated scoring techniques.
-#' @param remove_negative Should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.
-#' @param EBICglasso Should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.
+#' @param ResIN_scores Logical; should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Current package implementation also provides empirical Bayesian scores via James-Stein shrinkage (\code{eb_x}) and heuristic shrinkage (\code{heur_x}) scores. Please refer to the package [vignette]https://pwarncke77.github.io/ResIN/articles/ResIN-VIGNETTE.html#spatial-interpretation-and-individual-latent-space-scores for further details.
+#' @param remove_negative Logical; should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.
+#' @param EBICglasso Logical; should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.
 #' @param EBICglasso_arglist An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE.
-#' @param remove_nonsignificant Optionally, should non-significant edges be removed from the ResIN network? Defaults to FALSE. Note that this option is incompatible with EBICglasso and weighted correlations.
+#' @param remove_nonsignificant Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. Note that this option is incompatible with EBICglasso and weighted correlations.
 #' @param sign_threshold At what p-value threshold should non-significant edges be removed? Defaults to 0.05.
 #' @param node_covars An optional character string selecting quantitative covariates that can be used to enhance ResIN analysis. Typically, these covariates provide grouped summary statistics for item response nodes. (E.g.: What is the average age or income level of respondents who selected a particular item response?) Variable names specified here should match existing columns in \code{df}.
 #' @param node_costats If any \code{node_covars} are selected, what summary statistics should be estimated from them? Argument should be a character vector and call a base-R function. (E.g. \code{"mean"}, \code{"median"}, \code{"sd"}). Each element specified in \code{node_costats} is applied to each element in \code{node_covars} and the out-put is stored as a node-level summary statistic in the \code{ResIN_nodeframe}. The extra columns in \code{ResIN_nodeframe} are labeled according to the following template: "covariate name"_"statistic". So for the respondents mean age, the corresponding column in \code{ResIN_nodeframe} would be labeled as "age_mean".
@@ -23,8 +23,8 @@
 #' @param cluster_method A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function.
 #' @param cluster_arglist An optional list specifying additional arguments to the selected [igraph](https://igraph.org/r/doc/communities.html) clustering method.
 #' @param cluster_assignment Should individual (survey) respondents be assigned to different clusters? If set to TRUE, function will generate an n*c matrix of probabilities for each respondent to be assigned to one of c clusters. Furthermore, a vector of length n is generated displaying the most likely cluster respondents belong to. In case of a tie between one or more clusters, a very small amount of random noise determines assignment. Both matrix and vectors are added to the \code{aux_objects} list. Defaults to FALSE and will be ignored if \code{detect_clusters} is set to FALSE.
-#' @param generate_ggplot Should a ggplot-based visualization of the ResIN network be generated? Defaults to TRUE.
-#' @param plot_ggplot Should a basic ggplot of the ResIN network be plotted? Defaults to TRUE. If set to FALSE, the ggplot object will not be directly returned to the console. (However, if generate_ggplot=TRUE, the plot will still be generated and stored alongside the other output objects.)
+#' @param generate_ggplot Logical; should a ggplot-based visualization of the ResIN network be generated? Defaults to TRUE.
+#' @param plot_ggplot Logical; should a basic ggplot of the ResIN network be plotted? Defaults to TRUE. If set to FALSE, the ggplot object will not be directly returned to the console. (However, if generate_ggplot=TRUE, the plot will still be generated and stored alongside the other output objects.)
 #' @param plot_whichstat Should a particular node-level metric be color-visualized in the ggplot output? For node cluster, specify "cluster". For the same Likert response choices or options, specify "choices". For a particular node-level co-variate please specify the name of the particular element in \code{node_covars} followed by a "_" and the specific \code{node_costats} you would like to visualize. For instance if you want the visualize average age at the node-level, you should specify "age_mean". To colorize by node centrality statistics, possible choices are "Strength", "Betweenness", "Closeness", and "ExpectedInfluence". Defaults to NULL. Make sure to supply appropriate choices to \code{node_covars}, \code{node_costats}, \code{detect_clusters}, and/or \code{network_stats} prior to setting this argument.
 #' @param plot_edgestat Should the thickness of the edges be adjusted according to a particular co-statistic? Defaults to NULL. Possible choices are "weight" for the bi-variate correlation strength, and "edgebetweenness"
 #' @param color_palette Optionally, you may specify the ggplot2 color palette to be applied to the plot. All options contained in [\code{RColorBrewer}](https://cran.r-project.org/web/packages/RColorBrewer/RColorBrewer.pdf) (for discrete colors such as cluster assignments) and [\code{ggplot2::scale_colour_distiller}](https://ggplot2.tidyverse.org/reference/scale_brewer.html) are supported. Defaults to "RdBu".
@@ -32,11 +32,11 @@
 #' @param plot_responselabels Should response labels be plotted via \code{geom_text}? Defaults to TRUE. It is recommended to set to FALSE if the network possesses a lot of nodes and/or long response choice names.
 #' @param response_levels An optional character vector specifying the correct order of global response levels. Only useful if all node-items follow the same convention (e.g. ranging from "strong disagreement" to "strong agreement"). The supplied vector should have the same length as the total number of response options and supply these (matching exactly) in the correct order. E.g. c("Strongly Agree", "Somewhat Agree", "Neutral", "Somewhat Disagree", "Strongly Disagree"). Defaults to NULL.
 #' @param plot_title Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".
-#' @param bipartite Should a bipartite graph be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) bipartite graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} are generated if set to TRUE.
-#' @param save_input Optionally, should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.
+#' @param bipartite Logical; should a bipartite graph be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) bipartite graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} are generated if set to TRUE.
+#' @param save_input Logical; should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.
 #' @param seed Random seed for force-directed algorithm. Defaults to NULL (no seed is set.) If scalar integer is supplied, that seed will be set prior to analysis.
 #'
-#' @return An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}), and centralization (\code{graph_centralization}). Further, a \code{bipartite_output} list which includes an \code{igraph} class bipartite graph (\code{bipartite_igraph}), a data frame, \code{coordinate_df}, with spatial coordinates of respondents, and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} is optionally generated. Lastly, the output includes a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}).
+#' @return An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}), and centralization (\code{graph_centralization}). Further, a \code{bipartite_output} list which includes an \code{igraph} class bipartite graph (\code{bipartite_igraph}), a data frame, \code{coordinate_df}, with spatial coordinates of respondents, and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} is optionally generated. Lastly, the output includes a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}). For reproducibility, (\code{aux_objects$meta} stores a numeric dataframe identifier (\code{df_id}, the random seed, call, and the (\code{ResIN} package version used to create the object.”
 #'
 #' @examples
 #'
@@ -73,6 +73,8 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
                       plot_whichstat = NULL, plot_edgestat = NULL, color_palette = "RdBu", direction = 1, plot_responselabels = TRUE,
                       response_levels = NULL, plot_title = NULL, bipartite = FALSE, save_input = TRUE, seed = NULL) {
 
+  # Reproducibility housekeeping
+  ## Storing input parameters
   if(save_input==TRUE){
   ResIN_arglist <- list(df = df, node_vars = node_vars, left_anchor = left_anchor, cor_method = cor_method,
                         weights = weights, method_wCorr = method_wCorr, poly_ncor = poly_ncor, neg_offset = neg_offset,
@@ -93,8 +95,29 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
 
   if(!is.null(seed)){
   set.seed(seed)
-    }
+  }
 
+  ## Versioning
+  resin_version <- as.character(utils::packageVersion("ResIN"))
+  r_version     <- paste0(R.version$major, ".", R.version$minor)
+
+  ## Adding stable input identifier
+  tmp <- tempfile("ResIN_df_", fileext = ".rds")
+  saveRDS(df, tmp, compress = FALSE)
+  df_id <- unname(tools::md5sum(tmp))
+  unlink(tmp)
+
+  created <- Sys.time()
+
+  if (!is.null(seed)) {
+    old_seed <- if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) get(".Random.seed", envir = .GlobalEnv) else NULL
+    on.exit({
+      if (!is.null(old_seed)) assign(".Random.seed", old_seed, envir = .GlobalEnv)
+    }, add = TRUE)
+    set.seed(seed)
+  }
+
+  # Actual begin of ResIN algorithm:
   ## Select response node_vars
   if(is.null(node_vars)) {
     df_nodes <- df
@@ -132,9 +155,12 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
 
     for(i in 1:ncol(df_dummies))  {
       for(j in 1:ncol(df_dummies))  {
-        temp <- as.data.frame(cbind(df_dummies[, i], df_dummies[, j], df[, weights]))
-        temp <- temp[complete.cases(temp), ]
-        res_in_cor[i, j]  <- wCorr::weightedCorr(temp[, 1], temp[, 2], weights=temp[, 3], method = method_wCorr)
+
+        temp <- data.frame(x = df_dummies[, i], y = df_dummies[, j], w = weights)
+
+
+        temp <- temp[stats::complete.cases(temp), ]
+        res_in_cor[i, j] <- wCorr::weightedCorr(temp$x, temp$y, weights = temp$w, method = method_wCorr)
       }
     }
     colnames(res_in_cor) <- colnames(df_dummies)
@@ -339,7 +365,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
     colnames(cluster_probs) <- paste0("cluster_", names(table(node_frame$cluster)))
 
     ### Maximum probability assignment
-    temp_probs <- cluster_probs + rnorm(nrow(cluster_probs)*ncol(cluster_probs), 0, 0.001)
+    temp_probs <- cluster_probs + stats::rnorm(nrow(cluster_probs)*ncol(cluster_probs), 0, 0.001)
     temp_probs <- dplyr::mutate(temp_probs, max_ind = max.col(temp_probs))
     max_cluster <- temp_probs$max_ind
   } else {
@@ -349,7 +375,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
 
   ## Calculating summary statistics based on co-variates
   if(!(is.null(node_covars)) & !(is.null(node_costats))) {
-    if(length(node_covars) != length(node_covars)) {
+    if (length(node_covars) != length(node_costats)) {
       stop("Covariate selection and summary statistics vectors must be of equal length.")
     }
 
@@ -393,7 +419,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
                           function(p) which(df_dummies[p, ] == 1))
 
     ### Heuristic lambda  (rarer items -> more pooling)
-    k           <- median(popularity)
+    k           <- stats::median(popularity)
     lambda_h    <- sapply(items_list, function(Ip) {
       num <- sum(popularity[Ip])
       1 - num / (num + k)
@@ -417,7 +443,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
     within_var_x <- rowMeans((score_dummies_x - raw_x)^2, na.rm = TRUE)
     sigma2_x     <- mean(within_var_x, na.rm = TRUE)
     mu_x         <- mean(raw_x, na.rm = TRUE)
-    tau2_x       <- max(0, var(raw_x, na.rm = TRUE) -
+    tau2_x       <- max(0, stats::var(raw_x, na.rm = TRUE) -
                           sigma2_x * mean(1 / n_items, na.rm = TRUE))
 
     lambda_eb_x  <- (sigma2_x / n_items) / (tau2_x + sigma2_x / n_items)
@@ -427,7 +453,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
     within_var_y <- rowMeans((score_dummies_y - raw_y)^2, na.rm = TRUE)
     sigma2_y     <- mean(within_var_y, na.rm = TRUE)
     mu_y         <- mean(raw_y, na.rm = TRUE)
-    tau2_y       <- max(0, var(raw_y, na.rm = TRUE) -
+    tau2_y       <- max(0, stats::var(raw_y, na.rm = TRUE) -
                           sigma2_y * mean(1 / n_items, na.rm = TRUE))
 
     lambda_eb_y  <- (sigma2_y / n_items) / (tau2_y + sigma2_y / n_items)
@@ -684,10 +710,13 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
 
   # Exporting features:
   graph_stats <- list(structuration, centralization)
-  aux_objects <- list(res_in_cor, same_items, df_dummies, cluster_probs, max_cluster, ResIN_arglist)
-  names(aux_objects) <- c("adj_matrix", "same_items", "df_dummies", "cluster_probabilities", "max_clusterprob", "ResIN_arglist")
+  meta <- list(call = match.call(), created = created, seed = seed, df_id = df_id, df_n = nrow(df), df_p = ncol(df), node_vars = node_vars, ResIN_version = resin_version, R_version = r_version)
+  aux_objects <- list(res_in_cor, same_items, df_dummies, cluster_probs, max_cluster, ResIN_arglist, meta = meta)
+
+  names(aux_objects) <- c("adj_matrix", "same_items", "df_dummies", "cluster_probabilities", "max_clusterprob", "ResIN_arglist", "meta_info")
   output <- list(edgelist_frame, node_frame, ResIN_ggplot, scores, graph_stats, aux_objects, bipartite_output)
   names(output) <- c("ResIN_edgelist", "ResIN_nodeframe", "ResIN_ggplot", "ResIN_scores", "graph_stats", "aux_objects", "bipartite_output")
+
   class(output) <- c("ResIN", "list")
 
   return(output)
