@@ -1,66 +1,43 @@
-#' @title Convert ResIN networks to a Gephi-readable csv tables
+#' @title (Depricated.) Convert ResIN networks to Gephi-readable csv tables. Use \code{as.gephi()} method instead.
 #'
-#' @description Saves a ResIN graph as a series of csv files readable by Gephi. Source code taken from RMHogervorst / gephi
+#' @description Deprecated/legacy function. Saves a ResIN graph as a series of csv files readable by Gephi. Now supplanted by \code{as.gephi()} method.
 #'
-#' @param ResIN_object the output of the ResIN function (a list with class ResIN).
-#' @param file the name with .csv extension for the Gephi readable file to be output at. Defaults to "ResIN_gephi.csv".
+#' @param ResIN_object The output of the ResIN function (a list with class ResIN).
+#' @param file The name with .csv extension for the Gephi readable file to be output at. Defaults to "ResIN_gephi.csv".
+#' @param edges_only Logical; if TRUE write/return only edges.
+#' @param dont_save_csv Logical; set TRUE to disable writing.
 #'
 #' @return A series of csv files readable by Gephi
 #'
 #' @examples
-#'
-#' \dontrun{
 #' ## Load the 12-item simulated Likert-type ResIN toy dataset
 #' data(lik_data)
 #'
-#' ## Run the function:
-#' ResIN_to_gephi(ResIN(lik_data), file = "ResIN_gephi.csv")
+#' ## Estimate a ResIN network
+#' res <- ResIN(lik_data, generate_ggplot = FALSE)
+#'
+#' ## Create Gephi edge table without writing files
+#' edges <- as.gephi(res, dont_save_csv = TRUE)
+#' head(edges)
+#'
+#' \dontrun{
+#' ## Write CSV file(s) for import to Gephi
+#' ## (writes "ResIN_gephi.csv" by default)
+#' as.gephi(res, file = "ResIN_gephi.csv")
+#'
+#' ## Write both edges and nodes tables
+#' ## (writes "ResIN_gephi_edges.csv" and "ResIN_gephi_nodes.csv")
+#' as.gephi(res, file = "ResIN_gephi.csv", edges_only = FALSE)
 #' }
+#'
 #'
 #' @export
 #' @importFrom readr "write_csv"
-#' @references Source code was taken from: https://github.com/RMHogervorst/gephi?tab=MIT-1-ov-file#readme
+#' @references Source code of original function (< version 2.2.0) had been adapted from: https://github.com/RMHogervorst/gephi?tab=MIT-1-ov-file#readme
 #'
 
-ResIN_to_gephi <- function(ResIN_object, file = "ResIN_gephi.csv") {
-  ## Test for ResIN object
-  if(class(ResIN_object)[1] !=  "ResIN"){
-    stop("Please supply a ResIN type list object.")
-  }
-    dataframe <- ResIN_object$ResIN_edgelist
-    df_names <- names(dataframe)
-
-    from_ind <- grep("from", df_names)[[1]]
-    df_names[from_ind] <- "Source"
-
-    to_ind <- grep("to", df_names)[[1]]
-    df_names[to_ind] <- "Target"
-
-    names(dataframe) <- df_names
-
-    dataframe <- dataframe[, 1:3]
-    readr::write_csv(dataframe, file = file, na = "")
-    return(invisible(dataframe))
-  }
-
-# MIT License
-#
-# Copyright (c) 2018 Roel M. Hogervorst
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+ResIN_to_gephi <- function(ResIN_object, file = "ResIN_gephi.csv", edges_only = TRUE, dont_save_csv = FALSE) {
+  .Deprecated("as.gephi", package = "ResIN",
+              msg = "ResIN_to_gephi() is deprecated; use as.gephi(x, file=...) instead.")
+  as.gephi(ResIN_object, file = file, edges_only = edges_only, dont_save_csv = dont_save_csv)
+}

@@ -69,7 +69,7 @@ ResIN_out$ResIN_ggplot + ggplot2::theme(legend.position = "none", plot.title = g
 
 ```
 
-Welcome to the **ResIN** tutorial! ResIN stands for '**Res**ponse **I**tem **N**etworks' and was first introduced by [Carpentras et.al. 2022](https://www.nature.com/articles/s41598-022-10069-3). If you are interested in all things ResIN-related, including news, papers, and the corresponding Python tutorial, please check out the [ResIN website](https://www.resinmethod.net/).
+Welcome to the **ResIN** tutorial! ResIN stands for '**Res**ponse **I**tem **N**etworks' and was first introduced by [Carpentras et.al. 2022](https://www.nature.com/articles/s41598-022-10069-3). Another applied introduction as part of the Springer Series Computational Social Science is provided in [Warncke et.al. 2026](https://doi.org/10.1007/978-3-032-01373-6_5). If you are interested in all things ResIN-related, including news, papers, and the corresponding Python tutorial, please check out the [ResIN website](https://www.resinmethod.net/).
 
 This tutorial primarily introduces the [ResIN-R package](https://CRAN.R-project.org/package=ResIN) and provides an overview of the main functions and their capabilities. A bit of background knowledge in R and the Tidyverse is required to follow but you certainly do not need to have advanced skills either in R or network statistics. For an in-depth conceptual introduction to ResIN as a method, please refer to the [ResIN website](https://www.resinmethod.net/) or the above-referenced publication. The website also features [dates](https://www.resinmethod.net/conference-presentations/) for upcoming introductory talks by the [ResIN team](https://www.resinmethod.net/contact/) if you are instead interested in a live, hands-on, demonstration.
 
@@ -425,17 +425,18 @@ ResIN_out$bipartite_output$bipartite_ggraph
 
 ## Export ResIN graphs to qgraph, igraph, and gephi
 
-If you are familiar with some other statistical network software suits - either in R or elsewhere - you'll likely appreciate the converter functions that ship with the ResIN package. At the moment, `ResIN_to_igraph()`, `ResIN_to_qgraph()`, and `ResIN_to_gephi()` handle conversions to `igraph`, `qgraph`, and Gephi, respectively.
+If you are familiar with some other statistical network software suits - either in R or elsewhere - you'll likely appreciate the converter functions that ship with the ResIN package. At the moment, `as.igraph()`, `as.qgraph()`, and `as.gephi()` handle conversions to `igraph`, `qgraph`, and Gephi, respectively.
 
 ```{r}
 ## Easily convert a ResIN object to igraph:
-ResIN_igraph <- ResIN_to_igraph(ResIN_out)
+ResIN_igraph <- as.igraph(ResIN_out)
 class(ResIN_igraph)
 
-ResIN_qgraph <- ResIN_to_qgraph(ResIN_out)
+ResIN_qgraph <- as.qgraph(ResIN_out)
 class(ResIN_qgraph)
 
-# ResIN_to_gephi(ResIN_out, file = "ResIN_gephi.csv")
+ResIN_gephi <- as.gephi(ResIN_out, file = "ResIN_gephi.csv", dont_save_csv = TRUE)
+    ## set dont_save_csv = FALSE to save .cvs files for import to Gephi.
 ```
 
 ## Summary & other features
@@ -447,5 +448,7 @@ Carpentras, D., Lüders, A., & Quayle, M. (2022). Mapping the global opinion spa
 Efron, B., & Morris, C. (1973). Stein's estimation rule and its competitors—an empirical Bayes approach. Journal of the American Statistical Association, 68(341), 117-130.
 
 Lüders, A., Carpentras, D., & Quayle, M. (2024). Attitude networks as intergroup realities: Using network‐modelling to research attitude‐identity relationships in polarized political contexts. British Journal of Social Psychology, 63(1), 37-51.
+
+Warncke, P., Chen, Y., Speer, A., de Bruin, B., Lüders, A., Carpentras, D. (2026). ResIN: A New Method to Analyze Socio-political Attitude Systems. In: Keijzer, M.A., Lorenz, J., Bojanowski, M. (eds) Computational Social Science of Social Cohesion and Polarization. Computational Social Sciences. Springer, Cham. https://doi.org/10.1007/978-3-032-01373-6_5
 
 

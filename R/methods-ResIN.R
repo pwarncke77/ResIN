@@ -407,6 +407,253 @@ as.data.frame.ResIN_boots_draws <- function(x, ...) {
   )
 }
 
+#' @title Coerce a ResIN object to an igraph graph
+#'
+#' @description
+#' Converts a \code{ResIN} object to an \code{igraph} graph using the adjacency
+#' matrix stored in \code{x$aux_objects$adj_matrix}.
+#'
+#' @param x A \code{ResIN} object.
+#' @param mode,weighted,diag Passed to \code{igraph::graph_from_adjacency_matrix()}.
+#' @param ... Additional arguments passed to \code{igraph::graph_from_adjacency_matrix()}.
+#'
+#' @return An \code{igraph} object.
+#'
+#' @examples
+#' ## Load the 12-item simulated Likert-type ResIN toy dataset
+#' data(lik_data)
+#'
+#' ## Run the function:
+#'
+#' igraph_output <-  as.igraph(ResIN(lik_data, plot_ggplot = FALSE))
+#'
+#' class(igraph_output)
+#'
+#' ## Plot and/or investigate as you wish:
+#' \donttest{
+#' igraph::plot.igraph(igraph_output)
+#' }
+#'
+#' @export
+#' @importFrom igraph graph_from_adjacency_matrix
+as.igraph.ResIN <- function(x, mode = "undirected", weighted = TRUE, diag = FALSE, ...) {
+  if (!inherits(x, "ResIN")) {
+    stop("x must be a ResIN object.", call. = FALSE)
+  }
 
+  A <- x$aux_objects$adj_matrix
+  if (is.null(A) || !is.matrix(A)) {
+    stop("ResIN object does not contain a valid adjacency matrix in x$aux_objects$adj_matrix.", call. = FALSE)
+  }
 
+  igraph::graph_from_adjacency_matrix(adjmatrix = A, mode = mode, weighted = weighted, diag = diag, ...)
+}
 
+#' @title Coerce a ResIN object to a qgraph object
+#'
+#' @description
+#' Converts a \code{ResIN} object to a \code{qgraph} object using the adjacency
+#' matrix stored in \code{x$aux_objects$adj_matrix}.
+#'
+#' @param x A \code{ResIN} object.
+#' @param layout,maximum,vsize,DoNotPlot,sampleSize,title,mar,normalize Passed to \code{qgraph::qgraph()}.
+#' @param ... Additional arguments passed to \code{qgraph::qgraph()}.
+#'
+#' @return A \code{qgraph} object.
+#'
+#' @examples
+#' ## Load the 12-item simulated Likert-type ResIN toy dataset
+#' data(lik_data)
+#'
+#' ## Run the function:
+#' ResIN_qgraph <-  as.qgraph(ResIN(lik_data, plot_ggplot = FALSE))
+#'
+#' class(ResIN_qgraph)
+#'
+#' @export
+#' @importFrom qgraph qgraph
+as.qgraph.ResIN <- function(x,
+                            layout = "spring",
+                            maximum = 1,
+                            vsize = 6,
+                            DoNotPlot = TRUE,
+                            sampleSize = NULL,
+                            title = "ResIN graph in qgraph",
+                            mar = c(3, 8, 3, 8),
+                            normalize = FALSE,
+                            ...) {
+
+  if (!inherits(x, "ResIN")) {
+    stop("x must be a ResIN object.", call. = FALSE)
+  }
+
+  A <- x$aux_objects$adj_matrix
+  if (is.null(A) || !is.matrix(A)) {
+    stop("ResIN object does not contain a valid adjacency matrix in x$aux_objects$adj_matrix.", call. = FALSE)
+  }
+
+  if (is.null(sampleSize)) {
+    dd <- x$aux_objects$df_dummies
+    sampleSize <- if (is.data.frame(dd) || is.matrix(dd)) nrow(dd) else NA_integer_
+  }
+
+  qgraph::qgraph(
+    input = A,
+    layout = layout,
+    maximum = maximum,
+    vsize = vsize,
+    DoNotPlot = DoNotPlot,
+    sampleSize = sampleSize,
+    title = title,
+    mar = mar,
+    normalize = normalize,
+    ...
+  )
+}
+
+#' qgraph generic helpers (only back-end relevant to resolve methods conflicts)
+#'
+#' @param x A ResIN object to coerce.
+#' @param ... Passed to methods.
+#' @export
+#' @noRd
+as.qgraph <- function(x, ...) UseMethod("as.qgraph")
+
+#' @exportS3Method as.qgraph default
+#' @noRd
+as.qgraph.default <- function(x, ...) {
+  stop("No as.qgraph() method for objects of class: ", paste(class(x), collapse = "/"),
+       call. = FALSE)
+}
+
+#' @title Coerce a ResIN object to Gephi CSV table(s)
+#'
+#' @description
+#' Produces Gephi-readable edge (and optionally node) tables from a \code{ResIN}
+#' object and (by default) writes them to CSV. Set \code{dont_save_csv = TRUE}
+#' to return tables without writing files.
+#'
+#' @param x A \code{ResIN} object.
+#' @param file Output file name (legacy style).
+#' @param edges_only Logical; if TRUE write/return only edges.
+#' @param dont_save_csv Logical; set TRUE to disable writing.
+#' @param weight_col Name of the edge-weight column in \code{x$ResIN_edgelist}.
+#' @param ... Ignored.
+#'
+#' @examples
+#' ## Load the 12-item simulated Likert-type ResIN toy dataset
+#' data(lik_data)
+#'
+#' ## Estimate a ResIN network
+#' res <- ResIN(lik_data, plot_ggplot = FALSE)
+#'
+#' ## Create Gephi edge table without writing files
+#' edges <- as.gephi(res, dont_save_csv = TRUE)
+#' head(edges)
+#'
+#' \dontrun{
+#' ## Write CSV file(s) for import to Gephi
+#' ## (writes "ResIN_gephi.csv" by default)
+#' as.gephi(res, file = "ResIN_gephi.csv")
+#'
+#' ## Write both edges and nodes tables
+#' ## (writes "ResIN_gephi_edges.csv" and "ResIN_gephi_nodes.csv")
+#' as.gephi(res, file = "ResIN_gephi.csv", edges_only = FALSE)
+#' }
+#'
+#'
+#' @return If \code{edges_only = TRUE}, an edge table data.frame. Otherwise a list with \code{edges} and \code{nodes}. “When \code{dont_save_csv = FALSE}, the return value is returned invisibly.”
+#' @export
+#' @importFrom readr write_csv
+as.gephi.ResIN <- function(x,
+                           file = "ResIN_gephi.csv",
+                           edges_only = TRUE,
+                           dont_save_csv = FALSE,
+                           weight_col = "weight",
+                           ...) {
+
+  if (!inherits(x, "ResIN")) {
+    stop("x must be a ResIN object.", call. = FALSE)
+  }
+  if (!is.data.frame(x$ResIN_edgelist)) {
+    stop("ResIN object does not contain a valid edge list in x$ResIN_edgelist.", call. = FALSE)
+  }
+
+  el <- x$ResIN_edgelist
+
+  from_col <- if ("from" %in% names(el)) "from" else grep("from", names(el), value = TRUE)[1]
+  to_col   <- if ("to"   %in% names(el)) "to"   else grep("to",   names(el), value = TRUE)[1]
+  if (is.na(from_col) || is.na(to_col)) {
+    stop("Could not identify 'from'/'to' columns in ResIN_edgelist.", call. = FALSE)
+  }
+
+  w_col <- if (weight_col %in% names(el)) weight_col else NULL
+  if (is.null(w_col) && ncol(el) >= 3L) w_col <- names(el)[3]
+
+  edges <- data.frame(
+    Source = el[[from_col]],
+    Target = el[[to_col]],
+    stringsAsFactors = FALSE
+  )
+  if (!is.null(w_col)) edges$Weight <- el[[w_col]]
+
+  nodes <- NULL
+  if (!isTRUE(edges_only)) {
+    if (is.data.frame(x$ResIN_nodeframe)) {
+      nf <- x$ResIN_nodeframe
+      if (!"Id" %in% names(nf)) {
+        if ("node_names" %in% names(nf)) nf$Id <- nf$node_names
+        else if ("from" %in% names(nf))  nf$Id <- nf$from
+        else nf$Id <- seq_len(nrow(nf))
+      }
+      nodes <- nf
+    } else {
+      nodes <- data.frame(Id = unique(c(edges$Source, edges$Target)))
+    }
+  }
+
+  out <- if (isTRUE(edges_only)) edges else list(edges = edges, nodes = nodes)
+
+  if (!isTRUE(dont_save_csv)) {
+
+    if (isTRUE(edges_only)) {
+      readr::write_csv(edges, file = file, na = "")
+      created <- normalizePath(file, winslash = "/", mustWork = FALSE)
+
+      message("Gephi edge table created: ", basename(created),
+              " (", dirname(created), ")")
+
+    } else {
+      prefix <- sub("\\.csv$", "", file, ignore.case = TRUE)
+      edges_file <- paste0(prefix, "_edges.csv")
+      nodes_file <- paste0(prefix, "_nodes.csv")
+
+      readr::write_csv(edges, file = edges_file, na = "")
+      readr::write_csv(nodes, file = nodes_file, na = "")
+
+      ef <- normalizePath(edges_file, winslash = "/", mustWork = FALSE)
+      nf <- normalizePath(nodes_file, winslash = "/", mustWork = FALSE)
+
+      message("Gephi tables created: ",
+              basename(ef), " and ", basename(nf),
+              " (", dirname(ef), ")")
+    }
+    return(invisible(out))
+  }
+  out
+}
+
+#' Generic (default) Gephi table method
+#'
+#' @param x An object to coerce.
+#' @param ... Passed to methods.
+#' @export
+#' @noRd
+as.gephi <- function(x, ...) UseMethod("as.gephi")
+
+#' @exportS3Method as.gephi default
+#' @noRd
+as.gephi.default <- function(x, ...) {
+  stop("No as.gephi() method for objects of class: ", paste(class(x), collapse = "/"),
+       call. = FALSE)
+}

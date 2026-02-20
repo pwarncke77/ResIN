@@ -1,6 +1,6 @@
-#' @title Convert a ResIN network into an igraph object
+#' @title (Deprecated.) Convert a ResIN network into an igraph object. Use \code{as.igraph()} method instead.
 #'
-#' @description Transforms the output of the \code{ResIN} function into an [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) object
+#' @description Deprecated/legacy function. Transforms the output of the \code{ResIN} function into an [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) object. Now simply a wrapper for the \code{as.igraph()} method.
 #'
 #' @param ResIN_object the output of the ResIN function (a list with class ResIN).
 #' @param igraph_arglist an optional argument list to be supplied to the igraph::graph_from_adjacency_matrix function. If NULL, default is: list(mode = "undirected", weighted = TRUE, diag = FALSE).
@@ -13,28 +13,30 @@
 #' data(lik_data)
 #'
 #' ## Run the function:
-#' \donttest{
-#' igraph_output <-  ResIN_to_igraph(ResIN(lik_data))
 #'
+#' igraph_output <-  as.igraph(ResIN(lik_data, plot_ggplot = FALSE))
+#'
+#' class(igraph_output)
 #'
 #' ## Plot and/or investigate as you wish:
+#' \donttest{
 #' igraph::plot.igraph(igraph_output)
 #' }
+#'
 #'
 #' @export
 #' @importFrom igraph "graph_from_adjacency_matrix"
 #'
 #' @references Csardi G, Nepusz T (2006). “The igraph software package for complex network research.” InterJournal, Complex Systems, 1695. https://igraph.org.
-
+#' @seealso \code{\link[=as.igraph.ResIN]{as.igraph}} as the recommended interface.
 ResIN_to_igraph <- function(ResIN_object, igraph_arglist = NULL) {
-  ## Test for ResIN object
-  if(class(ResIN_object)[1] !=  "ResIN"){
-    stop("Please supply a ResIN type list object.")
-  }
-  ## Generating the igraph object
-  if(is.null(igraph_arglist)) {
+
+  .Deprecated("as.igraph", package = "ResIN",
+              msg = "Note: ResIN_to_igraph() is deprecated as of Version 2.2.2; please use as.igraph(x, ...) instead.")
+
+  if (is.null(igraph_arglist)) {
     igraph_arglist <- list(mode = "undirected", weighted = TRUE, diag = FALSE)
   }
-  res_in_graph_igraph <- do.call(igraph::graph_from_adjacency_matrix, c(list(adjmatrix = ResIN_object$aux_objects$adj_matrix), igraph_arglist))
-  return(res_in_graph_igraph)
+
+  do.call(as.igraph, c(list(ResIN_object), igraph_arglist))
 }

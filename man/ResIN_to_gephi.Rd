@@ -2,32 +2,53 @@
 % Please edit documentation in R/ResIN_to_gephi.R
 \name{ResIN_to_gephi}
 \alias{ResIN_to_gephi}
-\title{Convert ResIN networks to a Gephi-readable csv tables}
+\title{(Depricated.) Convert ResIN networks to Gephi-readable csv tables. Use \code{as.gephi()} method instead.}
 \usage{
-ResIN_to_gephi(ResIN_object, file = "ResIN_gephi.csv")
+ResIN_to_gephi(
+  ResIN_object,
+  file = "ResIN_gephi.csv",
+  edges_only = TRUE,
+  dont_save_csv = FALSE
+)
 }
 \arguments{
-\item{ResIN_object}{the output of the ResIN function (a list with class ResIN).}
+\item{ResIN_object}{The output of the ResIN function (a list with class ResIN).}
 
-\item{file}{the name with .csv extension for the Gephi readable file to be output at. Defaults to "ResIN_gephi.csv".}
+\item{file}{The name with .csv extension for the Gephi readable file to be output at. Defaults to "ResIN_gephi.csv".}
+
+\item{edges_only}{Logical; if TRUE write/return only edges.}
+
+\item{dont_save_csv}{Logical; set TRUE to disable writing.}
 }
 \value{
 A series of csv files readable by Gephi
 }
 \description{
-Saves a ResIN graph as a series of csv files readable by Gephi. Source code taken from RMHogervorst / gephi
+Deprecated/legacy function. Saves a ResIN graph as a series of csv files readable by Gephi. Now supplanted by \code{as.gephi()} method.
 }
 \examples{
-
-\dontrun{
 ## Load the 12-item simulated Likert-type ResIN toy dataset
 data(lik_data)
 
-## Run the function:
-ResIN_to_gephi(ResIN(lik_data), file = "ResIN_gephi.csv")
+## Estimate a ResIN network
+res <- ResIN(lik_data, generate_ggplot = FALSE)
+
+## Create Gephi edge table without writing files
+edges <- as.gephi(res, dont_save_csv = TRUE)
+head(edges)
+
+\dontrun{
+## Write CSV file(s) for import to Gephi
+## (writes "ResIN_gephi.csv" by default)
+as.gephi(res, file = "ResIN_gephi.csv")
+
+## Write both edges and nodes tables
+## (writes "ResIN_gephi_edges.csv" and "ResIN_gephi_nodes.csv")
+as.gephi(res, file = "ResIN_gephi.csv", edges_only = FALSE)
 }
+
 
 }
 \references{
-Source code was taken from: https://github.com/RMHogervorst/gephi?tab=MIT-1-ov-file#readme
+Source code of original function (< version 2.2.0) had been adapted from: https://github.com/RMHogervorst/gephi?tab=MIT-1-ov-file#readme
 }

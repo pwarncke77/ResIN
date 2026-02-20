@@ -29,7 +29,8 @@ Imports:
     doSNOW,
     readr,
     ggraph (>= 2.2.0),
-    shadowtext (>= 0.1.4)
+    shadowtext (>= 0.1.4),
+    readr
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz

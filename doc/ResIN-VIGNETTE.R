@@ -286,11 +286,12 @@ ResIN_out$bipartite_output$bipartite_ggraph
 
 ## -----------------------------------------------------------------------------
 ## Easily convert a ResIN object to igraph:
-ResIN_igraph <- ResIN_to_igraph(ResIN_out)
+ResIN_igraph <- as.igraph(ResIN_out)
 class(ResIN_igraph)
 
-ResIN_qgraph <- ResIN_to_qgraph(ResIN_out)
+ResIN_qgraph <- as.qgraph(ResIN_out)
 class(ResIN_qgraph)
 
-# ResIN_to_gephi(ResIN_out, file = "ResIN_gephi.csv")
+ResIN_gephi <- as.gephi(ResIN_out, file = "ResIN_gephi.csv", dont_save_csv = TRUE)
+    ## set dont_save_csv = FALSE to save .cvs files for import to Gephi.
 

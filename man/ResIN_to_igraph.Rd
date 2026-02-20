@@ -2,7 +2,7 @@
 % Please edit documentation in R/ResIN_to_igraph.R
 \name{ResIN_to_igraph}
 \alias{ResIN_to_igraph}
-\title{Convert a ResIN network into an igraph object}
+\title{(Deprecated.) Convert a ResIN network into an igraph object. Use \code{as.igraph()} method instead.}
 \usage{
 ResIN_to_igraph(ResIN_object, igraph_arglist = NULL)
 }
@@ -15,7 +15,7 @@ ResIN_to_igraph(ResIN_object, igraph_arglist = NULL)
 A class \code{igraph} object.
 }
 \description{
-Transforms the output of the \code{ResIN} function into an [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) object
+Deprecated/legacy function. Transforms the output of the \code{ResIN} function into an [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) object. Now simply a wrapper for the \code{as.igraph()} method.
 }
 \examples{
 
@@ -23,15 +23,21 @@ Transforms the output of the \code{ResIN} function into an [igraph](https://igra
 data(lik_data)
 
 ## Run the function:
-\donttest{
-igraph_output <-  ResIN_to_igraph(ResIN(lik_data))
 
+igraph_output <-  as.igraph(ResIN(lik_data, plot_ggplot = FALSE))
+
+class(igraph_output)
 
 ## Plot and/or investigate as you wish:
+\donttest{
 igraph::plot.igraph(igraph_output)
 }
+
 
 }
 \references{
 Csardi G, Nepusz T (2006). “The igraph software package for complex network research.” InterJournal, Complex Systems, 1695. https://igraph.org.
+}
+\seealso{
+\code{\link[=as.igraph.ResIN]{as.igraph}} as the recommended interface.
 }

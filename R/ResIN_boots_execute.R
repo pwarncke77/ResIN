@@ -132,6 +132,10 @@ ResIN_boots_execute <- function(ResIN_boots_prepped,
       )
     }
 
+    utils::setTxtProgressBar(pb, n)
+    close(pb)
+    cat("\n")
+
     ok <- vapply(res_raw, `[[`, logical(1), "ok")
     res_list <- lapply(res_raw, `[[`, "fit")
 
