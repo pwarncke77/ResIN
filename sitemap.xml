@@ -6,6 +6,8 @@
 <url><loc>https://pwarncke77.github.io/ResIN/index.html</loc></url>
 <url><loc>https://pwarncke77.github.io/ResIN/reference/Bootstrap_example.html</loc></url>
 <url><loc>https://pwarncke77.github.io/ResIN/reference/BrJSocPsychol_2024.html</loc></url>
+<url><loc>https://pwarncke77.github.io/ResIN/reference/ResIN-coercion-generics.html</loc></url>
+<url><loc>https://pwarncke77.github.io/ResIN/reference/ResIN-reexports.html</loc></url>
 <url><loc>https://pwarncke77.github.io/ResIN/reference/ResIN.html</loc></url>
 <url><loc>https://pwarncke77.github.io/ResIN/reference/ResIN_boots_draws.html</loc></url>
 <url><loc>https://pwarncke77.github.io/ResIN/reference/ResIN_boots_execute.html</loc></url>
@@ -16,6 +18,9 @@
 <url><loc>https://pwarncke77.github.io/ResIN/reference/ResIN_to_gephi.html</loc></url>
 <url><loc>https://pwarncke77.github.io/ResIN/reference/ResIN_to_igraph.html</loc></url>
 <url><loc>https://pwarncke77.github.io/ResIN/reference/ResIN_to_qgraph.html</loc></url>
+<url><loc>https://pwarncke77.github.io/ResIN/reference/as.gephi.ResIN.html</loc></url>
+<url><loc>https://pwarncke77.github.io/ResIN/reference/as.igraph.ResIN.html</loc></url>
+<url><loc>https://pwarncke77.github.io/ResIN/reference/as.qgraph.ResIN.html</loc></url>
 <url><loc>https://pwarncke77.github.io/ResIN/reference/index.html</loc></url>
 <url><loc>https://pwarncke77.github.io/ResIN/reference/lik_data.html</loc></url>
 <url><loc>https://pwarncke77.github.io/ResIN/reference/plot.ResIN.html</loc></url>

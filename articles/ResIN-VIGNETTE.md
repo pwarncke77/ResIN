@@ -4,7 +4,10 @@
 
 Welcome to the **ResIN** tutorial! ResIN stands for ‘**Res**ponse
 **I**tem **N**etworks’ and was first introduced by [Carpentras et.al.
-2022](https://www.nature.com/articles/s41598-022-10069-3). If you are
+2022](https://www.nature.com/articles/s41598-022-10069-3). Another
+applied introduction as part of the Springer Series Computational Social
+Science is provided in [Warncke et.al.
+2026](https://doi.org/10.1007/978-3-032-01373-6_5). If you are
 interested in all things ResIN-related, including news, papers, and the
 corresponding Python tutorial, please check out the [ResIN
 website](https://www.resinmethod.net/).
@@ -722,23 +725,24 @@ ResIN_out$bipartite_output$bipartite_ggraph
 If you are familiar with some other statistical network software suits -
 either in R or elsewhere - you’ll likely appreciate the converter
 functions that ship with the ResIN package. At the moment,
-[`ResIN_to_igraph()`](https://pwarncke77.github.io/ResIN/reference/ResIN_to_igraph.md),
-[`ResIN_to_qgraph()`](https://pwarncke77.github.io/ResIN/reference/ResIN_to_qgraph.md),
+[`as.igraph()`](https://pwarncke77.github.io/ResIN/reference/ResIN-reexports.md),
+[`as.qgraph()`](https://pwarncke77.github.io/ResIN/reference/ResIN-coercion-generics.md),
 and
-[`ResIN_to_gephi()`](https://pwarncke77.github.io/ResIN/reference/ResIN_to_gephi.md)
+[`as.gephi()`](https://pwarncke77.github.io/ResIN/reference/ResIN-coercion-generics.md)
 handle conversions to `igraph`, `qgraph`, and Gephi, respectively.
 
 ``` r
 ## Easily convert a ResIN object to igraph:
-ResIN_igraph <- ResIN_to_igraph(ResIN_out)
+ResIN_igraph <- as.igraph(ResIN_out)
 class(ResIN_igraph)
 #> [1] "igraph"
 
-ResIN_qgraph <- ResIN_to_qgraph(ResIN_out)
+ResIN_qgraph <- as.qgraph(ResIN_out)
 class(ResIN_qgraph)
 #> [1] "qgraph"
 
-# ResIN_to_gephi(ResIN_out, file = "ResIN_gephi.csv")
+ResIN_gephi <- as.gephi(ResIN_out, file = "ResIN_gephi.csv", dont_save_csv = TRUE)
+    ## set dont_save_csv = FALSE to save .cvs files for import to Gephi.
 ```
 
 ## Summary & other features
@@ -770,3 +774,10 @@ Lüders, A., Carpentras, D., & Quayle, M. (2024). Attitude networks as
 intergroup realities: Using network‐modelling to research
 attitude‐identity relationships in polarized political contexts. British
 Journal of Social Psychology, 63(1), 37-51.
+
+Warncke, P., Chen, Y., Speer, A., de Bruin, B., Lüders, A., Carpentras,
+D. (2026). ResIN: A New Method to Analyze Socio-political Attitude
+Systems. In: Keijzer, M.A., Lorenz, J., Bojanowski, M. (eds)
+Computational Social Science of Social Cohesion and Polarization.
+Computational Social Sciences. Springer, Cham.
+<https://doi.org/10.1007/978-3-032-01373-6_5>

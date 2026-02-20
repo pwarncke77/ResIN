@@ -75,10 +75,11 @@
 <p>Welcome to the <strong>ResIN</strong> tutorial! ResIN stands for
 ‘<strong>Res</strong>ponse <strong>I</strong>tem
 <strong>N</strong>etworks’ and was first introduced by <a href="https://www.nature.com/articles/s41598-022-10069-3" class="external-link">Carpentras
-et.al. 2022</a>. If you are interested in all things ResIN-related,
-including news, papers, and the corresponding Python tutorial, please
-check out the <a href="https://www.resinmethod.net/" class="external-link">ResIN
-website</a>.</p>
+et.al. 2022</a>. Another applied introduction as part of the Springer
+Series Computational Social Science is provided in <a href="https://doi.org/10.1007/978-3-032-01373-6_5" class="external-link">Warncke et.al.
+2026</a>. If you are interested in all things ResIN-related, including
+news, papers, and the corresponding Python tutorial, please check out
+the <a href="https://www.resinmethod.net/" class="external-link">ResIN website</a>.</p>
 <p>This tutorial primarily introduces the <a href="https://CRAN.R-project.org/package=ResIN" class="external-link">ResIN-R package</a> and
 provides an overview of the main functions and their capabilities. A bit
 of background knowledge in R and the Tidyverse is required to follow but
@@ -719,20 +720,21 @@ extract and plot the bipartite graph:</p>
 <p>If you are familiar with some other statistical network software
 suits - either in R or elsewhere - you’ll likely appreciate the
 converter functions that ship with the ResIN package. At the moment,
-<code><a href="../reference/ResIN_to_igraph.html">ResIN_to_igraph()</a></code>, <code><a href="../reference/ResIN_to_qgraph.html">ResIN_to_qgraph()</a></code>, and
-<code><a href="../reference/ResIN_to_gephi.html">ResIN_to_gephi()</a></code> handle conversions to <code>igraph</code>,
+<code><a href="../reference/ResIN-reexports.html">as.igraph()</a></code>, <code><a href="../reference/ResIN-coercion-generics.html">as.qgraph()</a></code>, and
+<code><a href="../reference/ResIN-coercion-generics.html">as.gephi()</a></code> handle conversions to <code>igraph</code>,
 <code>qgraph</code>, and Gephi, respectively.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Easily convert a ResIN object to igraph:</span></span>
-<span><span class="va">ResIN_igraph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN_to_igraph.html">ResIN_to_igraph</a></span><span class="op">(</span><span class="va">ResIN_out</span><span class="op">)</span></span>
+<span><span class="va">ResIN_igraph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN-reexports.html">as.igraph</a></span><span class="op">(</span><span class="va">ResIN_out</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">ResIN_igraph</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "igraph"</span></span>
 <span></span>
-<span><span class="va">ResIN_qgraph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN_to_qgraph.html">ResIN_to_qgraph</a></span><span class="op">(</span><span class="va">ResIN_out</span><span class="op">)</span></span>
+<span><span class="va">ResIN_qgraph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN-coercion-generics.html">as.qgraph</a></span><span class="op">(</span><span class="va">ResIN_out</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">ResIN_qgraph</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "qgraph"</span></span>
 <span></span>
-<span><span class="co"># ResIN_to_gephi(ResIN_out, file = "ResIN_gephi.csv")</span></span></code></pre></div>
+<span><span class="va">ResIN_gephi</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ResIN-coercion-generics.html">as.gephi</a></span><span class="op">(</span><span class="va">ResIN_out</span>, file <span class="op">=</span> <span class="st">"ResIN_gephi.csv"</span>, dont_save_csv <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    <span class="co">## set dont_save_csv = FALSE to save .cvs files for import to Gephi.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="summary-other-features">Summary &amp; other features<a class="anchor" aria-label="anchor" href="#summary-other-features"></a>
@@ -760,6 +762,11 @@ Statistical Association, 68(341), 117-130.</p>
 networks as intergroup realities: Using network‐modelling to research
 attitude‐identity relationships in polarized political contexts. British
 Journal of Social Psychology, 63(1), 37-51.</p>
+<p>Warncke, P., Chen, Y., Speer, A., de Bruin, B., Lüders, A.,
+Carpentras, D. (2026). ResIN: A New Method to Analyze Socio-political
+Attitude Systems. In: Keijzer, M.A., Lorenz, J., Bojanowski, M. (eds)
+Computational Social Science of Social Cohesion and Polarization.
+Computational Social Sciences. Springer, Cham. <a href="https://doi.org/10.1007/978-3-032-01373-6_5" class="external-link uri">https://doi.org/10.1007/978-3-032-01373-6_5</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

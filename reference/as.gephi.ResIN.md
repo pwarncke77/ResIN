@@ -1,31 +1,32 @@
-# (Depricated.) Convert ResIN networks to Gephi-readable csv tables. Use `as.gephi()` method instead.
+# Coerce a ResIN object to Gephi CSV table(s)
 
-Deprecated/legacy function. Saves a ResIN graph as a series of csv files
-readable by Gephi. Now supplanted by
-[`as.gephi()`](https://pwarncke77.github.io/ResIN/reference/ResIN-coercion-generics.md)
-method.
+Produces Gephi-readable edge (and optionally node) tables from a `ResIN`
+object and (by default) writes them to CSV. Set `dont_save_csv = TRUE`
+to return tables without writing files.
 
 ## Usage
 
 ``` r
-ResIN_to_gephi(
-  ResIN_object,
+# S3 method for class 'ResIN'
+as.gephi(
+  x,
   file = "ResIN_gephi.csv",
   edges_only = TRUE,
-  dont_save_csv = FALSE
+  dont_save_csv = FALSE,
+  weight_col = "weight",
+  ...
 )
 ```
 
 ## Arguments
 
-- ResIN_object:
+- x:
 
-  The output of the ResIN function (a list with class ResIN).
+  A `ResIN` object.
 
 - file:
 
-  The name with .csv extension for the Gephi readable file to be output
-  at. Defaults to "ResIN_gephi.csv".
+  Output file name (legacy style).
 
 - edges_only:
 
@@ -35,14 +36,19 @@ ResIN_to_gephi(
 
   Logical; set TRUE to disable writing.
 
+- weight_col:
+
+  Name of the edge-weight column in `x$ResIN_edgelist`.
+
+- ...:
+
+  Ignored.
+
 ## Value
 
-A series of csv files readable by Gephi
-
-## References
-
-Source code of original function (\< version 2.2.0) had been adapted
-from: https://github.com/RMHogervorst/gephi?tab=MIT-1-ov-file#readme
+If `edges_only = TRUE`, an edge table data.frame. Otherwise a list with
+`edges` and `nodes`. “When `dont_save_csv = FALSE`, the return value is
+returned invisibly.”
 
 ## Examples
 
@@ -51,8 +57,7 @@ from: https://github.com/RMHogervorst/gephi?tab=MIT-1-ov-file#readme
 data(lik_data)
 
 ## Estimate a ResIN network
-res <- ResIN(lik_data, generate_ggplot = FALSE)
-#> [1] "not generated"
+res <- ResIN(lik_data, plot_ggplot = FALSE)
 
 ## Create Gephi edge table without writing files
 edges <- as.gephi(res, dont_save_csv = TRUE)

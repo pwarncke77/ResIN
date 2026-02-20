@@ -1,6 +1,9 @@
-# Convert a ResIN network into an qgraph object
+# (Deprecated.) Convert a ResIN network into an qgraph object. Use `as.qgraph()` method instead.
 
-Transforms the output of the `ResIN` function into an `qgraph` object
+Deprecated/legacy function. Transforms the output of the `ResIN`
+function into an `qgraph` object. Use
+[`as.qgraph()`](https://pwarncke77.github.io/ResIN/reference/ResIN-coercion-generics.md)
+method instead.
 
 ## Usage
 
@@ -32,15 +35,20 @@ Epskamp S, Cramer AOJ, Waldorp LJ, Schmittmann VD, Borsboom D (2012).
 “qgraph: Network Visualizations of Relationships in Psychometric Data.”
 Journal of Statistical Software, 48(4), 1–18.
 
+## See also
+
+[`as.qgraph`](https://pwarncke77.github.io/ResIN/reference/as.qgraph.ResIN.md)
+as the recommended interface.
+
 ## Examples
 
 ``` r
-
 ## Load the 12-item simulated Likert-type ResIN toy dataset
 data(lik_data)
 
 ## Run the function:
-ResIN_qgraph <-  ResIN_to_qgraph(ResIN(lik_data))
+ResIN_qgraph <-  as.qgraph(ResIN(lik_data, plot_ggplot = FALSE))
 
-
+class(ResIN_qgraph)
+#> [1] "qgraph"
 ```
