@@ -1,6 +1,6 @@
-# ResIN object S3 methods
+# Print a ResIN object
 
-ResIN object S3 methods
+Print a ResIN object
 
 ## Usage
 

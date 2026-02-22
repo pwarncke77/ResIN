@@ -63,8 +63,14 @@
 - [`as.igraph(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/as.igraph.ResIN.md)
   : Coerce a ResIN object to an igraph graph
 
+- [`as.network(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/as.network.ResIN.md)
+  : Convert a ResIN object to a statnet/network object
+
 - [`as.qgraph(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/as.qgraph.ResIN.md)
   : Coerce a ResIN object to a qgraph object
+
+- [`as.tidygraph(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/as.tidygraph.ResIN.md)
+  : Coerce a ResIN object to a tidygraph graph
 
 - [`lik_data`](https://pwarncke77.github.io/ResIN/reference/lik_data.md)
   : Likert-type, mock-response data for "ResIN" package examples
@@ -73,7 +79,7 @@
   : Plot a ResIN object
 
 - [`print(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/print.ResIN.md)
-  : ResIN object S3 methods
+  : Print a ResIN object
 
 - [`summary(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/summary.ResIN.md)
   : Summarize a ResIN object

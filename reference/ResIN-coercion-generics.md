@@ -13,4 +13,6 @@ and
 as.qgraph(x, ...)
 
 as.gephi(x, ...)
+
+as.tidygraph(x, ...)
 ```
