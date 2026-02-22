@@ -15,3 +15,26 @@ as.qgraph <- function(x, ...) UseMethod("as.qgraph")
 #' @rdname ResIN-coercion-generics
 #' @export
 as.gephi <- function(x, ...) UseMethod("as.gephi")
+
+
+#' S3 generics used internally by \pkg{ResIN} for graph coercion.
+#' End users will usually call the class-specific methods (e.g.,
+#' \code{\link{as.tidygraph.ResIN}}).
+#'
+#' @name ResIN-coercion-generics
+#' @keywords internal
+NULL
+
+#' @rdname ResIN-coercion-generics
+#' @export
+as.tidygraph <- function(x, ...) UseMethod("as.tidygraph")
+
+#' @exportS3Method as.tidygraph default
+#' @noRd
+as.tidygraph.default <- function(x, ...) {
+  stop(
+    "No as.tidygraph() method for objects of class: ",
+    paste(class(x), collapse = "/"),
+    call. = FALSE
+  )
+}

@@ -30,6 +30,8 @@ Imports:
     readr,
     ggraph (>= 2.2.0),
     shadowtext (>= 0.1.4),
+    tidygraph,
+    network,
     readr
 Encoding: UTF-8
 LazyData: true

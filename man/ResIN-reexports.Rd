@@ -3,11 +3,16 @@
 \name{ResIN-reexports}
 \alias{ResIN-reexports}
 \alias{as.igraph}
-\title{Re-exported functions (resolving igraph conflict)}
+\alias{as.network}
+\title{Re-exported functions used by ResIN}
 \usage{
 as.igraph(x, ...)
+
+as.network(x, ...)
 }
 \description{
-Re-exported functions (resolving igraph conflict)
+These functions are re-exported so users can call common coercion generics
+(e.g., \code{as.igraph()} and \code{as.network()}) directly after loading
+\pkg{ResIN}, with S3 dispatch to \code{ResIN} methods.
 }
 \keyword{internal}

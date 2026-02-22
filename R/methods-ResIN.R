@@ -1,4 +1,4 @@
-#' ResIN object S3 methods
+#' Print a ResIN object
 #'
 #' @param x A ResIN object.
 #' @param ... Ignored.
@@ -657,3 +657,246 @@ as.gephi.default <- function(x, ...) {
   stop("No as.gephi() method for objects of class: ", paste(class(x), collapse = "/"),
        call. = FALSE)
 }
+
+#' @title Coerce a ResIN object to a tidygraph graph
+#'
+#' @description
+#' Converts a \code{ResIN} object to a \code{tidygraph::tbl_graph} object while
+#' preserving as much node- and edge-level information as possible from
+#' \code{x$ResIN_nodeframe} and \code{x$ResIN_edgelist}.
+#'
+#' Because \code{tidygraph} stores edge endpoints as integer node indices, the
+#' original edge endpoint labels are preserved in additional edge columns
+#' \code{from_name} and \code{to_name}.
+#'
+#' If \code{ResIN_nodeframe} or \code{ResIN_edgelist} are unavailable, the method
+#' falls back to a simpler conversion via \code{as.igraph()} followed by
+#' \code{tidygraph::as_tbl_graph()}, which may not preserve all metadata.
+#'
+#' @param x A \code{ResIN} object.
+#' @param directed Logical; should the resulting graph be treated as directed?
+#'   Defaults to \code{FALSE}.
+#' @param ... Ignored.
+#'
+#' @return A \code{tidygraph::tbl_graph} object. Node data include (when present)
+#'   all columns from \code{x$ResIN_nodeframe}; edge data include (when present)
+#'   all columns from \code{x$ResIN_edgelist}, plus \code{from_name}/\code{to_name}
+#'   preserving original endpoint labels.
+#'
+#' @examples
+#' ## Load toy data and estimate ResIN
+#' data(lik_data)
+#' res <- ResIN(lik_data, network_stats = TRUE, detect_clusters = TRUE,
+#'              plot_ggplot = FALSE)
+#'
+#' ## Convert to tidygraph
+#' tg <- as.tidygraph(res)
+#' tg
+#'
+#' @export
+#' @importFrom tidygraph tbl_graph as_tbl_graph
+as.tidygraph.ResIN <- function(x, directed = FALSE, ...) {
+
+  if (!inherits(x, "ResIN")) {
+    stop("x must be a ResIN object.", call. = FALSE)
+  }
+
+  nf <- x$ResIN_nodeframe
+  ef <- x$ResIN_edgelist
+
+  # A-route: direct conversion preserving ResIN-generated node and edge metadata
+  if (is.data.frame(nf) && is.data.frame(ef)) {
+
+    # Validate node identifiers
+    node_id_col <- if ("node_names" %in% names(nf)) {
+      "node_names"
+    } else if ("name" %in% names(nf)) {
+      "name"
+    } else {
+      NA_character_
+    }
+
+    if (is.na(node_id_col)) {
+      stop(
+        "ResIN_nodeframe must contain a node identifier column ('node_names' or 'name').",
+        call. = FALSE
+      )
+    }
+
+    node_names <- as.character(nf[[node_id_col]])
+
+    if (anyNA(node_names) || any(node_names == "")) {
+      stop("Node identifier column contains missing/empty values.", call. = FALSE)
+    }
+    if (anyDuplicated(node_names)) {
+      stop("Node identifier column contains duplicates; tidygraph conversion requires unique node names.",
+           call. = FALSE)
+    }
+
+    # Validate edge endpoints
+    if (!all(c("from", "to") %in% names(ef))) {
+      stop("ResIN_edgelist must contain 'from' and 'to' columns.", call. = FALSE)
+    }
+
+    # Copy node table and add standard tidygraph key `name` (without dropping node_names)
+    nodes <- nf
+    if (!"name" %in% names(nodes)) {
+      nodes$name <- node_names
+    } else {
+      # If `name` exists, ensure consistency / uniqueness
+      nm <- as.character(nodes$name)
+      if (anyNA(nm) || any(nm == "") || anyDuplicated(nm)) {
+        # overwrite with node_names to ensure valid key
+        nodes$name <- node_names
+      }
+    }
+
+    # Copy edge table and preserve original labels
+    edges <- ef
+    if (!"from_name" %in% names(edges)) edges$from_name <- as.character(edges$from)
+    if (!"to_name" %in% names(edges))   edges$to_name   <- as.character(edges$to)
+
+    # Convert endpoints to integer indices expected by tbl_graph()
+    idx_from <- match(as.character(edges$from), as.character(nodes$name))
+    idx_to   <- match(as.character(edges$to),   as.character(nodes$name))
+
+    if (anyNA(idx_from) || anyNA(idx_to)) {
+      missing_from <- unique(as.character(edges$from)[is.na(idx_from)])
+      missing_to   <- unique(as.character(edges$to)[is.na(idx_to)])
+      msg <- paste0(
+        "Could not match all edge endpoints to node names in ResIN_nodeframe.",
+        if (length(missing_from)) paste0(" Unmatched 'from': ", paste(utils::head(missing_from, 5), collapse = ", "),
+                                         if (length(missing_from) > 5) ", ..."),
+        if (length(missing_to)) paste0(" Unmatched 'to': ", paste(utils::head(missing_to, 5), collapse = ", "),
+                                       if (length(missing_to) > 5) ", ...")
+      )
+      stop(msg, call. = FALSE)
+    }
+
+    edges$from <- idx_from
+    edges$to   <- idx_to
+
+    # Building tidygraph object
+    tg <- tidygraph::tbl_graph(
+      nodes = nodes,
+      edges = edges,
+      directed = directed
+    )
+
+    return(tg)
+  }
+
+  # igraph-based fallback route
+  if (exists("as.igraph")) {
+    warning(
+      "ResIN_nodeframe and/or ResIN_edgelist not available; falling back to as.igraph() -> tidygraph::as_tbl_graph(). ",
+      "Some ResIN metadata may not be preserved.",
+      call. = FALSE
+    )
+    return(tidygraph::as_tbl_graph(as.igraph(x)))
+  }
+
+  stop(
+    "Could not convert ResIN object to tidygraph: missing node/edge tables and no as.igraph() fallback available.",
+    call. = FALSE
+  )
+}
+
+#' @rawNamespace export(as.network.ResIN)
+NULL
+
+#' Convert a ResIN object to a statnet/network object
+#'
+#' @description
+#' Coerces a \code{ResIN} object to a \code{network} object (from the
+#' \pkg{network} package used in the \pkg{statnet} ecosystem). The method
+#' preserves edge-level columns from \code{x$ResIN_edgelist} as edge attributes
+#' and node-level columns from \code{x$ResIN_nodeframe} as vertex attributes
+#' whenever available.
+#'
+#' @param x A \code{ResIN} object.
+#' @param directed Logical; should the resulting network be directed?
+#'   Defaults to \code{FALSE}.
+#' @param loops Logical; allow self-loops? Defaults to \code{FALSE}.
+#' @param multiple Logical; allow multiple edges? Defaults to \code{FALSE}.
+#' @param ... Additional arguments passed to \code{network::as.network()}.
+#'
+#' @return An object of class \code{network}.
+#'
+#' @examples
+#' data(lik_data)
+#' res <- ResIN(lik_data, generate_ggplot = FALSE, plot_ggplot = FALSE)
+#'
+#' # ResIN re-exports network::as.network()
+#' net <- as.network.ResIN(res) ## alternatively: as.network(res)
+#' net
+#'
+#' @export
+#' @importFrom network set.network.attribute
+as.network.ResIN <- function(x,
+                             directed = FALSE,
+                             loops = FALSE,
+                             multiple = FALSE,
+                             ...) {
+  if (!inherits(x, "ResIN")) {
+    stop("x must be a ResIN object.", call. = FALSE)
+  }
+
+  # Edge table
+  el <- x$ResIN_edgelist
+  if (!is.data.frame(el) || nrow(el) < 1L) {
+    stop("ResIN object does not contain a valid edge list in x$ResIN_edgelist.", call. = FALSE)
+  }
+
+  from_col <- if ("from" %in% names(el)) "from" else grep("from", names(el), value = TRUE)[1]
+  to_col   <- if ("to"   %in% names(el)) "to"   else grep("to",   names(el), value = TRUE)[1]
+
+  if (is.na(from_col) || is.na(to_col)) {
+    stop("Could not identify 'from'/'to' columns in x$ResIN_edgelist.", call. = FALSE)
+  }
+
+  edge_cols <- c(from_col, to_col, setdiff(names(el), c(from_col, to_col)))
+  edges_df <- el[, edge_cols, drop = FALSE]
+  edges_df[[1]] <- as.character(edges_df[[1]])
+  edges_df[[2]] <- as.character(edges_df[[2]])
+
+  # Vertex table (preserve node-level metadata if present)
+  nf <- x$ResIN_nodeframe
+  if (is.data.frame(nf) && nrow(nf) > 0L) {
+    id_col <- if ("node_names" %in% names(nf)) {
+      "node_names"
+    } else if ("from" %in% names(nf)) {
+      "from"
+    } else {
+      names(nf)[1]
+    }
+
+    vertex_cols <- c(id_col, setdiff(names(nf), id_col))
+    vertices_df <- nf[, vertex_cols, drop = FALSE]
+    vertices_df[[1]] <- as.character(vertices_df[[1]])
+  } else {
+    vertices_df <- data.frame(
+      vertex_id = unique(c(edges_df[[1]], edges_df[[2]])),
+      stringsAsFactors = FALSE
+    )
+  }
+
+  net <- network::as.network(
+    edges_df,
+    directed = directed,
+    vertices = vertices_df,
+    loops = loops,
+    multiple = multiple,
+    ...
+  )
+
+  # Optional provenance metadata
+  net <- network::set.network.attribute(net, "ResIN_source_class", "ResIN")
+
+  if (is.list(x$graph_stats)) {
+    net <- network::set.network.attribute(net, "ResIN_graph_stats", x$graph_stats)
+  }
+
+  net
+}
+

@@ -4,11 +4,14 @@
 \alias{ResIN-coercion-generics}
 \alias{as.qgraph}
 \alias{as.gephi}
+\alias{as.tidygraph}
 \title{Internal coercion generics}
 \usage{
 as.qgraph(x, ...)
 
 as.gephi(x, ...)
+
+as.tidygraph(x, ...)
 }
 \description{
 These functions are S3 generics used for object coercion in \pkg{ResIN}.
