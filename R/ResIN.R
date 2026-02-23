@@ -200,7 +200,7 @@ ResIN <- function(df, node_vars = NULL, left_anchor = NULL, cor_method = "pearso
       res_in_cor <- res_corrtest$r
     }
   }
-  }
+}
 
   ## Set all inner-variable correlations to 0
   j <- 1 ; i <- 1

@@ -900,3 +900,331 @@ as.network.ResIN <- function(x,
   net
 }
 
+
+#' Build edge/node export tables from a ResIN object
+#'
+#' @param x A ResIN object.
+#' @param weight_col Preferred edge-weight column name.
+#' @param endpoint_names Character vector of length 2 for endpoint column names.
+#' @param node_id_col Name of node identifier column in returned node table.
+#' @param integer_node_ids Logical; if TRUE, node IDs are recoded to 1..N and
+#'   edge endpoints are mapped accordingly (useful for Graphs.jl).
+#' @param include_name_cols Logical; if TRUE and integer_node_ids = TRUE, include
+#'   original endpoint names in edge table.
+#'
+#' @return A list with elements \code{edges}, \code{nodes}, and \code{id_map}.
+#' @importFrom stats setNames
+#' @noRd
+.resin_export_tables <- function(x,
+                                 weight_col = "weight",
+                                 endpoint_names = c("Source", "Target"),
+                                 node_id_col = "Id",
+                                 integer_node_ids = FALSE,
+                                 include_name_cols = TRUE) {
+  if (!inherits(x, "ResIN")) {
+    stop("x must be a ResIN object.", call. = FALSE)
+  }
+  if (!is.data.frame(x$ResIN_edgelist)) {
+    stop("ResIN object does not contain a valid edge list in x$ResIN_edgelist.", call. = FALSE)
+  }
+
+  el <- x$ResIN_edgelist
+
+  from_col <- if ("from" %in% names(el)) "from" else grep("from", names(el), value = TRUE)[1]
+  to_col   <- if ("to"   %in% names(el)) "to"   else grep("to",   names(el), value = TRUE)[1]
+  if (is.na(from_col) || is.na(to_col)) {
+    stop("Could not identify 'from'/'to' columns in ResIN_edgelist.", call. = FALSE)
+  }
+
+  # Build nodes table (preserve as much as possible)
+  if (is.data.frame(x$ResIN_nodeframe)) {
+    nf <- x$ResIN_nodeframe
+
+    name_col <- if ("node_names" %in% names(nf)) {
+      "node_names"
+    } else if ("from" %in% names(nf)) {
+      "from"
+    } else {
+      names(nf)[1]
+    }
+
+    nodes <- nf
+    if (!(node_id_col %in% names(nodes))) {
+      nodes[[node_id_col]] <- as.character(nodes[[name_col]])
+    }
+    # Put ID first
+    nodes <- nodes[, c(node_id_col, setdiff(names(nodes), node_id_col)), drop = FALSE]
+
+  } else {
+    v_names <- unique(c(as.character(el[[from_col]]), as.character(el[[to_col]])))
+    nodes <- data.frame(stringsAsFactors = FALSE)
+    nodes[[node_id_col]] <- v_names
+  }
+
+  # Build edges table (preserve all edge attrs)
+  edges <- el
+  names(edges)[names(edges) == from_col] <- endpoint_names[1]
+  names(edges)[names(edges) == to_col]   <- endpoint_names[2]
+
+  # Standardize weight column name if present
+  if (weight_col %in% names(edges) && weight_col != "weight") {
+    # leave as-is
+  } else if (!("weight" %in% names(edges)) && ncol(edges) >= 3L) {
+    # no-op: preserve original columns; do not guess/rename aggressively
+  }
+
+  id_map <- NULL
+
+  if (isTRUE(integer_node_ids)) {
+    # Prefer node_names if present, otherwise node_id_col as source labels
+    node_name_col <- if ("node_names" %in% names(nodes)) "node_names" else node_id_col
+    node_names <- as.character(nodes[[node_name_col]])
+
+    # Ensure uniqueness for Graphs.jl vertex indexing
+    if (anyDuplicated(node_names)) {
+      stop("Node identifiers are not unique; cannot build integer vertex mapping for Graphs.jl export.",
+           call. = FALSE)
+    }
+
+    id_map <- setNames(seq_along(node_names), node_names)
+
+    src_names <- as.character(edges[[endpoint_names[1]]])
+    dst_names <- as.character(edges[[endpoint_names[2]]])
+
+    if (!all(src_names %in% names(id_map)) || !all(dst_names %in% names(id_map))) {
+      stop("Some edge endpoints are missing from the node table; cannot build Graphs.jl export.",
+           call. = FALSE)
+    }
+
+    edges[[endpoint_names[1]]] <- unname(id_map[src_names])
+    edges[[endpoint_names[2]]] <- unname(id_map[dst_names])
+
+    # overwrite node_id_col with integer IDs
+    nodes[[node_id_col]] <- seq_len(nrow(nodes))
+
+    if (isTRUE(include_name_cols)) {
+      edges$source_name <- src_names
+      edges$target_name <- dst_names
+    }
+  }
+
+  list(edges = edges, nodes = nodes, id_map = id_map)
+}
+
+
+#' @rawNamespace export(as.networkx.ResIN)
+NULL
+
+#' Python NetworkX coercion helpers
+#'
+#' @description
+#' Generic for exporting objects to a lightweight NetworkX-ready representation.
+#' For \code{ResIN} objects, this creates edge and node CSV tables that can be
+#' read via \pkg{pandas} and converted to a \pkg{networkx} graph.
+#'
+#' @param x Object to coerce/export.
+#' @param ... Passed to methods.
+#' @export
+as.networkx <- function(x, ...) UseMethod("as.networkx")
+
+#' @export
+#' @noRd
+as.networkx.default <- function(x, ...) {
+  stop("No as.networkx() method for objects of class: ",
+       paste(class(x), collapse = "/"),
+       call. = FALSE)
+}
+
+#' Export a ResIN object to NetworkX (Python) tables
+#'
+#' @description
+#' Produces NetworkX-ready edge (and optionally node) tables
+#' from a \code{ResIN} object for further manipulation in Python.
+#' By default, this method writes CSV files that can be imported into Python
+#' via \pkg{pandas} and \pkg{networkx}. Node and edge metadata are preserved as
+#' table columns.
+#'
+#' @param x A \code{ResIN} object.
+#' @param file Output file name (legacy style). If \code{edges_only = TRUE},
+#'   the edge table is written to \code{file}. If \code{edges_only = FALSE},
+#'   \code{file} is treated as a prefix and \code{"_edges.csv"} /
+#'   \code{"_nodes.csv"} are appended (with any trailing \code{.csv} removed).
+#' @param edges_only Logical; if TRUE (default), only write/return edge table.
+#' @param dont_save_csv Logical; if FALSE (default), write CSV output. If TRUE,
+#'   no files are written and the resulting table(s) are returned visibly.
+#' @param weight_col Preferred edge-weight column name. Defaults to \code{"weight"}.
+#' @param ... Ignored.
+#'
+#' @return If \code{edges_only = TRUE}, an edge table \code{data.frame}.
+#'   Otherwise a list with elements \code{edges} and \code{nodes}.
+#'
+#' @examples
+#' \dontrun{
+#' data(lik_data)
+#' res <- ResIN(lik_data, generate_ggplot = FALSE, plot_ggplot = FALSE)
+#'
+#' # Return tables only (no files written)
+#' nx_tbls <- as.networkx(res, dont_save_csv = TRUE, edges_only = FALSE)
+#'
+#' # Default behavior writes CSV files
+#' # as.networkx(res, file = "ResIN_networkx.csv", edges_only = FALSE)
+#' }
+#'
+#' @export
+#' @importFrom readr write_csv
+as.networkx.ResIN <- function(x,
+                              file = "ResIN_networkx.csv",
+                              edges_only = TRUE,
+                              dont_save_csv = FALSE,
+                              weight_col = "weight",
+                              ...) {
+  tabs <- .resin_export_tables(
+    x = x,
+    weight_col = weight_col,
+    endpoint_names = c("source", "target"),
+    node_id_col = "node",
+    integer_node_ids = FALSE
+  )
+
+  out <- if (isTRUE(edges_only)) {
+    tabs$edges
+  } else {
+    list(edges = tabs$edges, nodes = tabs$nodes)
+  }
+
+  if (isTRUE(dont_save_csv)) {
+    return(out)
+  }
+
+  if (isTRUE(edges_only)) {
+    readr::write_csv(tabs$edges, file = file, na = "")
+    message("NetworkX edge table created: ", normalizePath(file, winslash = "/", mustWork = FALSE))
+    return(invisible(tabs$edges))
+  }
+
+  prefix <- sub("\\.csv$", "", file, ignore.case = TRUE)
+  edge_file <- paste0(prefix, "_edges.csv")
+  node_file <- paste0(prefix, "_nodes.csv")
+
+  readr::write_csv(tabs$edges, file = edge_file, na = "")
+  readr::write_csv(tabs$nodes, file = node_file, na = "")
+
+  message(
+    "NetworkX tables created: ",
+    normalizePath(edge_file, winslash = "/", mustWork = FALSE),
+    " and ",
+    normalizePath(node_file, winslash = "/", mustWork = FALSE)
+  )
+
+  invisible(list(edges = tabs$edges, nodes = tabs$nodes))
+}
+
+#' @rawNamespace export(as.graphsjl.ResIN)
+NULL
+
+#' Julia Graphs.jl coercion helpers
+#'
+#' @description
+#' Generic for exporting objects to a lightweight Graphs.jl-ready representation.
+#' For \code{ResIN} objects, this creates edge and node CSV tables suitable for
+#' loading with \pkg{CSV.jl}/\pkg{DataFrames.jl}, with integer vertex IDs for
+#' direct use in \pkg{Graphs.jl}.
+#'
+#' @param x Object to coerce/export.
+#' @param ... Passed to methods.
+#' @export
+as.graphsjl <- function(x, ...) UseMethod("as.graphsjl")
+
+#' @export
+#' @noRd
+as.graphsjl.default <- function(x, ...) {
+  stop("No as.graphsjl() method for objects of class: ",
+       paste(class(x), collapse = "/"),
+       call. = FALSE)
+}
+
+#' Export a ResIN object to Graphs.jl (Julia) tables
+#'
+#' @description
+#' Produces Graphs.jl-style edge (and optionally node) tables from a \code{ResIN}
+#' object. Edge endpoints are mapped to integer vertex IDs (\code{src}, \code{dst})
+#' to align with \pkg{Graphs.jl} in Julia. Node and edge metadata are preserved as table
+#' columns. The node table stores the vertex mapping and additional ResIN metadata.
+#'
+#' @param x A \code{ResIN} object.
+#' @param file Output file name (legacy style). If \code{edges_only = TRUE},
+#'   the edge table is written to \code{file}. If \code{edges_only = FALSE},
+#'   \code{file} is treated as a prefix and \code{"_edges.csv"} /
+#'   \code{"_nodes.csv"} are appended (with any trailing \code{.csv} removed).
+#' @param edges_only Logical; if TRUE (default), only write/return edge table.
+#' @param dont_save_csv Logical; if FALSE (default), write CSV output. If TRUE,
+#'   no files are written and the resulting table(s) are returned visibly.
+#' @param weight_col Preferred edge-weight column name. Defaults to \code{"weight"}.
+#' @param ... Ignored.
+#'
+#' @return If \code{edges_only = TRUE}, an edge table \code{data.frame}.
+#'   Otherwise a list with elements \code{edges} and \code{nodes}. The node table
+#'   includes integer \code{vertex_id} values and preserved node metadata.
+#'
+#' @examples
+#' \dontrun{
+#' data(lik_data)
+#' res <- ResIN(lik_data, generate_ggplot = FALSE, plot_ggplot = FALSE)
+#'
+#' # Return tables only (no files written)
+#' jl_tbls <- as.graphsjl(res, dont_save_csv = TRUE, edges_only = FALSE)
+#'
+#' # Default behavior writes CSV files
+#' # as.graphsjl(res, file = "ResIN_graphsjl.csv", edges_only = FALSE)
+#' }
+#'
+#' @export
+#' @importFrom readr write_csv
+as.graphsjl.ResIN <- function(x,
+                              file = "ResIN_graphsjl.csv",
+                              edges_only = TRUE,
+                              dont_save_csv = FALSE,
+                              weight_col = "weight",
+                              ...) {
+  tabs <- .resin_export_tables(
+    x = x,
+    weight_col = weight_col,
+    endpoint_names = c("src", "dst"),
+    node_id_col = "vertex_id",
+    integer_node_ids = TRUE,
+    include_name_cols = TRUE
+  )
+
+  out <- if (isTRUE(edges_only)) {
+    tabs$edges
+  } else {
+    list(edges = tabs$edges, nodes = tabs$nodes)
+  }
+
+  if (isTRUE(dont_save_csv)) {
+    return(out)
+  }
+
+  if (isTRUE(edges_only)) {
+    readr::write_csv(tabs$edges, file = file, na = "")
+    message("Graphs.jl edge table created: ", normalizePath(file, winslash = "/", mustWork = FALSE))
+    return(invisible(tabs$edges))
+  }
+
+  prefix <- sub("\\.csv$", "", file, ignore.case = TRUE)
+  edge_file <- paste0(prefix, "_edges.csv")
+  node_file <- paste0(prefix, "_nodes.csv")
+
+  readr::write_csv(tabs$edges, file = edge_file, na = "")
+  readr::write_csv(tabs$nodes, file = node_file, na = "")
+
+  message(
+    "Graphs.jl tables created: ",
+    normalizePath(edge_file, winslash = "/", mustWork = FALSE),
+    " and ",
+    normalizePath(node_file, winslash = "/", mustWork = FALSE)
+  )
+
+  invisible(list(edges = tabs$edges, nodes = tabs$nodes))
+}
+
