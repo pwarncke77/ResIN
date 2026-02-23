@@ -77,11 +77,23 @@ License: GPL-3
 - [`as.gephi(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/as.gephi.ResIN.md)
   : Coerce a ResIN object to Gephi CSV table(s)
 
+- [`as.graphsjl()`](https://pwarncke77.github.io/ResIN/reference/as.graphsjl.md)
+  : Julia Graphs.jl coercion helpers
+
+- [`as.graphsjl(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/as.graphsjl.ResIN.md)
+  : Export a ResIN object to Graphs.jl (Julia) tables
+
 - [`as.igraph(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/as.igraph.ResIN.md)
   : Coerce a ResIN object to an igraph graph
 
 - [`as.network(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/as.network.ResIN.md)
   : Convert a ResIN object to a statnet/network object
+
+- [`as.networkx()`](https://pwarncke77.github.io/ResIN/reference/as.networkx.md)
+  : Python NetworkX coercion helpers
+
+- [`as.networkx(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/as.networkx.ResIN.md)
+  : Export a ResIN object to NetworkX (Python) tables
 
 - [`as.qgraph(`*`<ResIN>`*`)`](https://pwarncke77.github.io/ResIN/reference/as.qgraph.ResIN.md)
   : Coerce a ResIN object to a qgraph object
