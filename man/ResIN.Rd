@@ -10,8 +10,7 @@ ResIN(
   left_anchor = NULL,
   cor_method = "pearson",
   weights = NULL,
-  method_wCorr = "Pearson",
-  poly_ncor = 1,
+  missing_cor = "pairwise",
   neg_offset = 0,
   ResIN_scores = TRUE,
   remove_negative = TRUE,
@@ -47,13 +46,11 @@ ResIN(
 
 \item{left_anchor}{An optional character scalar indicating a particular response node which determines the spatial orientation of the ResIN latent space. If this response node does not appear on the left-hand side, the x-plane will be inverted. This ensures consistent interpretation of the latent space across multiple iterations (e.g. in bootstrapping analysis). Defaults to NULL (no adjustment to orientation is taken.)}
 
-\item{cor_method}{Which correlation method should be used? Defaults to "auto" which applies the \code{cor_auto} function from the \code{qgraph} package. Possible arguments are \code{"auto"}, \code{"pearson"}, \code{"kendall"}, and \code{"spearman"}.}
+\item{cor_method}{Which correlation method should be used? Current implementation supports "pearson" (default) and "polychoric". Please note that polychoric correlations are currently unsupported for weighted analysis.}
 
 \item{weights}{An optional continuous vector of survey weights. Should have the same length as number of observations in df. If weights are provided, weighted correlation matrix will be estimated with the \code{weightedCorr} function from the \code{wCorr} package.}
 
-\item{method_wCorr}{If weights are supplied, which method for weighted correlations should be used? Defaults to \code{"Pearson"}. See \code{wCorr::weightedCorr} for all correlation options.}
-
-\item{poly_ncor}{How many CPU cores should be used to estimate polychoric correlation matrix? Only used if \code{cor_method = "polychoric"}.}
+\item{missing_cor}{Character scalar controlling missing-data handling for correlation estimation. Either \code{"pairwise"} (default) or  \code{"listwise"}.}
 
 \item{neg_offset}{Should negative correlations be offset to avoid small correlation pairs disappearing? Defaults to \code{0}. Any positive number between 0 and 1 may be supplied instead.}
 
@@ -65,7 +62,7 @@ ResIN(
 
 \item{EBICglasso_arglist}{An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE.}
 
-\item{remove_nonsignificant}{Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. Note that this option is incompatible with EBICglasso and weighted correlations.}
+\item{remove_nonsignificant}{Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. For weighted Pearson correlations, p-values are approximated using a weighted effective sample size. For currently unsupported polychoric configurations, ResIN falls back to Pearson and issues a warning.#' @param EBICglasso Logical; should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.}
 
 \item{sign_threshold}{At what p-value threshold should non-significant edges be removed? Defaults to 0.05.}
 
@@ -119,6 +116,6 @@ Performs Response Item-Network (ResIN) analysis in one go. Users minimally need 
 data(lik_data)
 
 # Apply the ResIN function to toy Likert data:
-ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, detect_clusters = TRUE)
+ResIN_obj <- ResIN(lik_data, network_stats = TRUE, remove_nonsignificant = TRUE)
 
 }

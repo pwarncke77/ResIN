@@ -21,7 +21,7 @@
 #' data(lik_data)
 #'
 #' # Apply the ResIN function to toy Likert data:
-#' ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE,
+#' ResIN_obj <- ResIN(lik_data, network_stats = TRUE,
 #'                       generate_ggplot = FALSE, plot_ggplot = FALSE)
 #'
 #'\donttest{
