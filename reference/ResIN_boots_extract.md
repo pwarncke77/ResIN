@@ -50,7 +50,7 @@ statistics.
 data(lik_data)
 
 # Apply the ResIN function to toy Likert data:
-ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE,
+ResIN_obj <- ResIN(lik_data, network_stats = TRUE,
                       generate_ggplot = FALSE, plot_ggplot = FALSE)
 
 # \donttest{
@@ -67,7 +67,7 @@ ResIN_boots_extract(executed_boots, what = "global_clustering", summarize_result
 #>                what n_total n_ok n_failed       min    q2.5        q5       q25
 #> 1 global_clustering     100  100        0 0.2548646 0.26362 0.2660508 0.2762006
 #>      median      mean       q75       q95     q97.5       max          sd
-#> 1 0.2812725 0.2814186 0.2869986 0.2949319 0.2977245 0.3029203 0.009052593
+#> 1 0.2812725 0.2813905 0.2869986 0.2948369 0.2977245 0.3029203 0.009054742
 # }
 
 ```

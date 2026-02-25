@@ -88,7 +88,7 @@ returns a one-row data.frame of summary statistics.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">lik_data</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Apply the ResIN function to toy Likert data:</span></span></span>
-<span class="r-in"><span><span class="va">ResIN_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">lik_data</span>, cor_method <span class="op">=</span> <span class="st">"spearman"</span>, network_stats <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span><span class="va">ResIN_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="ResIN.html">ResIN</a></span><span class="op">(</span><span class="va">lik_data</span>, network_stats <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                      generate_ggplot <span class="op">=</span> <span class="cn">FALSE</span>, plot_ggplot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
@@ -105,7 +105,7 @@ returns a one-row data.frame of summary statistics.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                what n_total n_ok n_failed       min    q2.5        q5       q25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 global_clustering     100  100        0 0.2548646 0.26362 0.2660508 0.2762006</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      median      mean       q75       q95     q97.5       max          sd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2812725 0.2814186 0.2869986 0.2949319 0.2977245 0.3029203 0.009052593</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2812725 0.2813905 0.2869986 0.2948369 0.2977245 0.3029203 0.009054742</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>

@@ -14,8 +14,7 @@ ResIN(
   left_anchor = NULL,
   cor_method = "pearson",
   weights = NULL,
-  method_wCorr = "Pearson",
-  poly_ncor = 1,
+  missing_cor = "pairwise",
   neg_offset = 0,
   ResIN_scores = TRUE,
   remove_negative = TRUE,
@@ -68,9 +67,10 @@ ResIN(
 
 - cor_method:
 
-  Which correlation method should be used? Defaults to "auto" which
-  applies the `cor_auto` function from the `qgraph` package. Possible
-  arguments are `"auto"`, `"pearson"`, `"kendall"`, and `"spearman"`.
+  Which correlation method should be used? Current implementation
+  supports "pearson" (default) and "polychoric". Please note that
+  polychoric correlations are currently unsupported for weighted
+  analysis.
 
 - weights:
 
@@ -79,17 +79,10 @@ ResIN(
   weighted correlation matrix will be estimated with the `weightedCorr`
   function from the `wCorr` package.
 
-- method_wCorr:
+- missing_cor:
 
-  If weights are supplied, which method for weighted correlations should
-  be used? Defaults to `"Pearson"`. See
-  [`wCorr::weightedCorr`](https://american-institutes-for-research.github.io/wCorr/reference/weightedCorr.html)
-  for all correlation options.
-
-- poly_ncor:
-
-  How many CPU cores should be used to estimate polychoric correlation
-  matrix? Only used if `cor_method = "polychoric"`.
+  Character scalar controlling missing-data handling for correlation
+  estimation. Either `"pairwise"` (default) or `"listwise"`.
 
 - neg_offset:
 
@@ -129,8 +122,14 @@ ResIN(
 - remove_nonsignificant:
 
   Logical; should non-significant edges be removed from the ResIN
-  network? Defaults to FALSE. Note that this option is incompatible with
-  EBICglasso and weighted correlations.
+  network? Defaults to FALSE. For weighted Pearson correlations,
+  p-values are approximated using a weighted effective sample size. For
+  currently unsupported polychoric configurations, ResIN falls back to
+  Pearson and issues a warning.#' @param EBICglasso Logical; should a
+  sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE.
+  If set to TRUE, `EBICglasso` function from the `qgraph` packages
+  performs regularization on (nearest positive-semi-definite) ResIN
+  correlation matrix.
 
 - sign_threshold:
 
@@ -324,6 +323,6 @@ object.”
 data(lik_data)
 
 # Apply the ResIN function to toy Likert data:
-ResIN_obj <- ResIN(lik_data, cor_method = "spearman", network_stats = TRUE, detect_clusters = TRUE)
+ResIN_obj <- ResIN(lik_data, network_stats = TRUE, remove_nonsignificant = TRUE)
 
 ```

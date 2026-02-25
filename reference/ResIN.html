@@ -49,8 +49,7 @@
 <span>  left_anchor <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cor_method <span class="op">=</span> <span class="st">"pearson"</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  method_wCorr <span class="op">=</span> <span class="st">"Pearson"</span>,</span>
-<span>  poly_ncor <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  missing_cor <span class="op">=</span> <span class="st">"pairwise"</span>,</span>
 <span>  neg_offset <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  ResIN_scores <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  remove_negative <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -97,19 +96,15 @@
 
 
 <dt id="arg-cor-method">cor_method<a class="anchor" aria-label="anchor" href="#arg-cor-method"></a></dt>
-<dd><p>Which correlation method should be used? Defaults to "auto" which applies the <code>cor_auto</code> function from the <code>qgraph</code> package. Possible arguments are <code>"auto"</code>, <code>"pearson"</code>, <code>"kendall"</code>, and <code>"spearman"</code>.</p></dd>
+<dd><p>Which correlation method should be used? Current implementation supports "pearson" (default) and "polychoric". Please note that polychoric correlations are currently unsupported for weighted analysis.</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
 <dd><p>An optional continuous vector of survey weights. Should have the same length as number of observations in df. If weights are provided, weighted correlation matrix will be estimated with the <code>weightedCorr</code> function from the <code>wCorr</code> package.</p></dd>
 
 
-<dt id="arg-method-wcorr">method_wCorr<a class="anchor" aria-label="anchor" href="#arg-method-wcorr"></a></dt>
-<dd><p>If weights are supplied, which method for weighted correlations should be used? Defaults to <code>"Pearson"</code>. See <code><a href="https://american-institutes-for-research.github.io/wCorr/reference/weightedCorr.html" class="external-link">wCorr::weightedCorr</a></code> for all correlation options.</p></dd>
-
-
-<dt id="arg-poly-ncor">poly_ncor<a class="anchor" aria-label="anchor" href="#arg-poly-ncor"></a></dt>
-<dd><p>How many CPU cores should be used to estimate polychoric correlation matrix? Only used if <code>cor_method = "polychoric"</code>.</p></dd>
+<dt id="arg-missing-cor">missing_cor<a class="anchor" aria-label="anchor" href="#arg-missing-cor"></a></dt>
+<dd><p>Character scalar controlling missing-data handling for correlation estimation. Either <code>"pairwise"</code> (default) or  <code>"listwise"</code>.</p></dd>
 
 
 <dt id="arg-neg-offset">neg_offset<a class="anchor" aria-label="anchor" href="#arg-neg-offset"></a></dt>
@@ -133,7 +128,7 @@
 
 
 <dt id="arg-remove-nonsignificant">remove_nonsignificant<a class="anchor" aria-label="anchor" href="#arg-remove-nonsignificant"></a></dt>
-<dd><p>Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. Note that this option is incompatible with EBICglasso and weighted correlations.</p></dd>
+<dd><p>Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. For weighted Pearson correlations, p-values are approximated using a weighted effective sample size. For currently unsupported polychoric configurations, ResIN falls back to Pearson and issues a warning.#' @param EBICglasso Logical; should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, <code>EBICglasso</code> function from the <code>qgraph</code> packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.</p></dd>
 
 
 <dt id="arg-sign-threshold">sign_threshold<a class="anchor" aria-label="anchor" href="#arg-sign-threshold"></a></dt>
@@ -228,7 +223,7 @@
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">lik_data</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Apply the ResIN function to toy Likert data:</span></span></span>
-<span class="r-in"><span><span class="va">ResIN_obj</span> <span class="op">&lt;-</span> <span class="fu">ResIN</span><span class="op">(</span><span class="va">lik_data</span>, cor_method <span class="op">=</span> <span class="st">"spearman"</span>, network_stats <span class="op">=</span> <span class="cn">TRUE</span>, detect_clusters <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ResIN_obj</span> <span class="op">&lt;-</span> <span class="fu">ResIN</span><span class="op">(</span><span class="va">lik_data</span>, network_stats <span class="op">=</span> <span class="cn">TRUE</span>, remove_nonsignificant <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ResIN-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
