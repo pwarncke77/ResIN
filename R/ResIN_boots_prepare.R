@@ -108,4 +108,3 @@ ResIN_boots_prepare <- function(ResIN_object,
   class(out) <- c("ResIN_boots_prepped", "list")
   out
 }
-

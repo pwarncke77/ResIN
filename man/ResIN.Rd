@@ -11,12 +11,10 @@ ResIN(
   cor_method = "pearson",
   weights = NULL,
   missing_cor = "pairwise",
-  neg_offset = 0,
+  offset = 0,
   ResIN_scores = TRUE,
-  remove_negative = TRUE,
-  EBICglasso = FALSE,
-  EBICglasso_arglist = NULL,
   remove_nonsignificant = FALSE,
+  remove_nonsignificant_method = "default",
   sign_threshold = 0.05,
   node_covars = NULL,
   node_costats = NULL,
@@ -36,6 +34,9 @@ ResIN(
   plot_title = NULL,
   bipartite = FALSE,
   save_input = TRUE,
+  remove_negative = TRUE,
+  EBICglasso = FALSE,
+  EBICglasso_arglist = NULL,
   seed = NULL
 )
 }
@@ -48,23 +49,19 @@ ResIN(
 
 \item{cor_method}{Which correlation method should be used? Current implementation supports "pearson" (default) and "polychoric". Please note that polychoric correlations are currently unsupported for weighted analysis.}
 
-\item{weights}{An optional continuous vector of survey weights. Should have the same length as number of observations in df. If weights are provided, weighted correlation matrix will be estimated with the \code{weightedCorr} function from the \code{wCorr} package.}
+\item{weights}{Optional survey weights. Can be either \code{NULL} (default), a numeric vector of length \code{nrow(df)}, or a character scalar naming a weights column in \code{df}. If a column name is supplied and \code{node_vars = NULL}, the weights column is automatically excluded from the response-node variables used for ResIN estimation.}
 
 \item{missing_cor}{Character scalar controlling missing-data handling for correlation estimation. Either \code{"pairwise"} (default) or  \code{"listwise"}.}
 
-\item{neg_offset}{Should negative correlations be offset to avoid small correlation pairs disappearing? Defaults to \code{0}. Any positive number between 0 and 1 may be supplied instead.}
+\item{offset}{Optional off-set to correlation edges to manually adjust for over- or underfitting the network. Defaults to \code{0}. Supplying a value between -1 and 0 globally reduces edge values by that amount, leading to the elimination of all positive  edges below that value, resulting in a more sparse network. (However, we strongly recommend setting remove_nonsignificant=TRUE instead for a more principled approach to ensuring optimal network sparsity as global thresholds have heuristic value at best). Alternatively, a value between 0 and 1 enforces a positive offset, resulting in more dense (but potentially overfitted) networks.}
 
 \item{ResIN_scores}{Logical; should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Current package implementation also provides empirical Bayesian scores via James-Stein shrinkage (\code{eb_x}) and heuristic shrinkage (\code{heur_x}) scores. Please refer to the package [vignette]https://pwarncke77.github.io/ResIN/articles/ResIN-VIGNETTE.html#spatial-interpretation-and-individual-latent-space-scores for further details.}
 
-\item{remove_negative}{Logical; should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.}
+\item{remove_nonsignificant}{Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. For weighted Pearson correlations, p-values are approximated using a weighted effective sample size. For currently unsupported polychoric configurations, ResIN falls back to Pearson and issues a warning.}
 
-\item{EBICglasso}{Logical; should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.}
+\item{remove_nonsignificant_method}{Character scalar specifying how p-values are thresholded when \code{remove_nonsignificant = TRUE}. Defaults to \code{"default"}, which prunes edges with raw p-values greater than \code{sign_threshold} (i.e., retains edges with \code{p <= sign_threshold}). If set to \code{"fdr"}, p-values are adjusted using the Benjamini--Hochberg procedure and edges are retained only if the adjusted p-value is less than or equal to \code{sign_threshold}, interpreted as the target FDR level \eqn{q}. This provides multiplicity control across all tested edges and is typically more principled than using unadjusted p-values, but may be slightly slower. See \code{\link[stats]{p.adjust}} for details.}
 
-\item{EBICglasso_arglist}{An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE.}
-
-\item{remove_nonsignificant}{Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. For weighted Pearson correlations, p-values are approximated using a weighted effective sample size. For currently unsupported polychoric configurations, ResIN falls back to Pearson and issues a warning.#' @param EBICglasso Logical; should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.}
-
-\item{sign_threshold}{At what p-value threshold should non-significant edges be removed? Defaults to 0.05.}
+\item{sign_threshold}{Numeric scalar controlling the pruning threshold used when \code{remove_nonsignificant = TRUE}. For \code{remove_nonsignificant_method = "default"}, this is the raw p-value cutoff (e.g., \code{0.05}). For \code{remove_nonsignificant_method = "fdr"}, this is the target false discovery rate level \eqn{q} (e.g., \code{0.05}), applied to Benjamini--Hochberg adjusted p-values.}
 
 \item{node_covars}{An optional character string selecting quantitative covariates that can be used to enhance ResIN analysis. Typically, these covariates provide grouped summary statistics for item response nodes. (E.g.: What is the average age or income level of respondents who selected a particular item response?) Variable names specified here should match existing columns in \code{df}.}
 
@@ -101,6 +98,12 @@ ResIN(
 \item{bipartite}{Logical; should a bipartite graph be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) bipartite graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} are generated if set to TRUE.}
 
 \item{save_input}{Logical; should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.}
+
+\item{remove_negative}{Logical; should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.}
+
+\item{EBICglasso}{Retired as of ResIN 2.3.0 and ignored.}
+
+\item{EBICglasso_arglist}{Retired as of ResIN 2.3.0 and ignored.}
 
 \item{seed}{Random seed for force-directed algorithm. Defaults to NULL (no seed is set.) If scalar integer is supplied, that seed will be set prior to analysis.}
 }

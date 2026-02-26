@@ -7,11 +7,12 @@
 #' @param left_anchor An optional character scalar indicating a particular response node which determines the spatial orientation of the ResIN latent space. If this response node does not appear on the left-hand side, the x-plane will be inverted. This ensures consistent interpretation of the latent space across multiple iterations (e.g. in bootstrapping analysis). Defaults to NULL (no adjustment to orientation is taken.)
 #' @param cor_method Which correlation method should be used? Current implementation supports "pearson" (default) and "polychoric". Please note that polychoric correlations are currently unsupported for weighted analysis.
 #' @param missing_cor Character scalar controlling missing-data handling for correlation estimation. Either \code{"pairwise"} (default) or  \code{"listwise"}.
-#' @param weights An optional continuous vector of survey weights. Should have the same length as number of observations in df. If weights are provided, weighted correlation matrix will be estimated with the \code{weightedCorr} function from the \code{wCorr} package.
-#' @param neg_offset Should negative correlations be offset to avoid small correlation pairs disappearing? Defaults to \code{0}. Any positive number between 0 and 1 may be supplied instead.
+#' @param weights Optional survey weights. Can be either \code{NULL} (default), a numeric vector of length \code{nrow(df)}, or a character scalar naming a weights column in \code{df}. If a column name is supplied and \code{node_vars = NULL}, the weights column is automatically excluded from the response-node variables used for ResIN estimation.
+#' @param offset Optional off-set to correlation edges to manually adjust for over- or underfitting the network. Defaults to \code{0}. Supplying a value between -1 and 0 globally reduces edge values by that amount, leading to the elimination of all positive  edges below that value, resulting in a more sparse network. (However, we strongly recommend setting remove_nonsignificant=TRUE instead for a more principled approach to ensuring optimal network sparsity as global thresholds have heuristic value at best). Alternatively, a value between 0 and 1 enforces a positive offset, resulting in more dense (but potentially overfitted) networks.
 #' @param ResIN_scores Logical; should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Current package implementation also provides empirical Bayesian scores via James-Stein shrinkage (\code{eb_x}) and heuristic shrinkage (\code{heur_x}) scores. Please refer to the package [vignette]https://pwarncke77.github.io/ResIN/articles/ResIN-VIGNETTE.html#spatial-interpretation-and-individual-latent-space-scores for further details.
-#' @param remove_nonsignificant Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. For weighted Pearson correlations, p-values are approximated using a weighted effective sample size. For currently unsupported polychoric configurations, ResIN falls back to Pearson and issues a warning.#' @param EBICglasso Logical; should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.
-#' @param sign_threshold At what p-value threshold should non-significant edges be removed? Defaults to 0.05.
+#' @param remove_nonsignificant Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. For weighted Pearson correlations, p-values are approximated using a weighted effective sample size. For currently unsupported polychoric configurations, ResIN falls back to Pearson and issues a warning.
+#' @param remove_nonsignificant_method Character scalar specifying how p-values are thresholded when \code{remove_nonsignificant = TRUE}. Defaults to \code{"default"}, which prunes edges with raw p-values greater than \code{sign_threshold} (i.e., retains edges with \code{p <= sign_threshold}). If set to \code{"fdr"}, p-values are adjusted using the Benjamini--Hochberg procedure and edges are retained only if the adjusted p-value is less than or equal to \code{sign_threshold}, interpreted as the target FDR level \eqn{q}. This provides multiplicity control across all tested edges and is typically more principled than using unadjusted p-values, but may be slightly slower. See \code{\link[stats]{p.adjust}} for details.
+#' @param sign_threshold Numeric scalar controlling the pruning threshold used when \code{remove_nonsignificant = TRUE}. For \code{remove_nonsignificant_method = "default"}, this is the raw p-value cutoff (e.g., \code{0.05}). For \code{remove_nonsignificant_method = "fdr"}, this is the target false discovery rate level \eqn{q} (e.g., \code{0.05}), applied to Benjamini--Hochberg adjusted p-values.
 #' @param node_covars An optional character string selecting quantitative covariates that can be used to enhance ResIN analysis. Typically, these covariates provide grouped summary statistics for item response nodes. (E.g.: What is the average age or income level of respondents who selected a particular item response?) Variable names specified here should match existing columns in \code{df}.
 #' @param node_costats If any \code{node_covars} are selected, what summary statistics should be estimated from them? Argument should be a character vector and call a base-R function. (E.g. \code{"mean"}, \code{"median"}, \code{"sd"}). Each element specified in \code{node_costats} is applied to each element in \code{node_covars} and the out-put is stored as a node-level summary statistic in the \code{ResIN_nodeframe}. The extra columns in \code{ResIN_nodeframe} are labeled according to the following template: "covariate name"_"statistic". So for the respondents mean age, the corresponding column in \code{ResIN_nodeframe} would be labeled as "age_mean".
 #' @param network_stats Should common node- and graph level network statistics be extracted? Calls \code{qgraph::centrality_auto} and \code{DirectedClustering::ClustF} to the ResIN graph object to extract node-level betweenness, closeness, strength centrality, as well as the mean and standard deviation of these scores at the network level. Also estimates network expected influence, average path length, and global clustering coefficients. Defaults to TRUE. Set to FALSE if estimation takes a long time.
@@ -29,11 +30,11 @@
 #' @param response_levels An optional character vector specifying the correct order of global response levels. Only useful if all node-items follow the same convention (e.g. ranging from "strong disagreement" to "strong agreement"). The supplied vector should have the same length as the total number of response options and supply these (matching exactly) in the correct order. E.g. c("Strongly Agree", "Somewhat Agree", "Neutral", "Somewhat Disagree", "Strongly Disagree"). Defaults to NULL.
 #' @param plot_title Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".
 #' @param bipartite Logical; should a bipartite graph be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) bipartite graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} are generated if set to TRUE.
-#' @param EBICglasso Logical; should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, \code{EBICglasso} function from the \code{qgraph} packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.
-#' @param EBICglasso_arglist An argument list feeding additional instructions to the \code{EBICglasso} function if \code{EBICglasso} is set to TRUE.
 #' @param remove_negative Logical; should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.
 #' @param save_input Logical; should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.
 #' @param seed Random seed for force-directed algorithm. Defaults to NULL (no seed is set.) If scalar integer is supplied, that seed will be set prior to analysis.
+#' @param EBICglasso Retired as of ResIN 2.3.0 and ignored.
+#' @param EBICglasso_arglist Retired as of ResIN 2.3.0 and ignored.
 #'
 #' @return An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}), and centralization (\code{graph_centralization}). Further, a \code{bipartite_output} list which includes an \code{igraph} class bipartite graph (\code{bipartite_igraph}), a data frame, \code{coordinate_df}, with spatial coordinates of respondents, and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} is optionally generated. Lastly, the output includes a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}). For reproducibility, (\code{aux_objects$meta} stores a numeric dataframe identifier (\code{df_id}, the random seed, call, and the (\code{ResIN} package version used to create the object.”
 #'
@@ -51,10 +52,9 @@
 #' @importFrom tidyr "pivot_longer"
 #' @importFrom stats "complete.cases" "cor" "sd" "prcomp" "cov" "princomp" "pt"
 #' @importFrom fastDummies "dummy_cols"
-#' @importFrom qgraph "qgraph" "cor_auto" "centrality_auto" "EBICglasso" "qgraph.layout.fruchtermanreingold"
+#' @importFrom qgraph "qgraph" "centrality_auto" "qgraph.layout.fruchtermanreingold"
 #' @importFrom igraph "graph_from_adjacency_matrix" "graph_from_data_frame" "V" "vcount" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership"
 #' @importFrom wCorr "weightedCorr"
-#' @importFrom Matrix "nearPD"
 #' @importFrom DirectedClustering "ClustF"
 #' @importFrom psych "corr.test" "tetrachoric"
 #' @importFrom shadowtext "geom_shadowtext"
@@ -68,12 +68,10 @@ ResIN <- ResIN <- function(
     cor_method = "pearson",
     weights = NULL,
     missing_cor = "pairwise",
-    neg_offset = 0,
+    offset = 0,
     ResIN_scores = TRUE,
-    remove_negative = TRUE,
-    EBICglasso = FALSE,
-    EBICglasso_arglist = NULL,
     remove_nonsignificant = FALSE,
+    remove_nonsignificant_method = "default",
     sign_threshold = 0.05,
     node_covars = NULL,
     node_costats = NULL,
@@ -93,6 +91,9 @@ ResIN <- ResIN <- function(
     plot_title = NULL,
     bipartite = FALSE,
     save_input = TRUE,
+    remove_negative = TRUE,
+    EBICglasso = FALSE,
+    EBICglasso_arglist = NULL,
     seed = NULL
 ) {
 
@@ -106,7 +107,7 @@ ResIN <- ResIN <- function(
       cor_method = cor_method,
       weights = weights,
       missing_cor = missing_cor,
-      neg_offset = neg_offset,
+      offset = offset,
       ResIN_scores = ResIN_scores,
       remove_negative = remove_negative,
       EBICglasso = EBICglasso,
@@ -153,6 +154,7 @@ ResIN <- ResIN <- function(
 
   created <- Sys.time()
 
+  ## Retired and removed arguments: EBICglasso
   if (!is.null(seed)) {
     old_seed <- if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) get(".Random.seed", envir = .GlobalEnv) else NULL
     on.exit({
@@ -161,7 +163,84 @@ ResIN <- ResIN <- function(
     set.seed(seed)
   }
 
+  if (!missing(EBICglasso) && isTRUE(EBICglasso)) {
+    .Deprecated(
+      msg = paste0(
+        "EBICglasso is retired as of ResIN 2.3.0 and has no effect."
+      )
+    )
+  }
+
+  if (!missing(EBICglasso_arglist) && !is.null(EBICglasso_arglist)) {
+    .Deprecated(
+      msg = "EBICglasso_arglist is retired as of ResIN 2.3.0 and has no effect."
+    )
+  }
+
+  invisible(EBICglasso)
+  invisible(EBICglasso_arglist)
+
   # Actual begin of ResIN algorithm:
+  weights_name <- NULL
+  weights_from_df <- FALSE
+
+  if (!is.null(weights)) {
+
+    # Case 1: weights supplied as column name in df
+    if (is.character(weights)) {
+      if (length(weights) != 1L || is.na(weights) || !nzchar(weights)) {
+        stop("If supplied as character, weights must be a single non-empty column name in df.",
+             call. = FALSE)
+      }
+
+      weights_name <- weights
+
+      if (!weights_name %in% colnames(df)) {
+        stop("weights='", weights_name, "' was not found in colnames(df).", call. = FALSE)
+      }
+
+      weights <- df[[weights_name]]
+      weights_from_df <- TRUE
+
+      # If node_vars is not explicitly supplied, automatically exclude the weights column
+      if (is.null(node_vars)) {
+        node_vars <- setdiff(colnames(df), weights_name)
+      } else {
+        # If user explicitly included the weights column among node_vars, remove it
+        if (weights_name %in% node_vars) {
+          node_vars <- setdiff(node_vars, weights_name)
+          warning(
+            "The weights column ('", weights_name,
+            "') was removed from node_vars so it is not treated as a ResIN node.",
+            call. = FALSE
+          )
+        }
+      }
+    }
+
+    # Case 2: weights supplied as external numeric vector
+    if (!is.character(weights)) {
+      if (!is.numeric(weights) || length(weights) != nrow(df)) {
+        stop("weights must be NULL, a numeric vector of length nrow(df), or a single character naming a weights column in df.",
+             call. = FALSE)
+      }
+    }
+
+    # Common validation (applies after resolving character -> numeric vector)
+    if (!is.numeric(weights)) {
+      stop("Resolved weights must be numeric.", call. = FALSE)
+    }
+    if (any(!is.finite(weights))) {
+      stop("weights must contain only finite values.", call. = FALSE)
+    }
+    if (any(weights < 0)) {
+      stop("weights must be non-negative.", call. = FALSE)
+    }
+    if (all(weights == 0)) {
+      stop("weights cannot be all zero.", call. = FALSE)
+    }
+  }
+
   ## Select response node_vars
   if(is.null(node_vars)) {
     df_nodes <- df
@@ -193,21 +272,21 @@ ResIN <- ResIN <- function(
     stop("missing_cor must be either 'pairwise' or 'listwise'.", call. = FALSE)
   }
 
-  # validate / normalize weights
-  if (!is.null(weights)) {
-    if (!is.numeric(weights) || length(weights) != nrow(df)) {
-      stop("weights must be NULL or a numeric vector of length nrow(df).", call. = FALSE)
-    }
-    if (any(!is.finite(weights))) {
-      stop("weights must contain only finite values.", call. = FALSE)
-    }
-    if (any(weights < 0)) {
-      stop("weights must be non-negative.", call. = FALSE)
-    }
-    if (all(weights == 0)) {
-      stop("weights cannot be all zero.", call. = FALSE)
-    }
-  }
+  ## validate / normalize weights # (retired)
+  # if (!is.null(weights)) {
+  #   if (!is.numeric(weights) || length(weights) != nrow(df)) {
+  #     stop("weights must be NULL or a numeric vector of length nrow(df).", call. = FALSE)
+  #   }
+  #   if (any(!is.finite(weights))) {
+  #     stop("weights must contain only finite values.", call. = FALSE)
+  #   }
+  #   if (any(weights < 0)) {
+  #     stop("weights must be non-negative.", call. = FALSE)
+  #   }
+  #   if (all(weights == 0)) {
+  #     stop("weights cannot be all zero.", call. = FALSE)
+  #   }
+  # }
 
   # declare item id per dummy column
   item_id_per_dummycol <- rep(NA_integer_, ncol(df_dummies))
@@ -358,16 +437,34 @@ ResIN <- ResIN <- function(
     list(r = R, p = P, n_pair = N_pair, n_eff = N_eff)
   }
 
-  # helper: apply significance threshold
-  apply_p_threshold <- function(R, P, alpha) {
+  # Helper: apply significance threshold pruning
+  apply_p_threshold <- function(R, P, alpha, method = remove_nonsignificant_method) {
     if (is.null(P)) return(R)
-    keep <- is.finite(P) & (P <= alpha)
+
+    method <- match.arg(method)
+
+    # work on off-diagonal p-values only
+    off <- upper.tri(P) | lower.tri(P)
+    pvec <- P[off]
+
+    # treat NA/non-finite p-values as "not significant"
+    bad <- !is.finite(pvec)
+    pvec2 <- pvec
+    pvec2[bad] <- 1
+
+    if (method == "fdr") {
+      pvec2 <- stats::p.adjust(pvec2, method = "BH")
+    }
+
+    keep_vec <- pvec2 <= alpha
+
+    # Build keep matrix
+    keep <- matrix(FALSE, nrow(R), ncol(R))
+    keep[off] <- keep_vec
     diag(keep) <- TRUE
 
-    # non-finite p-values are treated as not significant for off-diagonals
     R2 <- R
-    offdiag <- row(R2) != col(R2)
-    R2[offdiag & !keep] <- 0
+    R2[!keep] <- 0
     R2
   }
 
@@ -539,7 +636,8 @@ ResIN <- ResIN <- function(
 
       res_in_cor <- ct$r
       res_in_p   <- ct$p
-      res_in_cor <- apply_p_threshold(res_in_cor, res_in_p, sign_threshold)
+      res_in_cor <- apply_p_threshold(res_in_cor, res_in_p, sign_threshold,
+                                      method = remove_nonsignificant_method)
     }
 
     if (has_weights && !need_pvals) {
@@ -572,12 +670,18 @@ ResIN <- ResIN <- function(
 
       res_in_cor <- wp$r
       res_in_p   <- wp$p
-      res_in_cor <- apply_p_threshold(res_in_cor, res_in_p, sign_threshold)
+      res_in_cor <- apply_p_threshold(res_in_cor, res_in_p, sign_threshold,
+                                      method = remove_nonsignificant_method)
 
       cor_engine_details$n_pair_matrix <- wp$n_pair
       cor_engine_details$n_eff_matrix  <- wp$n_eff
       cor_engine_details$p_values_are_approximate <- TRUE
     }
+  }
+
+  if(!is.null(weights)) {
+  cor_engine_details$weights_from_df <- weights_from_df
+  cor_engine_details$weights_name <- weights_name
   }
 
   # Safety check
@@ -594,38 +698,6 @@ ResIN <- ResIN <- function(
     rownames(res_in_p) <- colnames(df_dummies)
   }
 
-### Perform regularization (optional)
-#   if(EBICglasso==TRUE) {
-#     diag(res_in_cor) <- 1
-#     res_in_cor <- as.matrix(Matrix::nearPD(res_in_cor)$mat)
-#
-#     if(is.null(EBICglasso_arglist)) {
-#       EBICglasso_arglist <- list(n = nrow(df), gamma = 0.5, penalize.diagonal = FALSE,
-#                                  nlambda = 100,
-#                                  returnAllResults = FALSE, checkPD = FALSE,
-#                                  countDiagonal = FALSE, refit = FALSE,
-#                                  threshold = FALSE, verbose = FALSE)
-#     }
-#     res_in_cor <- do.call(qgraph::EBICglasso, c(list(S = as.matrix(res_in_cor)),
-#                                                 EBICglasso_arglist))
-#   }
-#
-#   else {
-#   ## Remove non-significant edges
-#   if(remove_nonsignificant==TRUE){
-#     if(EBICglasso==TRUE){
-#       stop("Removal of non-significant edges based on p-values cannot be combined with EBIC-glasso regularization.")
-#     }
-#
-#       cor_method <- "pearson"
-#     if(cor_method %in% c("pearson")) {
-#       res_corrtest <- psych::corr.test(df_dummies, method = cor_method, use = "pairwise.complete.obs", alpha = sign_threshold, adjust = "none")
-#       res_corrtest$r[res_corrtest$p>sign_threshold] <- 0
-#       res_in_cor <- res_corrtest$r
-#     }
-#   }
-# }
-
   ## Set all inner-variable correlations to 0
   for (idx in item_blocks) {
     res_in_cor[idx, idx] <- 0
@@ -634,8 +706,11 @@ ResIN <- ResIN <- function(
 
   ## Removing NA's and negatives
   if (remove_negative == TRUE) {
-    if (neg_offset > 0 && neg_offset < 1) {
-      res_in_cor[res_in_cor < 0] <- res_in_cor[res_in_cor < 0] + neg_offset
+    if (offset > 1 | offset < -1) {
+      stop("Argument offset must be a numeric value between -1 and 1", call. = FALSE)
+    }
+    if (offset != 0) {
+      res_in_cor[res_in_cor < 0] <- res_in_cor[res_in_cor < 0] + offset
     }
     res_in_cor[res_in_cor < 0] <- 0
   }
@@ -1148,19 +1223,3 @@ ResIN <- ResIN <- function(
 
   return(output)
 }
-
-# lik_data$weights <- NULL
-#
-# p_load(tictoc)
-#
-# tic()
-# test3 <-  ResIN(lik_data)
-# toc()
-#
-# tic()
-# test3 <-  ResIN(lik_data, weights = dummy_frame$weights)
-# toc()
-#
-# tic()
-# test3 <-  ResIN(lik_data, cor_method =  "polychoric", weights = dummy_frame$weights)
-# toc()
