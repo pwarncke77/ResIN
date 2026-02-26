@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ResIN</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,12 +50,10 @@
 <span>  cor_method <span class="op">=</span> <span class="st">"pearson"</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  missing_cor <span class="op">=</span> <span class="st">"pairwise"</span>,</span>
-<span>  neg_offset <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  offset <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  ResIN_scores <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  remove_negative <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  EBICglasso <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  EBICglasso_arglist <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  remove_nonsignificant <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  remove_nonsignificant_method <span class="op">=</span> <span class="st">"default"</span>,</span>
 <span>  sign_threshold <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  node_covars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  node_costats <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -75,6 +73,9 @@
 <span>  plot_title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  bipartite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  save_input <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  remove_negative <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  EBICglasso <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  EBICglasso_arglist <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -100,39 +101,31 @@
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
-<dd><p>An optional continuous vector of survey weights. Should have the same length as number of observations in df. If weights are provided, weighted correlation matrix will be estimated with the <code>weightedCorr</code> function from the <code>wCorr</code> package.</p></dd>
+<dd><p>Optional survey weights. Can be either <code>NULL</code> (default), a numeric vector of length <code>nrow(df)</code>, or a character scalar naming a weights column in <code>df</code>. If a column name is supplied and <code>node_vars = NULL</code>, the weights column is automatically excluded from the response-node variables used for ResIN estimation.</p></dd>
 
 
 <dt id="arg-missing-cor">missing_cor<a class="anchor" aria-label="anchor" href="#arg-missing-cor"></a></dt>
 <dd><p>Character scalar controlling missing-data handling for correlation estimation. Either <code>"pairwise"</code> (default) or  <code>"listwise"</code>.</p></dd>
 
 
-<dt id="arg-neg-offset">neg_offset<a class="anchor" aria-label="anchor" href="#arg-neg-offset"></a></dt>
-<dd><p>Should negative correlations be offset to avoid small correlation pairs disappearing? Defaults to <code>0</code>. Any positive number between 0 and 1 may be supplied instead.</p></dd>
+<dt id="arg-offset">offset<a class="anchor" aria-label="anchor" href="#arg-offset"></a></dt>
+<dd><p>Optional off-set to correlation edges to manually adjust for over- or underfitting the network. Defaults to <code>0</code>. Supplying a value between -1 and 0 globally reduces edge values by that amount, leading to the elimination of all positive  edges below that value, resulting in a more sparse network. (However, we strongly recommend setting remove_nonsignificant=TRUE instead for a more principled approach to ensuring optimal network sparsity as global thresholds have heuristic value at best). Alternatively, a value between 0 and 1 enforces a positive offset, resulting in more dense (but potentially overfitted) networks.</p></dd>
 
 
 <dt id="arg-resin-scores">ResIN_scores<a class="anchor" aria-label="anchor" href="#arg-resin-scores"></a></dt>
 <dd><p>Logical; should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Current package implementation also provides empirical Bayesian scores via James-Stein shrinkage (<code>eb_x</code>) and heuristic shrinkage (<code>heur_x</code>) scores. Please refer to the package [vignette]https://pwarncke77.github.io/ResIN/articles/ResIN-VIGNETTE.html#spatial-interpretation-and-individual-latent-space-scores for further details.</p></dd>
 
 
-<dt id="arg-remove-negative">remove_negative<a class="anchor" aria-label="anchor" href="#arg-remove-negative"></a></dt>
-<dd><p>Logical; should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.</p></dd>
-
-
-<dt id="arg-ebicglasso">EBICglasso<a class="anchor" aria-label="anchor" href="#arg-ebicglasso"></a></dt>
-<dd><p>Logical; should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, <code>EBICglasso</code> function from the <code>qgraph</code> packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.</p></dd>
-
-
-<dt id="arg-ebicglasso-arglist">EBICglasso_arglist<a class="anchor" aria-label="anchor" href="#arg-ebicglasso-arglist"></a></dt>
-<dd><p>An argument list feeding additional instructions to the <code>EBICglasso</code> function if <code>EBICglasso</code> is set to TRUE.</p></dd>
-
-
 <dt id="arg-remove-nonsignificant">remove_nonsignificant<a class="anchor" aria-label="anchor" href="#arg-remove-nonsignificant"></a></dt>
-<dd><p>Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. For weighted Pearson correlations, p-values are approximated using a weighted effective sample size. For currently unsupported polychoric configurations, ResIN falls back to Pearson and issues a warning.#' @param EBICglasso Logical; should a sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE. If set to TRUE, <code>EBICglasso</code> function from the <code>qgraph</code> packages performs regularization on (nearest positive-semi-definite) ResIN correlation matrix.</p></dd>
+<dd><p>Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. For weighted Pearson correlations, p-values are approximated using a weighted effective sample size. For currently unsupported polychoric configurations, ResIN falls back to Pearson and issues a warning.</p></dd>
+
+
+<dt id="arg-remove-nonsignificant-method">remove_nonsignificant_method<a class="anchor" aria-label="anchor" href="#arg-remove-nonsignificant-method"></a></dt>
+<dd><p>Character scalar specifying how p-values are thresholded when <code>remove_nonsignificant = TRUE</code>. Defaults to <code>"default"</code>, which prunes edges with raw p-values greater than <code>sign_threshold</code> (i.e., retains edges with <code>p &lt;= sign_threshold</code>). If set to <code>"fdr"</code>, p-values are adjusted using the Benjamini–Hochberg procedure and edges are retained only if the adjusted p-value is less than or equal to <code>sign_threshold</code>, interpreted as the target FDR level \(q\). This provides multiplicity control across all tested edges and is typically more principled than using unadjusted p-values, but may be slightly slower. See <code><a href="https://rdrr.io/r/stats/p.adjust.html" class="external-link">p.adjust</a></code> for details.</p></dd>
 
 
 <dt id="arg-sign-threshold">sign_threshold<a class="anchor" aria-label="anchor" href="#arg-sign-threshold"></a></dt>
-<dd><p>At what p-value threshold should non-significant edges be removed? Defaults to 0.05.</p></dd>
+<dd><p>Numeric scalar controlling the pruning threshold used when <code>remove_nonsignificant = TRUE</code>. For <code>remove_nonsignificant_method = "default"</code>, this is the raw p-value cutoff (e.g., <code>0.05</code>). For <code>remove_nonsignificant_method = "fdr"</code>, this is the target false discovery rate level \(q\) (e.g., <code>0.05</code>), applied to Benjamini–Hochberg adjusted p-values.</p></dd>
 
 
 <dt id="arg-node-covars">node_covars<a class="anchor" aria-label="anchor" href="#arg-node-covars"></a></dt>
@@ -205,6 +198,18 @@
 
 <dt id="arg-save-input">save_input<a class="anchor" aria-label="anchor" href="#arg-save-input"></a></dt>
 <dd><p>Logical; should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.</p></dd>
+
+
+<dt id="arg-remove-negative">remove_negative<a class="anchor" aria-label="anchor" href="#arg-remove-negative"></a></dt>
+<dd><p>Logical; should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.</p></dd>
+
+
+<dt id="arg-ebicglasso">EBICglasso<a class="anchor" aria-label="anchor" href="#arg-ebicglasso"></a></dt>
+<dd><p>Retired as of ResIN 2.3.0 and ignored.</p></dd>
+
+
+<dt id="arg-ebicglasso-arglist">EBICglasso_arglist<a class="anchor" aria-label="anchor" href="#arg-ebicglasso-arglist"></a></dt>
+<dd><p>Retired as of ResIN 2.3.0 and ignored.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>

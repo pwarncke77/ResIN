@@ -15,12 +15,10 @@ ResIN(
   cor_method = "pearson",
   weights = NULL,
   missing_cor = "pairwise",
-  neg_offset = 0,
+  offset = 0,
   ResIN_scores = TRUE,
-  remove_negative = TRUE,
-  EBICglasso = FALSE,
-  EBICglasso_arglist = NULL,
   remove_nonsignificant = FALSE,
+  remove_nonsignificant_method = "default",
   sign_threshold = 0.05,
   node_covars = NULL,
   node_costats = NULL,
@@ -40,6 +38,9 @@ ResIN(
   plot_title = NULL,
   bipartite = FALSE,
   save_input = TRUE,
+  remove_negative = TRUE,
+  EBICglasso = FALSE,
+  EBICglasso_arglist = NULL,
   seed = NULL
 )
 ```
@@ -74,21 +75,29 @@ ResIN(
 
 - weights:
 
-  An optional continuous vector of survey weights. Should have the same
-  length as number of observations in df. If weights are provided,
-  weighted correlation matrix will be estimated with the `weightedCorr`
-  function from the `wCorr` package.
+  Optional survey weights. Can be either `NULL` (default), a numeric
+  vector of length `nrow(df)`, or a character scalar naming a weights
+  column in `df`. If a column name is supplied and `node_vars = NULL`,
+  the weights column is automatically excluded from the response-node
+  variables used for ResIN estimation.
 
 - missing_cor:
 
   Character scalar controlling missing-data handling for correlation
   estimation. Either `"pairwise"` (default) or `"listwise"`.
 
-- neg_offset:
+- offset:
 
-  Should negative correlations be offset to avoid small correlation
-  pairs disappearing? Defaults to `0`. Any positive number between 0 and
-  1 may be supplied instead.
+  Optional off-set to correlation edges to manually adjust for over- or
+  underfitting the network. Defaults to `0`. Supplying a value between
+  -1 and 0 globally reduces edge values by that amount, leading to the
+  elimination of all positive edges below that value, resulting in a
+  more sparse network. (However, we strongly recommend setting
+  remove_nonsignificant=TRUE instead for a more principled approach to
+  ensuring optimal network sparsity as global thresholds have heuristic
+  value at best). Alternatively, a value between 0 and 1 enforces a
+  positive offset, resulting in more dense (but potentially overfitted)
+  networks.
 
 - ResIN_scores:
 
@@ -100,41 +109,36 @@ ResIN(
   \[vignette\]https://pwarncke77.github.io/ResIN/articles/ResIN-VIGNETTE.html#spatial-interpretation-and-individual-latent-space-scores
   for further details.
 
-- remove_negative:
-
-  Logical; should all negative correlations be removed? Defaults to TRUE
-  (highly recommended). Setting to FALSE makes it impossible to estimate
-  a force-directed network layout. Function will use
-  igraph::layout_nicely instead.
-
-- EBICglasso:
-
-  Logical; should a sparse, Gaussian-LASSO ResIN network be estimated?
-  Defaults to FALSE. If set to TRUE, `EBICglasso` function from the
-  `qgraph` packages performs regularization on (nearest
-  positive-semi-definite) ResIN correlation matrix.
-
-- EBICglasso_arglist:
-
-  An argument list feeding additional instructions to the `EBICglasso`
-  function if `EBICglasso` is set to TRUE.
-
 - remove_nonsignificant:
 
   Logical; should non-significant edges be removed from the ResIN
   network? Defaults to FALSE. For weighted Pearson correlations,
   p-values are approximated using a weighted effective sample size. For
   currently unsupported polychoric configurations, ResIN falls back to
-  Pearson and issues a warning.#' @param EBICglasso Logical; should a
-  sparse, Gaussian-LASSO ResIN network be estimated? Defaults to FALSE.
-  If set to TRUE, `EBICglasso` function from the `qgraph` packages
-  performs regularization on (nearest positive-semi-definite) ResIN
-  correlation matrix.
+  Pearson and issues a warning.
+
+- remove_nonsignificant_method:
+
+  Character scalar specifying how p-values are thresholded when
+  `remove_nonsignificant = TRUE`. Defaults to `"default"`, which prunes
+  edges with raw p-values greater than `sign_threshold` (i.e., retains
+  edges with `p <= sign_threshold`). If set to `"fdr"`, p-values are
+  adjusted using the Benjamini–Hochberg procedure and edges are retained
+  only if the adjusted p-value is less than or equal to
+  `sign_threshold`, interpreted as the target FDR level \\q\\. This
+  provides multiplicity control across all tested edges and is typically
+  more principled than using unadjusted p-values, but may be slightly
+  slower. See [`p.adjust`](https://rdrr.io/r/stats/p.adjust.html) for
+  details.
 
 - sign_threshold:
 
-  At what p-value threshold should non-significant edges be removed?
-  Defaults to 0.05.
+  Numeric scalar controlling the pruning threshold used when
+  `remove_nonsignificant = TRUE`. For
+  `remove_nonsignificant_method = "default"`, this is the raw p-value
+  cutoff (e.g., `0.05`). For `remove_nonsignificant_method = "fdr"`,
+  this is the target false discovery rate level \\q\\ (e.g., `0.05`),
+  applied to Benjamini–Hochberg adjusted p-values.
 
 - node_covars:
 
@@ -290,6 +294,21 @@ ResIN(
 
   Logical; should input data and function arguments be saved (this is
   necessary for running ResIN_boots_prepare function). Defaults to TRUE.
+
+- remove_negative:
+
+  Logical; should all negative correlations be removed? Defaults to TRUE
+  (highly recommended). Setting to FALSE makes it impossible to estimate
+  a force-directed network layout. Function will use
+  igraph::layout_nicely instead.
+
+- EBICglasso:
+
+  Retired as of ResIN 2.3.0 and ignored.
+
+- EBICglasso_arglist:
+
+  Retired as of ResIN 2.3.0 and ignored.
 
 - seed:
 

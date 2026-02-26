@@ -15,12 +15,12 @@ Source:
 
 Warncke P, Carpentras D, Lüders A (2026). *ResIN: Conduct Response Item
 Network (ResIN) analysis with social response data*. R package version
-2.2.1, <https://pwarncke77.github.io/ResIN/>.
+2.3.0, <https://pwarncke77.github.io/ResIN/>.
 
     @Manual{,
       title = {ResIN: Conduct Response Item Network (ResIN) analysis with social response data},
       author = {Philip Warncke and Dino Carpentras and Adrian Lüders},
       year = {2026},
-      note = {R package version 2.2.1},
+      note = {R package version 2.3.0},
       url = {https://pwarncke77.github.io/ResIN/},
     }

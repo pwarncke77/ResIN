@@ -751,12 +751,12 @@ ResIN_gephi <- as.gephi(ResIN_out, file = "ResIN_gephi.csv", dont_save_csv = TRU
 lot more to offer and we hope that you’ll enjoy experimenting with some
 of the additional features not covered in this tutorial. For instance,
 [`ResIN()`](https://pwarncke77.github.io/ResIN/reference/ResIN.md)
-natively supports analysis with survey weights (see `weights`-argument),
-LASSO-regularization via `EBICglasso()`, automatic removal of
-non-significant edges (`remove_nonsignificant`). Please feel free to
-reach out to the team of developers at <https://www.resinmethod.net/>
-and [leave comments or feedback](https://www.resinmethod.net/contact/).
-We hope you enjoyed this tutorial and that you’ll give
+natively supports analysis with survey weights (see `weights`-argument)
+and automatic removal of non-significant edges
+(`remove_nonsignificant`). Please feel free to reach out to the team of
+developers at <https://www.resinmethod.net/> and [leave comments or
+feedback](https://www.resinmethod.net/contact/). We hope you enjoyed
+this tutorial and that you’ll give
 [`ResIN()`](https://pwarncke77.github.io/ResIN/reference/ResIN.md) a try
 in your next project.
 
