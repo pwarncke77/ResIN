@@ -105,35 +105,9 @@ Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Convert to tidygraph</span></span></span>
 <span class="r-in"><span><span class="va">tg</span> <span class="op">&lt;-</span> <span class="fu"><a href="ResIN-coercion-generics.html">as.tidygraph</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">tg</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tbl_graph: 60 nodes and 570 edges</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># An undirected simple graph with 1 component</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Node Data: 60 × 10 (active)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        x      y node_names Betweenness Closeness Strength ExpectedInfluence</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> -<span style="color: #BB0000;">8.48</span>  1.10  Item_1_1             0   0.001<span style="text-decoration: underline;">65</span>     5.66              5.66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> -<span style="color: #BB0000;">5.50</span> -<span style="color: #BB0000;">0.608</span> Item_1_2            68   0.002<span style="text-decoration: underline;">30</span>     8.38              8.38</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  2.05  0.314 Item_1_3            10   0.002<span style="text-decoration: underline;">65</span>     5.81              5.81</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  6.40  0.769 Item_1_4             5   0.002<span style="text-decoration: underline;">24</span>     7.74              7.74</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  6.96 -<span style="color: #BB0000;">1.87</span>  Item_1_5             0   0.001<span style="text-decoration: underline;">73</span>     5.29              5.29</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> -<span style="color: #BB0000;">7.15</span> -<span style="color: #BB0000;">0.109</span> Item_2_1           388   0.002<span style="text-decoration: underline;">15</span>     9.99              9.99</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  1.33  0.243 Item_2_2           218   0.002<span style="text-decoration: underline;">76</span>     6.55              6.55</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  7.38  1.35  Item_2_3             0   0.001<span style="text-decoration: underline;">64</span>     2.98              2.98</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  7.49  0.127 Item_2_4             0   0.001<span style="text-decoration: underline;">88</span>     5.05              5.05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  7.56 -<span style="color: #BB0000;">1.71</span>  Item_2_5             0   0.001<span style="text-decoration: underline;">74</span>     5.39              5.39</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 50 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3 more variables: cluster &lt;dbl&gt;, choices &lt;fct&gt;, name &lt;chr&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Edge Data: 570 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    from    to weight from.x from.y  to.x    to.y from_to         edgebetweenness</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1     6  0.332  -<span style="color: #BB0000;">8.48</span>   1.10 -<span style="color: #BB0000;">7.15</span> -<span style="color: #BB0000;">0.109</span>  Item_1_1_Item_…              45</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     1    11  0.597  -<span style="color: #BB0000;">8.48</span>   1.10 -<span style="color: #BB0000;">7.90</span>  0.194  Item_1_1_Item_…               6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     1    16  0.221  -<span style="color: #BB0000;">8.48</span>   1.10 -<span style="color: #BB0000;">6.22</span>  0.027<span style="text-decoration: underline;">4</span> Item_1_1_Item_…               0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 567 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: from_name &lt;chr&gt;, to_name &lt;chr&gt;</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">tg</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tbl_graph" "igraph"   </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

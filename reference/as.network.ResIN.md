@@ -48,26 +48,6 @@ res <- ResIN(lik_data, generate_ggplot = FALSE, plot_ggplot = FALSE)
 
 # ResIN re-exports network::as.network()
 net <- as.network.ResIN(res) ## alternatively: as.network(res)
-net
-#>  Network attributes:
-#>   vertices = 60 
-#>   directed = FALSE 
-#>   hyper = FALSE 
-#>   loops = FALSE 
-#>   multiple = FALSE 
-#>   bipartite = FALSE 
-#>   ResIN_source_class = ResIN 
-#>   ResIN_graph_stats:
-#>      Length Class  Mode   
-#> [1,] 8      -none- numeric
-#> [2,] 4      -none- numeric
-#>   total edges= 570 
-#>     missing edges= 0 
-#>     non-missing edges= 570 
-#> 
-#>  Vertex attribute names: 
-#>     Betweenness Closeness ExpectedInfluence Strength choices vertex.names x y 
-#> 
-#>  Edge attribute names: 
-#>     edgebetweenness from.x from.y from_to to.x to.y weight 
+class(net)
+#> [1] "network"
 ```
