@@ -9,7 +9,7 @@ ResIN_to_qgraph(ResIN_object, qgraph_arglist = NULL)
 \arguments{
 \item{ResIN_object}{the output of the ResIN function (a list with class ResIN).}
 
-\item{qgraph_arglist}{an optional argument list to be supplied to the igraph::graph_from_adjacency_matrix function. If NULL, defaults are: list(layout = "spring", maximum = 1, vsize = 6, DoNotPlot = TRUE, sampleSize = nrow(df_nodes), mar = c(3,3,3,3), normalize = FALSE)}
+\item{qgraph_arglist}{an optional argument list to be supplied to the igraph::graph_from_adjacency_matrix function. If NULL, defaults are: \code{list(layout = "spring", maximum = 1, vsize = 6, DoNotPlot = TRUE, sampleSize = nrow(df_nodes), mar = c(3,3,3,3), normalize = FALSE)}}
 }
 \value{
 A [qgraph]https://cran.r-project.org/web/packages/qgraph/index.html graph object.

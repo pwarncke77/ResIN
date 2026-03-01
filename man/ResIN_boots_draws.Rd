@@ -2,7 +2,7 @@
 % Please edit documentation in R/ResIN_boots_draws.R
 \name{ResIN_boots_draws}
 \alias{ResIN_boots_draws}
-\title{Extract bootrstrap draws from ResIN objects}
+\title{Extract bootstrap draws from ResIN objects}
 \description{
 \code{"ResIN_boots_draws"} objects are typically returned by \code{\link{ResIN_boots_extract}}
 when the requested quantity is scalar per bootstrap iteration (e.g., \code{"global_clustering"}).

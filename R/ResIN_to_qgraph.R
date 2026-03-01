@@ -3,7 +3,7 @@
 #' @description Deprecated/legacy function. Transforms the output of the \code{ResIN} function into an \code{qgraph} object. Use \code{as.qgraph()} method instead.
 #'
 #' @param ResIN_object the output of the ResIN function (a list with class ResIN).
-#' @param qgraph_arglist an optional argument list to be supplied to the igraph::graph_from_adjacency_matrix function. If NULL, defaults are: list(layout = "spring", maximum = 1, vsize = 6, DoNotPlot = TRUE, sampleSize = nrow(df_nodes), mar = c(3,3,3,3), normalize = FALSE)
+#' @param qgraph_arglist an optional argument list to be supplied to the igraph::graph_from_adjacency_matrix function. If NULL, defaults are: \code{list(layout = "spring", maximum = 1, vsize = 6, DoNotPlot = TRUE, sampleSize = nrow(df_nodes), mar = c(3,3,3,3), normalize = FALSE)}
 #'
 #' @return A [qgraph]https://cran.r-project.org/web/packages/qgraph/index.html graph object.
 #'

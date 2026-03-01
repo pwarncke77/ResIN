@@ -1,4 +1,4 @@
-#' @title (Depricated.) Convert ResIN networks to Gephi-readable csv tables. Use \code{as.gephi()} method instead.
+#' @title (Deprecated.) Convert ResIN networks to Gephi-readable csv tables. Use \code{as.gephi()} method instead.
 #'
 #' @description Deprecated/legacy function. Saves a ResIN graph as a series of csv files readable by Gephi. Now supplanted by \code{as.gephi()} method.
 #'

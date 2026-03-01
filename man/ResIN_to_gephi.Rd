@@ -2,7 +2,7 @@
 % Please edit documentation in R/ResIN_to_gephi.R
 \name{ResIN_to_gephi}
 \alias{ResIN_to_gephi}
-\title{(Depricated.) Convert ResIN networks to Gephi-readable csv tables. Use \code{as.gephi()} method instead.}
+\title{(Deprecated.) Convert ResIN networks to Gephi-readable csv tables. Use \code{as.gephi()} method instead.}
 \usage{
 ResIN_to_gephi(
   ResIN_object,

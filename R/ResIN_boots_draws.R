@@ -1,4 +1,4 @@
-#' Extract bootrstrap draws from ResIN objects
+#' Extract bootstrap draws from ResIN objects
 #'
 #' \code{"ResIN_boots_draws"} objects are typically returned by \code{\link{ResIN_boots_extract}}
 #' when the requested quantity is scalar per bootstrap iteration (e.g., \code{"global_clustering"}).
