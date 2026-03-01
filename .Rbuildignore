@@ -6,6 +6,22 @@
 ^rstudio$
 ^\.rstudio
 ^rstudio\.
+^ResIN\.Rcheck$
+^\.Rcheck$
+^\.\.Rcheck$
+^\.git$
+^\.github$
+^docs$
+^doc$
+^pkgdown$
+^_pkgdown\.yml$
+^Meta$
+^CRAN-SUBMISSION$
+^cran-comments\.md$
+^\.Rproj\.user$
+^.*\.Rproj$
+^\.Rhistory$
+^\.RData$
 
 
 ^CRAN-SUBMISSION$
