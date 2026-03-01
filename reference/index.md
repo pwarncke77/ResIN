@@ -17,7 +17,7 @@
   analysis
 
 - [`ResIN_boots_draws`](https://pwarncke77.github.io/ResIN/reference/ResIN_boots_draws.md)
-  : Extract bootrstrap draws from ResIN objects
+  : Extract bootstrap draws from ResIN objects
 
 - [`ResIN_boots_execute()`](https://pwarncke77.github.io/ResIN/reference/ResIN_boots_execute.md)
   : Carry out prepared bootstrap analyses on ResIN networks
@@ -39,7 +39,7 @@
 - [`ResIN_to_gephi()`](https://pwarncke77.github.io/ResIN/reference/ResIN_to_gephi.md)
   :
 
-  (Depricated.) Convert ResIN networks to Gephi-readable csv tables. Use
+  (Deprecated.) Convert ResIN networks to Gephi-readable csv tables. Use
   [`as.gephi()`](https://pwarncke77.github.io/ResIN/reference/ResIN-coercion-generics.md)
   method instead.
 

@@ -1,4 +1,4 @@
-# (Depricated.) Convert ResIN networks to Gephi-readable csv tables. Use `as.gephi()` method instead.
+# (Deprecated.) Convert ResIN networks to Gephi-readable csv tables. Use `as.gephi()` method instead.
 
 Deprecated/legacy function. Saves a ResIN graph as a series of csv files
 readable by Gephi. Now supplanted by

@@ -21,8 +21,7 @@ ResIN_to_qgraph(ResIN_object, qgraph_arglist = NULL)
 
   an optional argument list to be supplied to the
   igraph::graph_from_adjacency_matrix function. If NULL, defaults are:
-  list(layout = "spring", maximum = 1, vsize = 6, DoNotPlot = TRUE,
-  sampleSize = nrow(df_nodes), mar = c(3,3,3,3), normalize = FALSE)
+  `list(layout = "spring", maximum = 1, vsize = 6, DoNotPlot = TRUE, sampleSize = nrow(df_nodes), mar = c(3,3,3,3), normalize = FALSE)`
 
 ## Value
 

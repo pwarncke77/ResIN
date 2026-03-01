@@ -1,4 +1,4 @@
-# Extract bootrstrap draws from ResIN objects
+# Extract bootstrap draws from ResIN objects
 
 `"ResIN_boots_draws"` objects are typically returned by
 [`ResIN_boots_extract`](https://pwarncke77.github.io/ResIN/reference/ResIN_boots_extract.md)

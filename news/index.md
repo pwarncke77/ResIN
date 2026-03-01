@@ -28,7 +28,7 @@
     the weights column is automatically excluded from the response-node
     variables used for estimation.
 
-### Edge pruning / sparsification
+### Edge pruning
 
 - **New multiple-testing option for pruning.** Added
   `remove_nonsignificant_method`, enabling Benjamini–Hochberg FDR
@@ -50,12 +50,12 @@
     is more robust (handles failed iterations gracefully) and improves
     progress-bar formatting.
 - [`ResIN_boots_extract()`](https://pwarncke77.github.io/ResIN/reference/ResIN_boots_extract.md)
-  now supports multi-quantity extraction and improved summarization
+  now supports multi-quantity extraction and improved summarizing
   behavior, including consistent data-frame output for summaries.
 
 ### Conversion of ResIN objects for interoperability and manipulation in other software environments
 
-- Added conventional S3 coercions for ResIN objects:
+- Added conventional S3 conversions for ResIN objects:
   - [`as.igraph.ResIN()`](https://pwarncke77.github.io/ResIN/reference/as.igraph.ResIN.md),
     [`as.qgraph.ResIN()`](https://pwarncke77.github.io/ResIN/reference/as.qgraph.ResIN.md),
     [`as.gephi.ResIN()`](https://pwarncke77.github.io/ResIN/reference/as.gephi.ResIN.md)
@@ -75,7 +75,7 @@
   [`ResIN_to_igraph()`](https://pwarncke77.github.io/ResIN/reference/ResIN_to_igraph.md),
   [`ResIN_to_qgraph()`](https://pwarncke77.github.io/ResIN/reference/ResIN_to_qgraph.md),
   [`ResIN_to_gephi()`](https://pwarncke77.github.io/ResIN/reference/ResIN_to_gephi.md))
-  are retained for compatibility and delegate to the new coercion
+  are retained for compatibility and delegate to the new conversion
   methods where appropriate.
 
 ### Documentation

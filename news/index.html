@@ -60,7 +60,7 @@ When <code>weights</code> is supplied as a column name and <code>node_vars = NUL
 </ul></li>
 </ul></div>
 <div class="section level3">
-<h3 id="edge-pruning--sparsification-2-3-0">Edge pruning / sparsification<a class="anchor" aria-label="anchor" href="#edge-pruning--sparsification-2-3-0"></a></h3>
+<h3 id="edge-pruning-2-3-0">Edge pruning<a class="anchor" aria-label="anchor" href="#edge-pruning-2-3-0"></a></h3>
 <ul><li>
 <strong>New multiple-testing option for pruning.</strong> Added <code>remove_nonsignificant_method</code>, enabling Benjamini–Hochberg FDR control (<code>"fdr"</code>) as an alternative to raw p-value pruning (<code>"default"</code>). <code>sign_threshold</code> is interpreted as the raw p-value cutoff under <code>"default"</code> and as the target FDR level under <code>"fdr"</code>.</li>
 <li>
@@ -75,11 +75,11 @@ When <code>weights</code> is supplied as a column name and <code>node_vars = NUL
 <code><a href="../reference/ResIN_boots_execute.html">ResIN_boots_execute()</a></code> is more robust (handles failed iterations gracefully) and improves progress-bar formatting.</li>
 </ul></li>
 <li>
-<code><a href="../reference/ResIN_boots_extract.html">ResIN_boots_extract()</a></code> now supports multi-quantity extraction and improved summarization behavior, including consistent data-frame output for summaries.</li>
+<code><a href="../reference/ResIN_boots_extract.html">ResIN_boots_extract()</a></code> now supports multi-quantity extraction and improved summarizing behavior, including consistent data-frame output for summaries.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="conversion-of-resin-objects-for-interoperability-and-manipulation-in-other-software-environments-2-3-0">Conversion of ResIN objects for interoperability and manipulation in other software environments<a class="anchor" aria-label="anchor" href="#conversion-of-resin-objects-for-interoperability-and-manipulation-in-other-software-environments-2-3-0"></a></h3>
-<ul><li>Added conventional S3 coercions for ResIN objects:
+<ul><li>Added conventional S3 conversions for ResIN objects:
 <ul><li>
 <code><a href="../reference/as.igraph.ResIN.html">as.igraph.ResIN()</a></code>, <code><a href="../reference/as.qgraph.ResIN.html">as.qgraph.ResIN()</a></code>, <code><a href="../reference/as.gephi.ResIN.html">as.gephi.ResIN()</a></code>
 </li>
@@ -92,7 +92,7 @@ When <code>weights</code> is supplied as a column name and <code>node_vars = NUL
 <li>
 <code><a href="../reference/as.graphsjl.ResIN.html">as.graphsjl.ResIN()</a></code> exports Graphs.jl compatible edge &amp; node CSV tables for Julia workflows (with integer vertex IDs suitable for <code>Graphs.jl</code>), while preserving node/edge metadata as table columns.</li>
 </ul></li>
-<li>Legacy conversion functions (e.g., <code><a href="../reference/ResIN_to_igraph.html">ResIN_to_igraph()</a></code>, <code><a href="../reference/ResIN_to_qgraph.html">ResIN_to_qgraph()</a></code>, <code><a href="../reference/ResIN_to_gephi.html">ResIN_to_gephi()</a></code>) are retained for compatibility and delegate to the new coercion methods where appropriate.</li>
+<li>Legacy conversion functions (e.g., <code><a href="../reference/ResIN_to_igraph.html">ResIN_to_igraph()</a></code>, <code><a href="../reference/ResIN_to_qgraph.html">ResIN_to_qgraph()</a></code>, <code><a href="../reference/ResIN_to_gephi.html">ResIN_to_gephi()</a></code>) are retained for compatibility and delegate to the new conversion methods where appropriate.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-2-3-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-2-3-0"></a></h3>

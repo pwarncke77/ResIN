@@ -109,7 +109,7 @@
 
 
 <dt id="arg-offset">offset<a class="anchor" aria-label="anchor" href="#arg-offset"></a></dt>
-<dd><p>Optional off-set to correlation edges to manually adjust for over- or underfitting the network. Defaults to <code>0</code>. Supplying a value between -1 and 0 globally reduces edge values by that amount, leading to the elimination of all positive  edges below that value, resulting in a more sparse network. (However, we strongly recommend setting remove_nonsignificant=TRUE instead for a more principled approach to ensuring optimal network sparsity as global thresholds have heuristic value at best). Alternatively, a value between 0 and 1 enforces a positive offset, resulting in more dense (but potentially overfitted) networks.</p></dd>
+<dd><p>Optional off-set to correlation edges to manually adjust for over- or under-fitting the network. Defaults to <code>0</code>. Supplying a value between -1 and 0 globally reduces edge values by that amount, leading to the elimination of all positive  edges below that value, resulting in a more sparse network. (However, we strongly recommend setting <code>remove_nonsignificant=TRUE</code> instead for a more principled approach to ensuring optimal network sparsity as global thresholds have heuristic value at best). Alternatively, a value between 0 and 1 enforces a positive offset, resulting in more dense (but potentially over-fitted) networks.</p></dd>
 
 
 <dt id="arg-resin-scores">ResIN_scores<a class="anchor" aria-label="anchor" href="#arg-resin-scores"></a></dt>
@@ -129,7 +129,7 @@
 
 
 <dt id="arg-node-covars">node_covars<a class="anchor" aria-label="anchor" href="#arg-node-covars"></a></dt>
-<dd><p>An optional character string selecting quantitative covariates that can be used to enhance ResIN analysis. Typically, these covariates provide grouped summary statistics for item response nodes. (E.g.: What is the average age or income level of respondents who selected a particular item response?) Variable names specified here should match existing columns in <code>df</code>.</p></dd>
+<dd><p>An optional character string selecting quantitative co-variates that can be used to enhance ResIN analysis. Typically, these covariates provide grouped summary statistics for item response nodes. (E.g.: What is the average age or income level of respondents who selected a particular item response?) Variable names specified here should match existing columns in <code>df</code>.</p></dd>
 
 
 <dt id="arg-node-costats">node_costats<a class="anchor" aria-label="anchor" href="#arg-node-costats"></a></dt>

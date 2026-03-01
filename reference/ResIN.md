@@ -89,14 +89,14 @@ ResIN(
 - offset:
 
   Optional off-set to correlation edges to manually adjust for over- or
-  underfitting the network. Defaults to `0`. Supplying a value between
+  under-fitting the network. Defaults to `0`. Supplying a value between
   -1 and 0 globally reduces edge values by that amount, leading to the
   elimination of all positive edges below that value, resulting in a
   more sparse network. (However, we strongly recommend setting
-  remove_nonsignificant=TRUE instead for a more principled approach to
+  `remove_nonsignificant=TRUE` instead for a more principled approach to
   ensuring optimal network sparsity as global thresholds have heuristic
   value at best). Alternatively, a value between 0 and 1 enforces a
-  positive offset, resulting in more dense (but potentially overfitted)
+  positive offset, resulting in more dense (but potentially over-fitted)
   networks.
 
 - ResIN_scores:
@@ -142,7 +142,7 @@ ResIN(
 
 - node_covars:
 
-  An optional character string selecting quantitative covariates that
+  An optional character string selecting quantitative co-variates that
   can be used to enhance ResIN analysis. Typically, these covariates
   provide grouped summary statistics for item response nodes. (E.g.:
   What is the average age or income level of respondents who selected a
