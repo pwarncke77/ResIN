@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.8)  1 MAR 2026 10:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.8)  1 MAR 2026 11:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**C:/Users/pwarn/AppData/Local/Temp/RtmpgXdIh3/Rd2pdfe3060a861c2/Rd2.tex
-(C:/Users/pwarn/AppData/Local/Temp/RtmpgXdIh3/Rd2pdfe3060a861c2/Rd2.tex
+**C:/Users/pwarn/AppData/Local/Temp/RtmpYLAL0L/Rd2pdf5cc825a54ed2/Rd2.tex
+(C:/Users/pwarn/AppData/Local/Temp/RtmpYLAL0L/Rd2pdf5cc825a54ed2/Rd2.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
 
@@ -405,14 +405,9 @@ File: t1zi4.fd 2018/01/14 T1/zi4 (Inconsolata)
 )
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
 (Font)              scaled to size 10.0pt on input line 23.
-
-Overfull \hbox (6.05159pt too wide) in paragraph at lines 23--24
-\T1/ptm/m/n/10 Philip Warncke \T1/zi4/m/n/10 <philip.warncke@ul.ie>\T1/ptm/m/n/
-10 Maintainer: Philip Warncke \T1/zi4/m/n/10 <philip.warncke@ul.ie>  
- []
-
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 2
 4.
+
 (C:\Program Files\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
@@ -679,12 +674,12 @@ Package rerunfilecheck Info: Checksums for `Rd2.out':
  ) 
 Here is how much of TeX's memory you used:
  10855 strings out of 467871
- 161890 string characters out of 5428444
+ 161901 string characters out of 5428444
  575197 words of memory out of 5000000
  39344 multiletter control sequences out of 15000+600000
  661877 words of font info for 84 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 92i,6n,95p,1245b,782s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 92i,6n,95p,1246b,782s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{Rfn.p.adjust} has been referenced but does not exis
 t, replaced by a fixed one

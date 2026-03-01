@@ -1,11 +1,11 @@
 Package: ResIN
 Type: Package
-Title: Conduct Response Item Network (ResIN) analysis with social
-        response data
+Title: Conduct Response Item Network (ResIN) Analysis with Social
+        Response Data
 Version: 2.3.0
 Authors@R: c(person("Philip", "Warncke", email = "philip.warncke@ul.ie", role = c("cre","aut")), person("Dino", "Carpentras", role = "aut"), person("Adrian", "L\u00FCders", role = "aut"))
-Author: Philip Warncke [aut, cre], Dino Carpentras [aut], Adrian Lüders [aut]
-Maintainer: Philip Warncke <philip.warncke@ul.ie>Maintainer: Philip Warncke <philip.warncke@ul.ie>
+Author: Philip Warncke [cre, aut], Dino Carpentras [aut], Adrian Lüders [aut]
+Maintainer: Philip Warncke <philip.warncke@ul.ie>
 Description: Contains various tools to perform and visualize Response Item Networks ('ResIN's'). 'ResIN' dummy-codes ordered and qualitative response choices from (survey) data, calculates pairwise associations and maps the location of each item response as a node in a force-directed network. Please refer to <https://www.resinmethod.net/> for more details.
 License: GPL-3
 URL: https://pwarncke77.github.io/ResIN/
@@ -22,4 +22,4 @@ LazyDataCompression: xz
 RoxygenNote: 7.3.3
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-Built: R 4.5.2; ; 2026-03-01 10:52:23 UTC; windows
+Built: R 4.5.2; ; 2026-03-01 11:03:01 UTC; windows

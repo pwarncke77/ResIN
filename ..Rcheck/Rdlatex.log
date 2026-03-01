@@ -1,21 +1,614 @@
 Hmm ... looks like a package
 Converting parsed Rd's to LaTeX ..
 Creating pdf output from LaTeX ...
-Warning in system(paste(shQuote(texi2dvi), if (quiet) "--quiet" else "",  :
-  running command '"C:\PROGRA~1\MiKTeX\miktex\bin\x64\texify.exe"  --pdf "Rd2.tex" ' had status 1
-Error : running 'texi2dvi' on 'Rd2.tex' failed
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(Rd2.tex
+LaTeX2e <2025-11-01>
+L3 programming layer <2025-12-24>
 
-LaTeX errors:
-!pdfTeX error: pdflatex (file t1-zi4r-0): Font t1-zi4r-0 at 540 not found
- ==> Fatal error occurred, no output PDF file produced!
+(C:\Program Files\MiKTeX\tex/latex/base\book.cls
+Document Class: book 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Program Files\MiKTeX\tex/latex/base\bk10.clo))
+(C:/PROGRA~1/R/R-45~1.2/share/texmf/tex/latex\Rd.sty
+(C:\Program Files\MiKTeX\tex/latex/base\ifthen.sty)
+(C:\Program Files\MiKTeX\tex/generic/iftex\iftex.sty)
+(C:\Program Files\MiKTeX\tex/latex/tools\longtable.sty)
+(C:\Program Files\MiKTeX\tex/latex/tools\bm.sty)
+(C:\Program Files\MiKTeX\tex/latex/base\alltt.sty)
+(C:\Program Files\MiKTeX\tex/latex/tools\verbatim.sty)
+(C:\Program Files\MiKTeX\tex/latex/url\url.sty)
+(C:\Program Files\MiKTeX\tex/latex/base\textcomp.sty)
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Program Files\MiKTeX\tex/latex/amsfonts\amsfonts.sty)
+(C:\Program Files\MiKTeX\tex/latex/amsfonts\amssymb.sty)
+(C:\Program Files\MiKTeX\tex/latex/jknappen\mathrsfs.sty)
+(C:\Program Files\MiKTeX\tex/latex/base\fontenc.sty)
+(C:\Program Files\MiKTeX\tex/latex/psnfss\times.sty)
+(C:\Program Files\MiKTeX\tex/latex/graphics\color.sty
+(C:\Program Files\MiKTeX\tex/latex/graphics-cfg\color.cfg)
+(C:\Program Files\MiKTeX\tex/latex/graphics-def\pdftex.def)
+(C:\Program Files\MiKTeX\tex/latex/graphics\mathcolor.ltx))
+(C:\Program Files\MiKTeX\tex/latex/hyperref\hyperref.sty
+(C:\Program Files\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Program Files\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty)
+(C:\Program Files\MiKTeX\tex/generic/kvdefinekeys\kvdefinekeys.sty)
+(C:\Program Files\MiKTeX\tex/generic/pdfescape\pdfescape.sty
+(C:\Program Files\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty)
+(C:\Program Files\MiKTeX\tex/generic/pdftexcmds\pdftexcmds.sty
+(C:\Program Files\MiKTeX\tex/generic/infwarerr\infwarerr.sty)))
+(C:\Program Files\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Program Files\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Program Files\MiKTeX\tex/latex/refcount\refcount.sty)
+(C:\Program Files\MiKTeX\tex/generic/gettitlestring\gettitlestring.sty
+(C:\Program Files\MiKTeX\tex/latex/kvoptions\kvoptions.sty)))
+(C:\Program Files\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+(C:\Program Files\MiKTeX\tex/generic/stringenc\stringenc.sty)
+(C:\Program Files\MiKTeX\tex/latex/hyperref\pd1enc.def)
+(C:\Program Files\MiKTeX\tex/generic/intcalc\intcalc.sty)
+(C:\Program Files\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Program Files\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Program Files\MiKTeX\tex/generic/bigintcalc\bigintcalc.sty)))
+(C:\Program Files\MiKTeX\tex/latex/hyperref\hpdftex.def
+(C:\Program Files\MiKTeX\tex/latex/rerunfilecheck\rerunfilecheck.sty
+(C:\Program Files\MiKTeX\tex/generic/uniquecounter\uniquecounter.sty))))
+(C:\Program Files\MiKTeX\tex/latex/psnfss\t1ptm.fd)
+(C:\Program Files\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def)
+No file Rd2.aux.
+(C:\Program Files\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (C:\Program Files\MiKTeX\tex/latex/psnfss\t1pcr.fd)
+(C:\Program Files\MiKTeX\tex/latex/psnfss\ts1ptm.fd)
+(C:\Program Files\MiKTeX\tex/latex/amsfonts\umsa.fd)
+(C:\Program Files\MiKTeX\tex/latex/amsfonts\umsb.fd)
+(C:\Program Files\MiKTeX\tex/latex/jknappen\ursfs.fd)
+No file Rd2.toc.
+[1{C:/Users/pwarn/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Program 
+Files/MiKTeX/fonts/enc/dvips/base/8r.enc}]
+(C:\Program Files\MiKTeX\tex/latex/psnfss\ts1pcr.fd) [2] [3]
+Overfull \hbox (80.35822pt too wide) in paragraph at lines 198--200
+[]\T1/ptm/m/n/10 Converts a []\T1/pcr/m/n/10 ResIN []\T1/ptm/m/n/10 ob-ject to 
+an []\T1/pcr/m/n/10 igraph []\T1/ptm/m/n/10 graph us-ing the ad-ja-cency ma-tri
+x stored in []\T1/pcr/m/n/10 x$aux_objects$adj_matrix[]\T1/ptm/m/n/10 . 
 
-Warning in system(paste(shQuote(texi2dvi), if (quiet) "--quiet" else "",  :
-  running command '"C:\PROGRA~1\MiKTeX\miktex\bin\x64\texify.exe"  --pdf "Rd2.tex" ' had status 1
-Error : running 'texi2dvi' on 'Rd2.tex' failed
+Overfull \hbox (18.78088pt too wide) in paragraph at lines 205--205
+ []\T1/pcr/m/n/10 as.igraph(x, mode = "undirected", weighted = TRUE, diag = FAL
+SE, ...)[] 
 
-LaTeX errors:
-!pdfTeX error: pdflatex (file t1-zi4r-0): Font t1-zi4r-0 at 540 not found
- ==> Fatal error occurred, no output PDF file produced!
+Overfull \hbox (32.8496pt too wide) in paragraph at lines 215--216
+[]\T1/ptm/m/n/10 Additional ar-gu-ments passed to []\T1/pcr/m/n/10 igraph::grap
+h_from_adjacency_matrix()[]\T1/ptm/m/n/10 . 
+[4]
+Overfull \hbox (18.78088pt too wide) in paragraph at lines 254--254
+ []\T1/pcr/m/n/10 as.network(x, directed = FALSE, loops = FALSE, multiple = FAL
+SE, ...)[] 
+[5] [6]
+Overfull \hbox (77.02798pt too wide) in paragraph at lines 377--379
+[]\T1/ptm/m/n/10 Converts a []\T1/pcr/m/n/10 ResIN []\T1/ptm/m/n/10 ob-ject to 
+a []\T1/pcr/m/n/10 qgraph []\T1/ptm/m/n/10 ob-ject us-ing the ad-ja-cency ma-tr
+ix stored in []\T1/pcr/m/n/10 x$aux_objects$adj_matrix[]\T1/ptm/m/n/10 . 
+[7]
+Underfull \hbox (badness 1558) in paragraph at lines 403--403
+[]\T1/pcr/m/n/10 layout[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 maximum[]\T1/ptm/m/n
+/10 , []\T1/pcr/m/n/10 vsize[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 DoNotPlot[]\T1/
+ptm/m/n/10 , []\T1/pcr/m/n/10 sampleSize[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 tit
+le[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 mar[]\T1/ptm/m/n/10 ,
 
-Error in running tools::texi2pdf()
-You may want to clean up by 'rm -Rf C:/Users/pwarn/AppData/Local/Temp/RtmpgXdIh3/Rd2pdfe3060a861c2'
+Overfull \hbox (73.908pt too wide) in paragraph at lines 460--464
+[]\T1/ptm/m/n/10 A []\T1/pcr/m/n/10 tidygraph::tbl_graph []\T1/ptm/m/n/10 ob-je
+ct. Node data in-clude (when present) all columns from []\T1/pcr/m/n/10 x$ResIN
+_nodeframe[]\T1/ptm/m/n/10 ;
+
+Overfull \hbox (23.35872pt too wide) in paragraph at lines 460--464
+\T1/ptm/m/n/10 edge data in-clude (when present) all columns from []\T1/pcr/m/n
+/10 x$ResIN_edgelist[]\T1/ptm/m/n/10 , plus []\T1/pcr/m/n/10 from_name[]\T1/ptm
+/m/n/10 /[]\T1/pcr/m/n/10 to_name
+[8] [9] [10]
+Overfull \hbox (0.78088pt too wide) in paragraph at lines 577--577
+ []\T1/pcr/m/n/10 plot(x, which = c("network", "bipartite"), print_plot = TRUE,
+ ...)[] 
+[11] [12]
+Overfull \hbox (64.0461pt too wide) in paragraph at lines 678--679
+\T1/ptm/m/n/10 scores. Please re-fer to the pack-age [vignette]https://pwarncke
+77.github.io/ResIN/articles/ResIN-
+
+Overfull \hbox (11.70697pt too wide) in paragraph at lines 678--679
+\T1/ptm/m/n/10 VIGNETTE.html#spatial-interpretation-and-individual-latent-space
+-scores for fur-
+
+Overfull \hbox (58.2285pt too wide) in paragraph at lines 682--683
+[]\T1/ptm/m/n/10 Character scalar spec-i-fy-ing how p-values are thresh-olded w
+hen []\T1/pcr/m/n/10 remove_nonsignificant
+
+Overfull \hbox (2.10884pt too wide) in paragraph at lines 682--683
+\T1/pcr/m/n/10 = TRUE[]\T1/ptm/m/n/10 . De-faults to []\T1/pcr/m/n/10 "default"
+[]\T1/ptm/m/n/10 , which prunes edges with raw p-values greater
+
+Overfull \hbox (45.9887pt too wide) in paragraph at lines 684--685
+[]\T1/ptm/m/n/10 Numeric scalar con-trol-ling the prun-ing thresh-old used when
+ []\T1/pcr/m/n/10 remove_nonsignificant
+
+Overfull \hbox (8.74013pt too wide) in paragraph at lines 684--685
+\T1/ptm/m/n/10 the raw p-value cut-off (e.g., []\T1/pcr/m/n/10 0.05[]\T1/ptm/m/
+n/10 ). For []\T1/pcr/m/n/10 remove_nonsignificant_method
+[13]
+Overfull \hbox (3.97018pt too wide) in paragraph at lines 690--691
+[]\T1/pcr/m/n/10 qgraph::centrality_auto []\T1/ptm/m/n/10 and []\T1/pcr/m/n/10 
+DirectedClustering::ClustF []\T1/ptm/m/n/10 to
+
+Overfull \hbox (45.18579pt too wide) in paragraph at lines 694--695
+[]\T1/ptm/m/n/10 A char-ac-ter scalar spec-i-fy-ing the [igraph-based](https://
+igraph.org/r/doc/communities.html)
+
+Overfull \hbox (138.20523pt too wide) in paragraph at lines 696--697
+[]\T1/ptm/m/n/10 An op-tional list spec-i-fy-ing ad-di-tional ar-gu-ments to th
+e se-lected [igraph](https://igraph.org/r/doc/communities.html)
+
+Overfull \hbox (39.16982pt too wide) in paragraph at lines 704--705
+\T1/ptm/m/n/10 sup-ply ap-pro-pri-ate choices to []\T1/pcr/m/n/10 node_covars[]
+\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 node_costats[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/
+10 detect_clusters[]\T1/ptm/m/n/10 ,
+[14]
+Overfull \hbox (158.20645pt too wide) in paragraph at lines 708--709
+\T1/ptm/m/n/10 All op-tions con-tained in [[]\T1/pcr/m/n/10 RColorBrewer[]\T1/p
+tm/m/n/10 ](https://cran.r-project.org/web/packages/RColorBrewer/RColorBrewer.p
+df)
+
+Overfull \hbox (315.62547pt too wide) in paragraph at lines 708--709
+\T1/ptm/m/n/10 (for dis-crete col-ors such as clus-ter as-sign-ments) and [[]\T
+1/pcr/m/n/10 ggplot2::scale_colour_distiller[]\T1/ptm/m/n/10 ](https://ggplot2.
+tidyverse.org/reference/scale_brewer.html)
+
+Overfull \hbox (3.74896pt too wide) in paragraph at lines 718--719
+\T1/ptm/m/n/10 able []\T1/pcr/m/n/10 ggraph[]\T1/ptm/m/n/10 -object called []\T
+1/pcr/m/n/10 bipartite_ggraph []\T1/ptm/m/n/10 are gen-er-ated if set to TRUE. 
+
+[15]
+Overfull \hbox (1.08871pt too wide) in paragraph at lines 733--734
+[]\T1/ptm/m/n/10 An edge-list type data-frame, []\T1/pcr/m/n/10 ResIN_edgelist[
+]\T1/ptm/m/n/10 , a node-level data-frame, []\T1/pcr/m/n/10 ResIN_nodeframe[]\T
+1/ptm/m/n/10 ,
+
+Overfull \hbox (31.38742pt too wide) in paragraph at lines 733--734
+\T1/ptm/m/n/10 an n*2 data-frame of individual-level spa-tial scores along the 
+ma-jor (x) and mi-nor(y) axis, []\T1/pcr/m/n/10 ResIN_scores
+
+Overfull \hbox (36.7804pt too wide) in paragraph at lines 743--743
+ []\T1/pcr/m/n/9 ResIN_obj <- ResIN(lik_data, network_stats = TRUE, remove_nons
+ignificant = TRUE)[] 
+[16]
+Overfull \hbox (1.44806pt too wide) in paragraph at lines 822--825
+[]\T1/ptm/m/n/10 Executes a boot-strap plan cre-ated by [][][]\T1/pcr/m/n/10 Re
+sIN_boots_prepare[][] []\T1/ptm/m/n/10 by re-peat-edly re-estimating ResIN
+[17]
+Overfull \hbox (38.15945pt too wide) in paragraph at lines 842--843
+[]\T1/ptm/m/n/10 A []\T1/pcr/m/n/10 "ResIN_boots_prepped" []\T1/ptm/m/n/10 boot
+-strap plan (out-put of [][][]\T1/pcr/m/n/10 ResIN_boots_prepare[][][]\T1/ptm/m
+/n/10 ). 
+
+Overfull \hbox (29.6587pt too wide) in paragraph at lines 850--851
+[]\T1/ptm/m/n/10 Manually spec-ify num-ber of cores (ig-nored if []\T1/pcr/m/n/
+10 detect_cores = TRUE []\T1/ptm/m/n/10 or []\T1/pcr/m/n/10 parallel
+
+Overfull \hbox (31.46936pt too wide) in paragraph at lines 857--860
+[]\T1/pcr/m/n/10 print()[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 summary()[]\T1/ptm/
+m/n/10 , []\T1/pcr/m/n/10 length()[]\T1/ptm/m/n/10 , and []\T1/pcr/m/n/10 [ []\
+T1/ptm/m/n/10 to in-spect or sub-set re-sults. See [][][]\T1/pcr/m/n/10 ResIN_b
+oots_executed[][]
+
+Overfull \hbox (20.58041pt too wide) in paragraph at lines 873--873
+ []\T1/pcr/m/n/9 prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=100, boots_t
+ype="resample")[] 
+[18]
+Overfull \hbox (96.18033pt too wide) in paragraph at lines 876--876
+ []\T1/pcr/m/n/9 executed_boots <-  ResIN_boots_execute(prepped_boots, parallel
+ = TRUE, detect_cores = TRUE)[] 
+
+Overfull \hbox (42.18039pt too wide) in paragraph at lines 878--878
+ []\T1/pcr/m/n/9 # Extract results - here for example, the network (global)-clu
+stering coefficient[] 
+
+Overfull \hbox (85.38034pt too wide) in paragraph at lines 879--879
+ []\T1/pcr/m/n/9 ResIN_boots_extract(executed_boots, what = "global_clustering"
+, summarize_results = TRUE)[] 
+
+Overfull \hbox (74.34094pt too wide) in paragraph at lines 919--921
+[][][]\T1/pcr/m/n/10 ResIN_boots_prepare[][][]\T1/ptm/m/n/10 , [][][]\T1/pcr/m/
+n/10 ResIN_boots_execute[][][]\T1/ptm/m/n/10 , [][][]\T1/pcr/m/n/10 ResIN_boots
+_extract[][][]\T1/ptm/m/n/10 , [][][]\T1/pcr/m/n/10 ResIN_boots_prepped[][] 
+[19]
+Overfull \hbox (48.82985pt too wide) in paragraph at lines 942--943
+[]\T1/ptm/m/n/10 An ob-ject of class []\T1/pcr/m/n/10 "ResIN_boots_executed" []
+\T1/ptm/m/n/10 (out-put of [][][]\T1/pcr/m/n/10 ResIN_boots_execute[][][]\T1/pt
+m/m/n/10 ). 
+
+Overfull \hbox (9.4987pt too wide) in paragraph at lines 944--945
+[]\T1/ptm/m/n/10 Character scalar nam-ing the quan-tity to ex-tract (e.g., []\T
+1/pcr/m/n/10 "global_clustering"[]\T1/ptm/m/n/10 ). 
+
+Overfull \hbox (4.70828pt too wide) in paragraph at lines 954--957
+[]\T1/ptm/m/n/10 (a nu-meric vec-tor with at-tributes). If []\T1/pcr/m/n/10 sum
+marize_results = TRUE[]\T1/ptm/m/n/10 , re-turns a one-row data.frame
+
+Overfull \hbox (20.58041pt too wide) in paragraph at lines 970--970
+ []\T1/pcr/m/n/9 prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=100, boots_t
+ype="resample")[] 
+
+Overfull \hbox (96.18033pt too wide) in paragraph at lines 973--973
+ []\T1/pcr/m/n/9 executed_boots <-  ResIN_boots_execute(prepped_boots, parallel
+ = TRUE, detect_cores = TRUE)[] 
+
+Overfull \hbox (42.18039pt too wide) in paragraph at lines 975--975
+ []\T1/pcr/m/n/9 # Extract results - here for example, the network (global)-clu
+stering coefficient[] 
+[20]
+Overfull \hbox (85.38034pt too wide) in paragraph at lines 976--976
+ []\T1/pcr/m/n/9 ResIN_boots_extract(executed_boots, what = "global_clustering"
+, summarize_results = TRUE)[] 
+
+Overfull \hbox (31.88707pt too wide) in paragraph at lines 1014--1015
+[]\T1/ptm/m/n/10 Should all in-put in-for-ma-tion for each boot-strap it-er-a-t
+ion (in-clud-ing re-sampled/permuted
+[21]
+Overfull \hbox (20.58041pt too wide) in paragraph at lines 1038--1038
+ []\T1/pcr/m/n/9 prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=100, boots_t
+ype="resample")[] 
+
+Overfull \hbox (96.18033pt too wide) in paragraph at lines 1041--1041
+ []\T1/pcr/m/n/9 executed_boots <-  ResIN_boots_execute(prepped_boots, parallel
+ = TRUE, detect_cores = TRUE)[] 
+
+Overfull \hbox (42.18039pt too wide) in paragraph at lines 1043--1043
+ []\T1/pcr/m/n/9 # Extract results - here for example, the network (global)-clu
+stering coefficient[] 
+
+Overfull \hbox (85.38034pt too wide) in paragraph at lines 1044--1044
+ []\T1/pcr/m/n/9 ResIN_boots_extract(executed_boots, what = "global_clustering"
+, summarize_results = TRUE)[] 
+[22]
+Overfull \hbox (99.96649pt too wide) in paragraph at lines 1129--1130
+[]\T1/ptm/m/n/10 Source code of orig-i-nal func-tion (< ver-sion 2.2.0) had bee
+n adapted from: https://github.com/RMHogervorst/gephi?tab=MIT-
+[23]
+Overfull \hbox (171.54488pt too wide) in paragraph at lines 1161--1162
+[]\T1/ptm/m/n/10 Deprecated/legacy func-tion. Trans-forms the out-put of the []
+\T1/pcr/m/n/10 ResIN []\T1/ptm/m/n/10 func-tion into an [igraph](https://igraph
+.org/r/doc/cluster_leading_eigen.html)
+
+Overfull \hbox (16.55763pt too wide) in paragraph at lines 1174--1175
+[]\T1/ptm/m/n/10 an op-tional ar-gu-ment list to be sup-plied to the igraph::gr
+aph_from_adjacency_matrix
+[24]
+Overfull \hbox (16.55763pt too wide) in paragraph at lines 1226--1227
+[]\T1/ptm/m/n/10 an op-tional ar-gu-ment list to be sup-plied to the igraph::gr
+aph_from_adjacency_matrix
+
+Overfull \hbox (10.55087pt too wide) in paragraph at lines 1226--1227
+\T1/pcr/m/n/10 1, vsize = 6, DoNotPlot = TRUE, sampleSize = nrow(df_nodes),
+[25] [26] (Rd2.aux)
+
+Package rerunfilecheck Warning: File `Rd2.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)
+pdfTeX warning (dest): name{Rfn.p.adjust} has been referenced but does not exis
+t, replaced by a fixed one
+
+<C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program 
+Files/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files/MiKTeX/fonts/
+type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/times/utmr8
+a.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Program Fil
+es/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on Rd2.pdf (26 pages, 180118 bytes).
+Transcript written on Rd2.log.
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(Rd2.tex
+LaTeX2e <2025-11-01>
+L3 programming layer <2025-12-24>
+
+(C:\Program Files\MiKTeX\tex/latex/base\book.cls
+Document Class: book 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Program Files\MiKTeX\tex/latex/base\bk10.clo))
+(C:/PROGRA~1/R/R-45~1.2/share/texmf/tex/latex\Rd.sty
+(C:\Program Files\MiKTeX\tex/latex/base\ifthen.sty)
+(C:\Program Files\MiKTeX\tex/generic/iftex\iftex.sty)
+(C:\Program Files\MiKTeX\tex/latex/tools\longtable.sty)
+(C:\Program Files\MiKTeX\tex/latex/tools\bm.sty)
+(C:\Program Files\MiKTeX\tex/latex/base\alltt.sty)
+(C:\Program Files\MiKTeX\tex/latex/tools\verbatim.sty)
+(C:\Program Files\MiKTeX\tex/latex/url\url.sty)
+(C:\Program Files\MiKTeX\tex/latex/base\textcomp.sty)
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Program Files\MiKTeX\tex/latex/amsfonts\amsfonts.sty)
+(C:\Program Files\MiKTeX\tex/latex/amsfonts\amssymb.sty)
+(C:\Program Files\MiKTeX\tex/latex/jknappen\mathrsfs.sty)
+(C:\Program Files\MiKTeX\tex/latex/base\fontenc.sty)
+(C:\Program Files\MiKTeX\tex/latex/psnfss\times.sty)
+(C:\Program Files\MiKTeX\tex/latex/graphics\color.sty
+(C:\Program Files\MiKTeX\tex/latex/graphics-cfg\color.cfg)
+(C:\Program Files\MiKTeX\tex/latex/graphics-def\pdftex.def)
+(C:\Program Files\MiKTeX\tex/latex/graphics\mathcolor.ltx))
+(C:\Program Files\MiKTeX\tex/latex/hyperref\hyperref.sty
+(C:\Program Files\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Program Files\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty)
+(C:\Program Files\MiKTeX\tex/generic/kvdefinekeys\kvdefinekeys.sty)
+(C:\Program Files\MiKTeX\tex/generic/pdfescape\pdfescape.sty
+(C:\Program Files\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty)
+(C:\Program Files\MiKTeX\tex/generic/pdftexcmds\pdftexcmds.sty
+(C:\Program Files\MiKTeX\tex/generic/infwarerr\infwarerr.sty)))
+(C:\Program Files\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Program Files\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Program Files\MiKTeX\tex/latex/refcount\refcount.sty)
+(C:\Program Files\MiKTeX\tex/generic/gettitlestring\gettitlestring.sty
+(C:\Program Files\MiKTeX\tex/latex/kvoptions\kvoptions.sty)))
+(C:\Program Files\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+(C:\Program Files\MiKTeX\tex/generic/stringenc\stringenc.sty)
+(C:\Program Files\MiKTeX\tex/latex/hyperref\pd1enc.def)
+(C:\Program Files\MiKTeX\tex/generic/intcalc\intcalc.sty)
+(C:\Program Files\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Program Files\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Program Files\MiKTeX\tex/generic/bigintcalc\bigintcalc.sty)))
+(C:\Program Files\MiKTeX\tex/latex/hyperref\hpdftex.def
+(C:\Program Files\MiKTeX\tex/latex/rerunfilecheck\rerunfilecheck.sty
+(C:\Program Files\MiKTeX\tex/generic/uniquecounter\uniquecounter.sty))))
+(C:\Program Files\MiKTeX\tex/latex/psnfss\t1ptm.fd)
+(C:\Program Files\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def) (Rd2.aux)
+(C:\Program Files\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (Rd2.out) (Rd2.out) (C:\Program Files\MiKTeX\tex/latex/psnfss\t1pcr.fd)
+(C:\Program Files\MiKTeX\tex/latex/psnfss\ts1ptm.fd)
+(C:\Program Files\MiKTeX\tex/latex/amsfonts\umsa.fd)
+(C:\Program Files\MiKTeX\tex/latex/amsfonts\umsb.fd)
+(C:\Program Files\MiKTeX\tex/latex/jknappen\ursfs.fd) (Rd2.toc [1{C:/Users/pwar
+n/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Program Files/MiKTeX/fon
+ts/enc/dvips/base/8r.enc}]) (C:\Program Files\MiKTeX\tex/latex/psnfss\ts1pcr.fd
+) [2] [3] [4]
+Overfull \hbox (80.35822pt too wide) in paragraph at lines 198--200
+[]\T1/ptm/m/n/10 Converts a []\T1/pcr/m/n/10 ResIN []\T1/ptm/m/n/10 ob-ject to 
+an []\T1/pcr/m/n/10 igraph []\T1/ptm/m/n/10 graph us-ing the ad-ja-cency ma-tri
+x stored in []\T1/pcr/m/n/10 x$aux_objects$adj_matrix[]\T1/ptm/m/n/10 . 
+
+Overfull \hbox (18.78088pt too wide) in paragraph at lines 205--205
+ []\T1/pcr/m/n/10 as.igraph(x, mode = "undirected", weighted = TRUE, diag = FAL
+SE, ...)[] 
+
+Overfull \hbox (32.8496pt too wide) in paragraph at lines 215--216
+[]\T1/ptm/m/n/10 Additional ar-gu-ments passed to []\T1/pcr/m/n/10 igraph::grap
+h_from_adjacency_matrix()[]\T1/ptm/m/n/10 . 
+[5]
+Overfull \hbox (18.78088pt too wide) in paragraph at lines 254--254
+ []\T1/pcr/m/n/10 as.network(x, directed = FALSE, loops = FALSE, multiple = FAL
+SE, ...)[] 
+[6] [7]
+Overfull \hbox (77.02798pt too wide) in paragraph at lines 377--379
+[]\T1/ptm/m/n/10 Converts a []\T1/pcr/m/n/10 ResIN []\T1/ptm/m/n/10 ob-ject to 
+a []\T1/pcr/m/n/10 qgraph []\T1/ptm/m/n/10 ob-ject us-ing the ad-ja-cency ma-tr
+ix stored in []\T1/pcr/m/n/10 x$aux_objects$adj_matrix[]\T1/ptm/m/n/10 . 
+
+Underfull \hbox (badness 1558) in paragraph at lines 403--403
+[]\T1/pcr/m/n/10 layout[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 maximum[]\T1/ptm/m/n
+/10 , []\T1/pcr/m/n/10 vsize[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 DoNotPlot[]\T1/
+ptm/m/n/10 , []\T1/pcr/m/n/10 sampleSize[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 tit
+le[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 mar[]\T1/ptm/m/n/10 ,
+[8]
+Overfull \hbox (73.908pt too wide) in paragraph at lines 460--464
+[]\T1/ptm/m/n/10 A []\T1/pcr/m/n/10 tidygraph::tbl_graph []\T1/ptm/m/n/10 ob-je
+ct. Node data in-clude (when present) all columns from []\T1/pcr/m/n/10 x$ResIN
+_nodeframe[]\T1/ptm/m/n/10 ;
+
+Overfull \hbox (23.35872pt too wide) in paragraph at lines 460--464
+\T1/ptm/m/n/10 edge data in-clude (when present) all columns from []\T1/pcr/m/n
+/10 x$ResIN_edgelist[]\T1/ptm/m/n/10 , plus []\T1/pcr/m/n/10 from_name[]\T1/ptm
+/m/n/10 /[]\T1/pcr/m/n/10 to_name
+[9] [10]
+Overfull \hbox (0.78088pt too wide) in paragraph at lines 577--577
+ []\T1/pcr/m/n/10 plot(x, which = c("network", "bipartite"), print_plot = TRUE,
+ ...)[] 
+[11] [12] [13]
+Overfull \hbox (64.0461pt too wide) in paragraph at lines 678--679
+\T1/ptm/m/n/10 scores. Please re-fer to the pack-age [vignette]https://pwarncke
+77.github.io/ResIN/articles/ResIN-
+
+Overfull \hbox (11.70697pt too wide) in paragraph at lines 678--679
+\T1/ptm/m/n/10 VIGNETTE.html#spatial-interpretation-and-individual-latent-space
+-scores for fur-
+
+Overfull \hbox (58.2285pt too wide) in paragraph at lines 682--683
+[]\T1/ptm/m/n/10 Character scalar spec-i-fy-ing how p-values are thresh-olded w
+hen []\T1/pcr/m/n/10 remove_nonsignificant
+
+Overfull \hbox (2.10884pt too wide) in paragraph at lines 682--683
+\T1/pcr/m/n/10 = TRUE[]\T1/ptm/m/n/10 . De-faults to []\T1/pcr/m/n/10 "default"
+[]\T1/ptm/m/n/10 , which prunes edges with raw p-values greater
+
+Overfull \hbox (45.9887pt too wide) in paragraph at lines 684--685
+[]\T1/ptm/m/n/10 Numeric scalar con-trol-ling the prun-ing thresh-old used when
+ []\T1/pcr/m/n/10 remove_nonsignificant
+
+Overfull \hbox (8.74013pt too wide) in paragraph at lines 684--685
+\T1/ptm/m/n/10 the raw p-value cut-off (e.g., []\T1/pcr/m/n/10 0.05[]\T1/ptm/m/
+n/10 ). For []\T1/pcr/m/n/10 remove_nonsignificant_method
+
+Overfull \hbox (3.97018pt too wide) in paragraph at lines 690--691
+[]\T1/pcr/m/n/10 qgraph::centrality_auto []\T1/ptm/m/n/10 and []\T1/pcr/m/n/10 
+DirectedClustering::ClustF []\T1/ptm/m/n/10 to
+[14]
+Overfull \hbox (45.18579pt too wide) in paragraph at lines 694--695
+[]\T1/ptm/m/n/10 A char-ac-ter scalar spec-i-fy-ing the [igraph-based](https://
+igraph.org/r/doc/communities.html)
+
+Overfull \hbox (138.20523pt too wide) in paragraph at lines 696--697
+[]\T1/ptm/m/n/10 An op-tional list spec-i-fy-ing ad-di-tional ar-gu-ments to th
+e se-lected [igraph](https://igraph.org/r/doc/communities.html)
+
+Overfull \hbox (39.16982pt too wide) in paragraph at lines 704--705
+\T1/ptm/m/n/10 sup-ply ap-pro-pri-ate choices to []\T1/pcr/m/n/10 node_covars[]
+\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 node_costats[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/
+10 detect_clusters[]\T1/ptm/m/n/10 ,
+
+Overfull \hbox (158.20645pt too wide) in paragraph at lines 708--709
+\T1/ptm/m/n/10 All op-tions con-tained in [[]\T1/pcr/m/n/10 RColorBrewer[]\T1/p
+tm/m/n/10 ](https://cran.r-project.org/web/packages/RColorBrewer/RColorBrewer.p
+df)
+
+Overfull \hbox (315.62547pt too wide) in paragraph at lines 708--709
+\T1/ptm/m/n/10 (for dis-crete col-ors such as clus-ter as-sign-ments) and [[]\T
+1/pcr/m/n/10 ggplot2::scale_colour_distiller[]\T1/ptm/m/n/10 ](https://ggplot2.
+tidyverse.org/reference/scale_brewer.html)
+[15]
+Overfull \hbox (3.74896pt too wide) in paragraph at lines 718--719
+\T1/ptm/m/n/10 able []\T1/pcr/m/n/10 ggraph[]\T1/ptm/m/n/10 -object called []\T
+1/pcr/m/n/10 bipartite_ggraph []\T1/ptm/m/n/10 are gen-er-ated if set to TRUE. 
+
+
+Overfull \hbox (1.08871pt too wide) in paragraph at lines 733--734
+[]\T1/ptm/m/n/10 An edge-list type data-frame, []\T1/pcr/m/n/10 ResIN_edgelist[
+]\T1/ptm/m/n/10 , a node-level data-frame, []\T1/pcr/m/n/10 ResIN_nodeframe[]\T
+1/ptm/m/n/10 ,
+
+Overfull \hbox (31.38742pt too wide) in paragraph at lines 733--734
+\T1/ptm/m/n/10 an n*2 data-frame of individual-level spa-tial scores along the 
+ma-jor (x) and mi-nor(y) axis, []\T1/pcr/m/n/10 ResIN_scores
+[16]
+Overfull \hbox (36.7804pt too wide) in paragraph at lines 743--743
+ []\T1/pcr/m/n/9 ResIN_obj <- ResIN(lik_data, network_stats = TRUE, remove_nons
+ignificant = TRUE)[] 
+[17]
+Overfull \hbox (1.44806pt too wide) in paragraph at lines 822--825
+[]\T1/ptm/m/n/10 Executes a boot-strap plan cre-ated by [][][]\T1/pcr/m/n/10 Re
+sIN_boots_prepare[][] []\T1/ptm/m/n/10 by re-peat-edly re-estimating ResIN
+
+Overfull \hbox (38.15945pt too wide) in paragraph at lines 842--843
+[]\T1/ptm/m/n/10 A []\T1/pcr/m/n/10 "ResIN_boots_prepped" []\T1/ptm/m/n/10 boot
+-strap plan (out-put of [][][]\T1/pcr/m/n/10 ResIN_boots_prepare[][][]\T1/ptm/m
+/n/10 ). 
+[18]
+Overfull \hbox (29.6587pt too wide) in paragraph at lines 850--851
+[]\T1/ptm/m/n/10 Manually spec-ify num-ber of cores (ig-nored if []\T1/pcr/m/n/
+10 detect_cores = TRUE []\T1/ptm/m/n/10 or []\T1/pcr/m/n/10 parallel
+
+Overfull \hbox (31.46936pt too wide) in paragraph at lines 857--860
+[]\T1/pcr/m/n/10 print()[]\T1/ptm/m/n/10 , []\T1/pcr/m/n/10 summary()[]\T1/ptm/
+m/n/10 , []\T1/pcr/m/n/10 length()[]\T1/ptm/m/n/10 , and []\T1/pcr/m/n/10 [ []\
+T1/ptm/m/n/10 to in-spect or sub-set re-sults. See [][][]\T1/pcr/m/n/10 ResIN_b
+oots_executed[][]
+
+Overfull \hbox (20.58041pt too wide) in paragraph at lines 873--873
+ []\T1/pcr/m/n/9 prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=100, boots_t
+ype="resample")[] 
+
+Overfull \hbox (96.18033pt too wide) in paragraph at lines 876--876
+ []\T1/pcr/m/n/9 executed_boots <-  ResIN_boots_execute(prepped_boots, parallel
+ = TRUE, detect_cores = TRUE)[] 
+
+Overfull \hbox (42.18039pt too wide) in paragraph at lines 878--878
+ []\T1/pcr/m/n/9 # Extract results - here for example, the network (global)-clu
+stering coefficient[] 
+
+Overfull \hbox (85.38034pt too wide) in paragraph at lines 879--879
+ []\T1/pcr/m/n/9 ResIN_boots_extract(executed_boots, what = "global_clustering"
+, summarize_results = TRUE)[] 
+[19]
+Overfull \hbox (74.34094pt too wide) in paragraph at lines 919--921
+[][][]\T1/pcr/m/n/10 ResIN_boots_prepare[][][]\T1/ptm/m/n/10 , [][][]\T1/pcr/m/
+n/10 ResIN_boots_execute[][][]\T1/ptm/m/n/10 , [][][]\T1/pcr/m/n/10 ResIN_boots
+_extract[][][]\T1/ptm/m/n/10 , [][][]\T1/pcr/m/n/10 ResIN_boots_prepped[][] 
+
+Overfull \hbox (48.82985pt too wide) in paragraph at lines 942--943
+[]\T1/ptm/m/n/10 An ob-ject of class []\T1/pcr/m/n/10 "ResIN_boots_executed" []
+\T1/ptm/m/n/10 (out-put of [][][]\T1/pcr/m/n/10 ResIN_boots_execute[][][]\T1/pt
+m/m/n/10 ). 
+
+Overfull \hbox (9.4987pt too wide) in paragraph at lines 944--945
+[]\T1/ptm/m/n/10 Character scalar nam-ing the quan-tity to ex-tract (e.g., []\T
+1/pcr/m/n/10 "global_clustering"[]\T1/ptm/m/n/10 ). 
+
+Overfull \hbox (4.70828pt too wide) in paragraph at lines 954--957
+[]\T1/ptm/m/n/10 (a nu-meric vec-tor with at-tributes). If []\T1/pcr/m/n/10 sum
+marize_results = TRUE[]\T1/ptm/m/n/10 , re-turns a one-row data.frame
+[20]
+Overfull \hbox (20.58041pt too wide) in paragraph at lines 970--970
+ []\T1/pcr/m/n/9 prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=100, boots_t
+ype="resample")[] 
+
+Overfull \hbox (96.18033pt too wide) in paragraph at lines 973--973
+ []\T1/pcr/m/n/9 executed_boots <-  ResIN_boots_execute(prepped_boots, parallel
+ = TRUE, detect_cores = TRUE)[] 
+
+Overfull \hbox (42.18039pt too wide) in paragraph at lines 975--975
+ []\T1/pcr/m/n/9 # Extract results - here for example, the network (global)-clu
+stering coefficient[] 
+
+Overfull \hbox (85.38034pt too wide) in paragraph at lines 976--976
+ []\T1/pcr/m/n/9 ResIN_boots_extract(executed_boots, what = "global_clustering"
+, summarize_results = TRUE)[] 
+[21]
+Overfull \hbox (31.88707pt too wide) in paragraph at lines 1014--1015
+[]\T1/ptm/m/n/10 Should all in-put in-for-ma-tion for each boot-strap it-er-a-t
+ion (in-clud-ing re-sampled/permuted
+
+Overfull \hbox (20.58041pt too wide) in paragraph at lines 1038--1038
+ []\T1/pcr/m/n/9 prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=100, boots_t
+ype="resample")[] 
+
+Overfull \hbox (96.18033pt too wide) in paragraph at lines 1041--1041
+ []\T1/pcr/m/n/9 executed_boots <-  ResIN_boots_execute(prepped_boots, parallel
+ = TRUE, detect_cores = TRUE)[] 
+
+Overfull \hbox (42.18039pt too wide) in paragraph at lines 1043--1043
+ []\T1/pcr/m/n/9 # Extract results - here for example, the network (global)-clu
+stering coefficient[] 
+
+Overfull \hbox (85.38034pt too wide) in paragraph at lines 1044--1044
+ []\T1/pcr/m/n/9 ResIN_boots_extract(executed_boots, what = "global_clustering"
+, summarize_results = TRUE)[] 
+[22] [23]
+Overfull \hbox (99.96649pt too wide) in paragraph at lines 1129--1130
+[]\T1/ptm/m/n/10 Source code of orig-i-nal func-tion (< ver-sion 2.2.0) had bee
+n adapted from: https://github.com/RMHogervorst/gephi?tab=MIT-
+[24]
+Overfull \hbox (171.54488pt too wide) in paragraph at lines 1161--1162
+[]\T1/ptm/m/n/10 Deprecated/legacy func-tion. Trans-forms the out-put of the []
+\T1/pcr/m/n/10 ResIN []\T1/ptm/m/n/10 func-tion into an [igraph](https://igraph
+.org/r/doc/cluster_leading_eigen.html)
+
+Overfull \hbox (16.55763pt too wide) in paragraph at lines 1174--1175
+[]\T1/ptm/m/n/10 an op-tional ar-gu-ment list to be sup-plied to the igraph::gr
+aph_from_adjacency_matrix
+[25]
+Overfull \hbox (16.55763pt too wide) in paragraph at lines 1226--1227
+[]\T1/ptm/m/n/10 an op-tional ar-gu-ment list to be sup-plied to the igraph::gr
+aph_from_adjacency_matrix
+
+Overfull \hbox (10.55087pt too wide) in paragraph at lines 1226--1227
+\T1/pcr/m/n/10 1, vsize = 6, DoNotPlot = TRUE, sampleSize = nrow(df_nodes),
+[26] [27] (Rd2.aux) )
+(see the transcript file for additional information)
+pdfTeX warning (dest): name{Rfn.p.adjust} has been referenced but does not exis
+t, replaced by a fixed one
+
+<C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program 
+Files/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files/MiKTeX/fonts/
+type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/times/utmr8
+a.pfb><C:/Program Files/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Program Fil
+es/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on Rd2.pdf (27 pages, 196180 bytes).
+Transcript written on Rd2.log.
+Saving output to 'ResIN-manual.pdf' ...
+Done
+You may want to clean up by 'rm -Rf C:/Users/pwarn/AppData/Local/Temp/RtmpYLAL0L/Rd2pdf5cc831ae5e9e'
