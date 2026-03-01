@@ -1,0 +1,21 @@
+Hmm ... looks like a package
+Converting parsed Rd's to LaTeX ..
+Creating pdf output from LaTeX ...
+Warning in system(paste(shQuote(texi2dvi), if (quiet) "--quiet" else "",  :
+  running command '"C:\PROGRA~1\MiKTeX\miktex\bin\x64\texify.exe"  --pdf "Rd2.tex" ' had status 1
+Error : running 'texi2dvi' on 'Rd2.tex' failed
+
+LaTeX errors:
+!pdfTeX error: pdflatex (file t1-zi4r-0): Font t1-zi4r-0 at 540 not found
+ ==> Fatal error occurred, no output PDF file produced!
+
+Warning in system(paste(shQuote(texi2dvi), if (quiet) "--quiet" else "",  :
+  running command '"C:\PROGRA~1\MiKTeX\miktex\bin\x64\texify.exe"  --pdf "Rd2.tex" ' had status 1
+Error : running 'texi2dvi' on 'Rd2.tex' failed
+
+LaTeX errors:
+!pdfTeX error: pdflatex (file t1-zi4r-0): Font t1-zi4r-0 at 540 not found
+ ==> Fatal error occurred, no output PDF file produced!
+
+Error in running tools::texi2pdf()
+You may want to clean up by 'rm -Rf C:/Users/pwarn/AppData/Local/Temp/RtmpgXdIh3/Rd2pdfe3060a861c2'
