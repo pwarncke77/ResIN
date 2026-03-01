@@ -87,6 +87,4 @@
 
 ## ResIN 2.2.1
 
-CRAN release: 2025-07-30
-
 - Prior release.

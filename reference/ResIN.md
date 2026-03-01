@@ -122,23 +122,23 @@ ResIN(
   Character scalar specifying how p-values are thresholded when
   `remove_nonsignificant = TRUE`. Defaults to `"default"`, which prunes
   edges with raw p-values greater than `sign_threshold` (i.e., retains
-  edges with `p <= sign_threshold`). If set to `"fdr"`, p-values are
-  adjusted using the Benjamini–Hochberg procedure and edges are retained
+  edges with `p <= sign_threshold`). If set to `"bh"`, p-values are
+  adjusted using the Benjamini–Hochberg procedure; edges are retained
   only if the adjusted p-value is less than or equal to
-  `sign_threshold`, interpreted as the target FDR level \\q\\. This
-  provides multiplicity control across all tested edges and is typically
-  more principled than using unadjusted p-values, but may be slightly
-  slower. See [`p.adjust`](https://rdrr.io/r/stats/p.adjust.html) for
-  details.
+  `sign_threshold`, interpreted as the target false discovery rate
+  \\q\\. This provides multiplicity control across all tested edges and
+  is typically more principled than using unadjusted p-values, but may
+  be slightly slower. See
+  [`p.adjust`](https://rdrr.io/r/stats/p.adjust.html) for details.
 
 - sign_threshold:
 
   Numeric scalar controlling the pruning threshold used when
   `remove_nonsignificant = TRUE`. For
   `remove_nonsignificant_method = "default"`, this is the raw p-value
-  cutoff (e.g., `0.05`). For `remove_nonsignificant_method = "fdr"`,
-  this is the target false discovery rate level \\q\\ (e.g., `0.05`),
-  applied to Benjamini–Hochberg adjusted p-values.
+  cutoff (e.g., `0.05`). For `remove_nonsignificant_method = "bh"`, this
+  is the target false discovery rate level \\q\\ (e.g., `0.05`), applied
+  to Benjamini–Hochberg adjusted p-values.
 
 - node_covars:
 
