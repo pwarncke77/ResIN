@@ -41,6 +41,7 @@ res <- ResIN(lik_data, network_stats = TRUE, detect_clusters = TRUE,
 
 ## Convert to tidygraph
 tg <- as.tidygraph(res)
-tg
+
+class(tg)
 
 }

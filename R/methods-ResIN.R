@@ -691,7 +691,8 @@ as.gephi.default <- function(x, ...) {
 #'
 #' ## Convert to tidygraph
 #' tg <- as.tidygraph(res)
-#' tg
+#'
+#' class(tg)
 #'
 #' @export
 #' @importFrom tidygraph tbl_graph as_tbl_graph
@@ -829,7 +830,7 @@ NULL
 #'
 #' # ResIN re-exports network::as.network()
 #' net <- as.network.ResIN(res) ## alternatively: as.network(res)
-#' net
+#' class(net)
 #'
 #' @export
 #' @importFrom network set.network.attribute

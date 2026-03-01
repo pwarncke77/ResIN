@@ -12,6 +12,6 @@
 #' @examples
 #'
 #' data(Bootstrap_example)
-#' str(Bootstrap_example)
+#' names(Bootstrap_example[[1]])
 #'
 "Bootstrap_example"

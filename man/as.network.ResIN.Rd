@@ -34,6 +34,6 @@ res <- ResIN(lik_data, generate_ggplot = FALSE, plot_ggplot = FALSE)
 
 # ResIN re-exports network::as.network()
 net <- as.network.ResIN(res) ## alternatively: as.network(res)
-net
+class(net)
 
 }

@@ -171,7 +171,7 @@ ResIN_out <- ResIN(Core_Items, left_anchor = "legal_abort_++",
 
 ## Node coloring options & visual enhancements
 
-So far so good. The above plots nicely reveal the familiar unidimensional spectrum in US politics with item responses in favor of welfare spending, protecting the environment, and protecting abortion rights on the left and their inverse positions on the political right. However, the graph also shows that the left-leaning attitude cluster appears much more consolidated; left-wingers (strongly) agree much more frequently and consistently than respondents on the opposite end of the ideological aisle. But what about the moderates? Let's try to reproduce figure 2a in [Lüders et.al.'s (2024, p. 45)](https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665) to get some more clarity on them.
+So far so good. The above plots nicely reveal the familiar uni-dimensional spectrum in US politics with item responses in favor of welfare spending, protecting the environment, and protecting abortion rights on the left and their inverse positions on the political right. However, the graph also shows that the left-leaning attitude cluster appears much more consolidated; left-wingers (strongly) agree much more frequently and consistently than respondents on the opposite end of the ideological aisle. But what about the moderates? Let's try to reproduce figure 2a in [Lüders et.al.'s (2024, p. 45)](https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.12665) to get some more clarity on them.
 
 ```{r figure 2a, fig.width = 7.2, fig.height = 4}
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices", 
@@ -440,7 +440,7 @@ ResIN_gephi <- as.gephi(ResIN_out, file = "ResIN_gephi.csv", dont_save_csv = TRU
 ```
 
 ## Summary & other features
-`ResIN()` has a lot more to offer and we hope that you'll enjoy experimenting with some of the additional features not covered in this tutorial. For instance, `ResIN()` natively supports analysis with survey weights (see `weights`-argument), LASSO-regularization via `EBICglasso()`, automatic removal of  non-significant edges (`remove_nonsignificant`). Please feel free to reach out to the team of developers at https://www.resinmethod.net/ and [leave comments or feedback](https://www.resinmethod.net/contact/). We hope you enjoyed this tutorial and that you'll give `ResIN()` a try in your next project.
+`ResIN()` has a lot more to offer and we hope that you'll enjoy experimenting with some of the additional features not covered in this tutorial. For instance, `ResIN()` natively supports analysis with survey weights (see `weights`-argument) and automatic removal of  non-significant edges (`remove_nonsignificant`). Please feel free to reach out to the team of developers at https://www.resinmethod.net/ and [leave comments or feedback](https://www.resinmethod.net/contact/). We hope you enjoyed this tutorial and that you'll give `ResIN()` a try in your next project.
 
 ## References
 Carpentras, D., Lüders, A., & Quayle, M. (2022). Mapping the global opinion space to explain anti-vaccine attraction. Scientific reports, 12(1), 6188.
