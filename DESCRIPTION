@@ -20,7 +20,6 @@ Imports:
     fastDummies,
     qgraph,
     igraph,
-    wCorr,
     DirectedClustering,
     foreach,
     parallelly,

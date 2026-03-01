@@ -11,8 +11,8 @@
 #' @param offset Optional off-set to correlation edges to manually adjust for over- or underfitting the network. Defaults to \code{0}. Supplying a value between -1 and 0 globally reduces edge values by that amount, leading to the elimination of all positive  edges below that value, resulting in a more sparse network. (However, we strongly recommend setting remove_nonsignificant=TRUE instead for a more principled approach to ensuring optimal network sparsity as global thresholds have heuristic value at best). Alternatively, a value between 0 and 1 enforces a positive offset, resulting in more dense (but potentially overfitted) networks.
 #' @param ResIN_scores Logical; should spatial scores be calculated for every individual. Defaults to TRUE. Function obtains the mean positional score on the major (x-axis) and minor (y-axis). Current package implementation also provides empirical Bayesian scores via James-Stein shrinkage (\code{eb_x}) and heuristic shrinkage (\code{heur_x}) scores. Please refer to the package [vignette]https://pwarncke77.github.io/ResIN/articles/ResIN-VIGNETTE.html#spatial-interpretation-and-individual-latent-space-scores for further details.
 #' @param remove_nonsignificant Logical; should non-significant edges be removed from the ResIN network? Defaults to FALSE. For weighted Pearson correlations, p-values are approximated using a weighted effective sample size. For currently unsupported polychoric configurations, ResIN falls back to Pearson and issues a warning.
-#' @param remove_nonsignificant_method Character scalar specifying how p-values are thresholded when \code{remove_nonsignificant = TRUE}. Defaults to \code{"default"}, which prunes edges with raw p-values greater than \code{sign_threshold} (i.e., retains edges with \code{p <= sign_threshold}). If set to \code{"fdr"}, p-values are adjusted using the Benjamini--Hochberg procedure and edges are retained only if the adjusted p-value is less than or equal to \code{sign_threshold}, interpreted as the target FDR level \eqn{q}. This provides multiplicity control across all tested edges and is typically more principled than using unadjusted p-values, but may be slightly slower. See \code{\link[stats]{p.adjust}} for details.
-#' @param sign_threshold Numeric scalar controlling the pruning threshold used when \code{remove_nonsignificant = TRUE}. For \code{remove_nonsignificant_method = "default"}, this is the raw p-value cutoff (e.g., \code{0.05}). For \code{remove_nonsignificant_method = "fdr"}, this is the target false discovery rate level \eqn{q} (e.g., \code{0.05}), applied to Benjamini--Hochberg adjusted p-values.
+#' @param remove_nonsignificant_method Character scalar specifying how p-values are thresholded when \code{remove_nonsignificant = TRUE}. Defaults to \code{"default"}, which prunes edges with raw p-values greater than \code{sign_threshold} (i.e., retains edges with \code{p <= sign_threshold}). If set to \code{"bh"}, p-values are adjusted using the Benjamini--Hochberg procedure; edges are retained only if the adjusted p-value is less than or equal to \code{sign_threshold}, interpreted as the target false discovery rate \eqn{q}. This provides multiplicity control across all tested edges and is typically more principled than using unadjusted p-values, but may be slightly slower. See \code{\link[stats]{p.adjust}} for details.
+#' @param sign_threshold Numeric scalar controlling the pruning threshold used when \code{remove_nonsignificant = TRUE}. For \code{remove_nonsignificant_method = "default"}, this is the raw p-value cutoff (e.g., \code{0.05}). For \code{remove_nonsignificant_method = "bh"}, this is the target false discovery rate level \eqn{q} (e.g., \code{0.05}), applied to Benjamini--Hochberg adjusted p-values.
 #' @param node_covars An optional character string selecting quantitative covariates that can be used to enhance ResIN analysis. Typically, these covariates provide grouped summary statistics for item response nodes. (E.g.: What is the average age or income level of respondents who selected a particular item response?) Variable names specified here should match existing columns in \code{df}.
 #' @param node_costats If any \code{node_covars} are selected, what summary statistics should be estimated from them? Argument should be a character vector and call a base-R function. (E.g. \code{"mean"}, \code{"median"}, \code{"sd"}). Each element specified in \code{node_costats} is applied to each element in \code{node_covars} and the out-put is stored as a node-level summary statistic in the \code{ResIN_nodeframe}. The extra columns in \code{ResIN_nodeframe} are labeled according to the following template: "covariate name"_"statistic". So for the respondents mean age, the corresponding column in \code{ResIN_nodeframe} would be labeled as "age_mean".
 #' @param network_stats Should common node- and graph level network statistics be extracted? Calls \code{qgraph::centrality_auto} and \code{DirectedClustering::ClustF} to the ResIN graph object to extract node-level betweenness, closeness, strength centrality, as well as the mean and standard deviation of these scores at the network level. Also estimates network expected influence, average path length, and global clustering coefficients. Defaults to TRUE. Set to FALSE if estimation takes a long time.
@@ -54,7 +54,6 @@
 #' @importFrom fastDummies "dummy_cols"
 #' @importFrom qgraph "qgraph" "centrality_auto" "qgraph.layout.fruchtermanreingold"
 #' @importFrom igraph "graph_from_adjacency_matrix" "graph_from_data_frame" "V" "vcount" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership"
-#' @importFrom wCorr "weightedCorr"
 #' @importFrom DirectedClustering "ClustF"
 #' @importFrom psych "corr.test" "tetrachoric"
 #' @importFrom shadowtext "geom_shadowtext"
@@ -272,22 +271,6 @@ ResIN <- ResIN <- function(
     stop("missing_cor must be either 'pairwise' or 'listwise'.", call. = FALSE)
   }
 
-  ## validate / normalize weights # (retired)
-  # if (!is.null(weights)) {
-  #   if (!is.numeric(weights) || length(weights) != nrow(df)) {
-  #     stop("weights must be NULL or a numeric vector of length nrow(df).", call. = FALSE)
-  #   }
-  #   if (any(!is.finite(weights))) {
-  #     stop("weights must contain only finite values.", call. = FALSE)
-  #   }
-  #   if (any(weights < 0)) {
-  #     stop("weights must be non-negative.", call. = FALSE)
-  #   }
-  #   if (all(weights == 0)) {
-  #     stop("weights cannot be all zero.", call. = FALSE)
-  #   }
-  # }
-
   # declare item id per dummy column
   item_id_per_dummycol <- rep(NA_integer_, ncol(df_dummies))
   j <- 1L
@@ -398,7 +381,7 @@ ResIN <- ResIN <- function(
       xi <- X[[i]]
 
       for (j in i:p) {
-        # skip same-item correlations (they will be forced to zero anyway)
+        # skip same-item correlations
         if (!is.null(item_id) && item_id[i] == item_id[j]) {
           if (isTRUE(need_p)) {
             P[i, j] <- P[j, i] <- 0
@@ -412,7 +395,6 @@ ResIN <- ResIN <- function(
           if (isTRUE(need_p)) {
             P[i, j] <- 0
             N_pair[i, j] <- if (missing == "listwise") nrow(X) else sum(is.finite(xi) & is.finite(w) & w > 0)
-            # for diagonal, n_eff is not substantively used
             ww <- w[is.finite(xi) & is.finite(w) & w > 0]
             if (length(ww) > 0) {
               wwn <- ww / sum(ww)
@@ -452,7 +434,7 @@ ResIN <- ResIN <- function(
     pvec2 <- pvec
     pvec2[bad] <- 1
 
-    if (method == "fdr") {
+    if (method == "bh") {
       pvec2 <- stats::p.adjust(pvec2, method = "BH")
     }
 
