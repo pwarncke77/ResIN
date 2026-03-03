@@ -30,13 +30,14 @@
 #' @param response_levels An optional character vector specifying the correct order of global response levels. Only useful if all node-items follow the same convention (e.g. ranging from "strong disagreement" to "strong agreement"). The supplied vector should have the same length as the total number of response options and supply these (matching exactly) in the correct order. E.g. c("Strongly Agree", "Somewhat Agree", "Neutral", "Somewhat Disagree", "Strongly Disagree"). Defaults to NULL.
 #' @param plot_title Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".
 #' @param bipartite Logical; should a bipartite graph be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) bipartite graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} are generated if set to TRUE.
+#' @param bipartite_edge_overlay Character scalar controlling which edges are drawn in the bipartite plot when \code{bipartite = TRUE}. One of \code{"none"} (no edges), \code{"ResIN"} (only the original ResIN edges among response nodes, styled via \code{plot_edgestat} when supplied), \code{"bipartite"} (only participant--response edges), or \code{"both"} (ResIN edges as a base layer plus bipartite edges on top).
 #' @param remove_negative Logical; should all negative correlations be removed? Defaults to TRUE (highly recommended). Setting to FALSE makes it impossible to estimate a force-directed network layout. Function will use igraph::layout_nicely instead.
 #' @param save_input Logical; should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.
 #' @param seed Random seed for force-directed algorithm. Defaults to NULL (no seed is set.) If scalar integer is supplied, that seed will be set prior to analysis.
 #' @param EBICglasso Retired as of ResIN 2.3.0 and ignored.
 #' @param EBICglasso_arglist Retired as of ResIN 2.3.0 and ignored.
 #'
-#' @return An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}), and centralization (\code{graph_centralization}). Further, a \code{bipartite_output} list which includes an \code{igraph} class bipartite graph (\code{bipartite_igraph}), a data frame, \code{coordinate_df}, with spatial coordinates of respondents, and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} is optionally generated. Lastly, the output includes a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}). For reproducibility, (\code{aux_objects$meta} stores a numeric dataframe identifier (\code{df_id}, the random seed, call, and the (\code{ResIN} package version used to create the object.”
+#' @return An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}), and centralization (\code{graph_centralization}). Further, a \code{bipartite_output} list which includes an \code{igraph} class bipartite graph (\code{bipartite_igraph}), a data frame, \code{coordinate_df}, with spatial coordinates of respondents, and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} is optionally generated. Lastly, the output includes a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), an alternate vrsion of the adjacency matrix with all negative edges retained, a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}). For reproducibility, (\code{aux_objects$meta} stores a numeric dataframe identifier (\code{df_id}, the random seed, call, and the (\code{ResIN} package version used to create the object.”
 #'
 #' @examples
 #'
@@ -52,6 +53,7 @@
 #' @importFrom tidyr "pivot_longer"
 #' @importFrom stats "complete.cases" "cor" "sd" "prcomp" "cov" "princomp" "pt"
 #' @importFrom fastDummies "dummy_cols"
+#' @importFrom utils "packageVersion" "getFromNamespace" "capture.output"
 #' @importFrom qgraph "qgraph" "centrality_auto" "qgraph.layout.fruchtermanreingold"
 #' @importFrom igraph "graph_from_adjacency_matrix" "graph_from_data_frame" "V" "vcount" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership"
 #' @importFrom DirectedClustering "ClustF"
@@ -89,6 +91,7 @@ ResIN <- ResIN <- function(
     response_levels = NULL,
     plot_title = NULL,
     bipartite = FALSE,
+    bipartite_edge_overlay = c("bipartite", "none", "ResIN", "both"),
     save_input = TRUE,
     remove_negative = TRUE,
     EBICglasso = FALSE,
@@ -130,6 +133,7 @@ ResIN <- ResIN <- function(
       response_levels = response_levels,
       plot_title = plot_title,
       bipartite = bipartite,
+      bipartite_edge_overlay = bipartite_edge_overlay,
       save_input = save_input,
       seed = seed
     )
@@ -138,7 +142,7 @@ ResIN <- ResIN <- function(
   }
 
   if(!is.null(seed)){
-  set.seed(seed)
+    set.seed(seed)
   }
 
   ## Versioning
@@ -178,6 +182,8 @@ ResIN <- ResIN <- function(
 
   invisible(EBICglasso)
   invisible(EBICglasso_arglist)
+
+
 
   # Actual begin of ResIN algorithm:
   weights_name <- NULL
@@ -662,8 +668,8 @@ ResIN <- ResIN <- function(
   }
 
   if(!is.null(weights)) {
-  cor_engine_details$weights_from_df <- weights_from_df
-  cor_engine_details$weights_name <- weights_name
+    cor_engine_details$weights_from_df <- weights_from_df
+    cor_engine_details$weights_name <- weights_name
   }
 
   # Safety check
@@ -685,6 +691,8 @@ ResIN <- ResIN <- function(
     res_in_cor[idx, idx] <- 0
     if (!is.null(res_in_p)) res_in_p[idx, idx] <- 0
   }
+
+  res_in_cor_neg <-  res_in_cor
 
   ## Removing NA's and negatives
   if (remove_negative == TRUE) {
@@ -714,7 +722,7 @@ ResIN <- ResIN <- function(
     rownames(graph_layout) <- rownames(res_in_cor)
     if(!is.null(left_anchor)) {
       if(graph_layout[left_anchor,][1] > mean(graph_layout[,1], na.rm = T)) {
-      graph_layout[,1] <- -1*graph_layout[,1]
+        graph_layout[,1] <- -1*graph_layout[,1]
       }
     }
   }
@@ -754,7 +762,7 @@ ResIN <- ResIN <- function(
   if(network_stats==TRUE) {
     edgelist_frame$from_to <- paste(edgelist_frame$from, edgelist_frame$to, sep = "_")
     node_net_stats$edge.betweenness.centrality$from_to <- paste(node_net_stats$edge.betweenness.centrality$from,
-                                    node_net_stats$edge.betweenness.centrality$to, sep = "_")
+                                                                node_net_stats$edge.betweenness.centrality$to, sep = "_")
 
     node_net_stats$edge.betweenness.centrality$from <- NULL
     node_net_stats$edge.betweenness.centrality$to <- NULL
@@ -946,126 +954,126 @@ ResIN <- ResIN <- function(
     ResIN_ggplot <- "not generated"
   } else {
 
-  if(is.null(plot_title)){
-    plot_title <- paste("ResIN plot")
-  }
+    if(is.null(plot_title)){
+      plot_title <- paste("ResIN plot")
+    }
 
-  ## generating base graph
-  ResIN_ggplot <- ggplot2::ggplot()+
-    ggplot2::coord_fixed(ratio=1, x = c(min(edgelist_frame$x-1.5), max(edgelist_frame$x+1.5)),
-                y = c(min(edgelist_frame$y-1.5), max(edgelist_frame$y+1.5)))
+    ## generating base graph
+    ResIN_ggplot <- ggplot2::ggplot()+
+      ggplot2::coord_fixed(ratio=1, x = c(min(edgelist_frame$x-1.5), max(edgelist_frame$x+1.5)),
+                           y = c(min(edgelist_frame$y-1.5), max(edgelist_frame$y+1.5)))
 
-  ### Adding edge-weights if desired
-  if(is.null(plot_edgestat)){
-  ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_curve(ggplot2::aes(x = edgelist_frame$from.x, xend = edgelist_frame$to.x, y = edgelist_frame$from.y, yend = edgelist_frame$to.y), curvature = 0.2, color = "black", alpha = 0.25)
-  }else{
-    edgelist_frame <- edgelist_frame[order(edgelist_frame[, plot_edgestat], decreasing = FALSE), ]
-    ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_curve(ggplot2::aes(x = edgelist_frame$from.x, xend = edgelist_frame$to.x, y = edgelist_frame$from.y, yend = edgelist_frame$to.y, linewidth = edgelist_frame[, plot_edgestat]), curvature = 0.2, color = "black", alpha = 0.25)+
-      ggplot2::scale_linewidth(range = c(0, 4))+
-      ggplot2::labs(linewidth = paste(plot_edgestat))
-  }
+    ### Adding edge-weights if desired
+    if(is.null(plot_edgestat)){
+      ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_curve(ggplot2::aes(x = edgelist_frame$from.x, xend = edgelist_frame$to.x, y = edgelist_frame$from.y, yend = edgelist_frame$to.y), curvature = 0.2, color = "black", alpha = 0.25)
+    }else{
+      edgelist_frame <- edgelist_frame[order(edgelist_frame[, plot_edgestat], decreasing = FALSE), ]
+      ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_curve(ggplot2::aes(x = edgelist_frame$from.x, xend = edgelist_frame$to.x, y = edgelist_frame$from.y, yend = edgelist_frame$to.y, linewidth = edgelist_frame[, plot_edgestat]), curvature = 0.2, color = "black", alpha = 0.25)+
+        ggplot2::scale_linewidth(range = c(0, 4))+
+        ggplot2::labs(linewidth = paste(plot_edgestat))
+    }
 
-  if(plot_responselabels==FALSE){
-  ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_point(ggplot2::aes(x = node_frame$x, y = node_frame$y))
-  } else {
-  ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names), size = 3.8)
-  }
-
-  ResIN_ggplot <- ResIN_ggplot+
-    ggplot2::ggtitle(plot_title)+
-    ggplot2::theme_classic()+
-    ggplot2::theme(axis.line = ggplot2::element_blank(), axis.text.x = ggplot2::element_blank(), axis.title.x = ggplot2::element_blank(),
-          axis.text.y = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(),
-          axis.ticks = ggplot2::element_blank(), panel.grid.major = ggplot2::element_blank(),
-          panel.grid.minor = ggplot2::element_blank(), legend.position = "bottom", legend.box = "vertical",
-          legend.text = ggplot2::element_blank(), plot.title = ggplot2::element_text(hjust = 0.5, size=15))
-
-  ## function to remove layers
-  remove_layer <- function(ggplot_obj, layer_index) {
-    ggplot_obj$layers <- ggplot_obj$layers[-layer_index]
-    return(ggplot_obj)
-  }
-
-  ## Different coloring options:
-  if(!is.null(plot_whichstat)){
-
-  ### Color by clusters:
-  if(plot_whichstat=="cluster") {
-    if(detect_clusters==FALSE) {
-      stop("You must set detect_clusters to TRUE in order to visualize node clusters")
-      }
-    ResIN_ggplot <- remove_layer(ResIN_ggplot, c(2,3))
     if(plot_responselabels==FALSE){
-      ResIN_ggplot <- ResIN_ggplot+
-        ggplot2::geom_point(ggplot2::aes(x = node_frame$x, y = node_frame$y, fill = as.factor(node_frame$cluster)),
-                            shape = 21, size = 3)}else{
-      ResIN_ggplot <- ResIN_ggplot +
-        shadowtext::geom_shadowtext(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
-                                      color = as.factor(node_frame$cluster)), size = 3.8, bg.r = 0.1)
-      }
-    ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_brewer(palette = color_palette, direction = direction) +
-      ggplot2::scale_fill_brewer(palette = color_palette, direction = direction) +
-      ggplot2::labs(color = "Cluster membership", fill = "Cluster membership")+
-      ggplot2::theme(legend.text = ggplot2::element_text(size=10))
-  }
+      ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_point(ggplot2::aes(x = node_frame$x, y = node_frame$y))
+    } else {
+      ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names), size = 3.8)
+    }
 
-  if(plot_whichstat=="choices"){
-  ResIN_ggplot <- remove_layer(ResIN_ggplot, c(2,3))
-  if(plot_responselabels==FALSE){
     ResIN_ggplot <- ResIN_ggplot+
-    ggplot2::geom_point(ggplot2::aes(x = node_frame$x, y = node_frame$y, fill = node_frame$choices),
-                        shape = 21, size = 3)}else{
-    ResIN_ggplot <- ResIN_ggplot +
-        shadowtext::geom_shadowtext(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
-                                      color = node_frame$choices), size = 3.8, bg.r = 0.1)
-      }
-  ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_brewer(palette = color_palette, direction = direction) +
-    ggplot2::scale_fill_brewer(palette = color_palette, direction = direction) +
-    ggplot2::labs(color = "Response choices", fill = "Response choices")+
-    ggplot2::theme(legend.text = ggplot2::element_text(size=10))
-  }
+      ggplot2::ggtitle(plot_title)+
+      ggplot2::theme_classic()+
+      ggplot2::theme(axis.line = ggplot2::element_blank(), axis.text.x = ggplot2::element_blank(), axis.title.x = ggplot2::element_blank(),
+                     axis.text.y = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank(),
+                     axis.ticks = ggplot2::element_blank(), panel.grid.major = ggplot2::element_blank(),
+                     panel.grid.minor = ggplot2::element_blank(), legend.position = "bottom", legend.box = "vertical",
+                     legend.text = ggplot2::element_blank(), plot.title = ggplot2::element_text(hjust = 0.5, size=15))
 
-  ### Coloring by node-level centrality stats:
-  if(plot_whichstat %in% c("Strength", "Betweenness", "Closeness", "ExpectedInfluence")){
-    if(network_stats==FALSE) {
-      stop("You must set network_stats to TRUE in order to visualize a particular, node-level centrality metric.")
+    ## function to remove layers
+    remove_layer <- function(ggplot_obj, layer_index) {
+      ggplot_obj$layers <- ggplot_obj$layers[-layer_index]
+      return(ggplot_obj)
     }
 
-    node_frame <- node_frame[order(node_frame[, plot_whichstat], decreasing = FALSE), ]
+    ## Different coloring options:
+    if(!is.null(plot_whichstat)){
 
-    ResIN_ggplot <- remove_layer(ResIN_ggplot, c(2,3))
-    if(plot_responselabels==FALSE){
-      ResIN_ggplot <- ResIN_ggplot+
-      ggplot2::geom_point(ggplot2::aes(x = node_frame$x, y = node_frame$y, fill = node_frame[, plot_whichstat]),
-                          shape = 21, size = 3)}else{
-      ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y,
-                                              label = node_frame$node_names, color = node_frame[, plot_whichstat]), size = 3.8)
+      ### Color by clusters:
+      if(plot_whichstat=="cluster") {
+        if(detect_clusters==FALSE) {
+          stop("You must set detect_clusters to TRUE in order to visualize node clusters")
         }
-    ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_distiller(palette = color_palette, direction = direction) +
-      ggplot2::scale_fill_distiller(palette = color_palette, direction = direction)+
-      ggplot2::labs(color = plot_whichstat, fill = plot_whichstat)+
-      ggplot2::theme(legend.text = ggplot2::element_text(size=10))
-    }
+        ResIN_ggplot <- remove_layer(ResIN_ggplot, c(2,3))
+        if(plot_responselabels==FALSE){
+          ResIN_ggplot <- ResIN_ggplot+
+            ggplot2::geom_point(ggplot2::aes(x = node_frame$x, y = node_frame$y, fill = as.factor(node_frame$cluster)),
+                                shape = 21, size = 3)}else{
+                                  ResIN_ggplot <- ResIN_ggplot +
+                                    shadowtext::geom_shadowtext(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
+                                                                             color = as.factor(node_frame$cluster)), size = 3.8, bg.r = 0.1)
+                                }
+        ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_brewer(palette = color_palette, direction = direction) +
+          ggplot2::scale_fill_brewer(palette = color_palette, direction = direction) +
+          ggplot2::labs(color = "Cluster membership", fill = "Cluster membership")+
+          ggplot2::theme(legend.text = ggplot2::element_text(size=10))
+      }
 
-    ### Coloring by co-stats:
-    if(!(plot_whichstat %in% c("cluster", "choices", "Strength", "Betweenness", "Closeness", "ExpectedInfluence"))){
-      if(is.null(node_covars) | is.null(node_costats)) {
-        stop("You must select at least one node level covariate (node_covars) and specify at least one summary statistic (node_costats) to be able to visualize the latter.")
+      if(plot_whichstat=="choices"){
+        ResIN_ggplot <- remove_layer(ResIN_ggplot, c(2,3))
+        if(plot_responselabels==FALSE){
+          ResIN_ggplot <- ResIN_ggplot+
+            ggplot2::geom_point(ggplot2::aes(x = node_frame$x, y = node_frame$y, fill = node_frame$choices),
+                                shape = 21, size = 3)}else{
+                                  ResIN_ggplot <- ResIN_ggplot +
+                                    shadowtext::geom_shadowtext(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
+                                                                             color = node_frame$choices), size = 3.8, bg.r = 0.1)
+                                }
+        ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_brewer(palette = color_palette, direction = direction) +
+          ggplot2::scale_fill_brewer(palette = color_palette, direction = direction) +
+          ggplot2::labs(color = "Response choices", fill = "Response choices")+
+          ggplot2::theme(legend.text = ggplot2::element_text(size=10))
       }
-      ResIN_ggplot <- remove_layer(ResIN_ggplot, c(2,3))
-      if(plot_responselabels==FALSE){
-      ResIN_ggplot <- ResIN_ggplot+
-        ggplot2::geom_point(ggplot2::aes(x = node_frame$x, y = node_frame$y, fill = node_frame[, plot_whichstat]),
-                            shape = 21, size = 3)}else{
-      ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
-                                                                       color = node_frame[, plot_whichstat]), size = 3.8)
+
+      ### Coloring by node-level centrality stats:
+      if(plot_whichstat %in% c("Strength", "Betweenness", "Closeness", "ExpectedInfluence")){
+        if(network_stats==FALSE) {
+          stop("You must set network_stats to TRUE in order to visualize a particular, node-level centrality metric.")
+        }
+
+        node_frame <- node_frame[order(node_frame[, plot_whichstat], decreasing = FALSE), ]
+
+        ResIN_ggplot <- remove_layer(ResIN_ggplot, c(2,3))
+        if(plot_responselabels==FALSE){
+          ResIN_ggplot <- ResIN_ggplot+
+            ggplot2::geom_point(ggplot2::aes(x = node_frame$x, y = node_frame$y, fill = node_frame[, plot_whichstat]),
+                                shape = 21, size = 3)}else{
+                                  ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y,
+                                                                                                 label = node_frame$node_names, color = node_frame[, plot_whichstat]), size = 3.8)
+                                }
+        ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_distiller(palette = color_palette, direction = direction) +
+          ggplot2::scale_fill_distiller(palette = color_palette, direction = direction)+
+          ggplot2::labs(color = plot_whichstat, fill = plot_whichstat)+
+          ggplot2::theme(legend.text = ggplot2::element_text(size=10))
       }
-      ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_distiller(palette = color_palette, direction = direction) +
-        ggplot2::scale_fill_distiller(palette = color_palette, direction = direction)+
-        ggplot2::labs(color = plot_whichstat, fill = plot_whichstat)+
-        ggplot2::theme(legend.text = ggplot2::element_text(size=10))
+
+      ### Coloring by co-stats:
+      if(!(plot_whichstat %in% c("cluster", "choices", "Strength", "Betweenness", "Closeness", "ExpectedInfluence"))){
+        if(is.null(node_covars) | is.null(node_costats)) {
+          stop("You must select at least one node level covariate (node_covars) and specify at least one summary statistic (node_costats) to be able to visualize the latter.")
+        }
+        ResIN_ggplot <- remove_layer(ResIN_ggplot, c(2,3))
+        if(plot_responselabels==FALSE){
+          ResIN_ggplot <- ResIN_ggplot+
+            ggplot2::geom_point(ggplot2::aes(x = node_frame$x, y = node_frame$y, fill = node_frame[, plot_whichstat]),
+                                shape = 21, size = 3)}else{
+                                  ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
+                                                                                                 color = node_frame[, plot_whichstat]), size = 3.8)
+                                }
+        ResIN_ggplot <- ResIN_ggplot + ggplot2::scale_colour_distiller(palette = color_palette, direction = direction) +
+          ggplot2::scale_fill_distiller(palette = color_palette, direction = direction)+
+          ggplot2::labs(color = plot_whichstat, fill = plot_whichstat)+
+          ggplot2::theme(legend.text = ggplot2::element_text(size=10))
+      }
     }
-   }
   }
 
   ## Plotting ggplot graph:
@@ -1073,11 +1081,13 @@ ResIN <- ResIN <- function(
     print(ResIN_ggplot)
   }
 
-  ## Bipartite graph (new as of version 2.1.0)
+  # Bipartite graph (new as of version 2.3.1)
+  bipartite_edge_overlay <- match.arg(bipartite_edge_overlay)
+
   if (bipartite) {
     if (!is.null(seed)) set.seed(seed)
 
-    ## Long format incidence table
+    ## Long incidence table (Participant -> Response node)
     df_long <- df_dummies %>%
       dplyr::mutate(participant = as.character(seq_len(nrow(.)))) %>%
       tidyr::pivot_longer(
@@ -1087,38 +1097,98 @@ ResIN <- ResIN <- function(
       ) %>%
       dplyr::filter(.data[["value"]] == 1)
 
-    ## Anchor coordinates
-    anchors <- node_frame %>%
-      dplyr::select(dplyr::all_of(c("x", "y", "node_names")))
-
-    ## Vertex data frame
-    vertex_df <- data.frame(
-      name = unique(c(df_long$participant,
-                      df_long$item,
-                      anchors$node_names)),
+    ## Bipartite edge list
+    ResIN_edgelist_bipartite <- data.frame(
+      from   = df_long$participant,
+      to     = df_long$item,
+      weight = 1,
       stringsAsFactors = FALSE
     )
 
-    ## Build igraph object
+    ## Base vertex table (participants + response nodes)
+    ### Anchor coordinates for response nodes
+    anchors <- node_frame %>%
+      dplyr::select(dplyr::all_of(c("x", "y", "node_names")))
+
+    vertex_names <- unique(c(df_long$participant, df_long$item, anchors$node_names))
+
+    vertex_df <- data.frame(
+      name = vertex_names,
+      stringsAsFactors = FALSE
+    )
+
+    ## Identify node type
+    vertex_df$node_type <- ifelse(vertex_df$name %in% anchors$node_names, "Response node", "Participant")
+
+    ## Attach metadata to nodes
+    ### Response-node metadata: merge full node_frame columns
+    resp_meta <- node_frame
+    resp_meta$name <- resp_meta$node_names
+    resp_meta$node_names <- NULL
+
+    vertex_df <- dplyr::left_join(vertex_df, resp_meta, by = "name")
+
+    # Participant-level covariates: raw values from df for node_covars
+    if (!is.null(node_covars) && length(node_covars) > 0) {
+      # Make sure requested covars exist
+      node_covars_ok <- node_covars[node_covars %in% names(df)]
+      if (length(node_covars_ok) > 0) {
+        part_meta <- data.frame(
+          name = as.character(seq_len(nrow(df))),
+          stringsAsFactors = FALSE
+        )
+        part_meta <- cbind(part_meta, df[, node_covars_ok, drop = FALSE])
+        vertex_df <- dplyr::left_join(vertex_df, part_meta, by = "name")
+      }
+    }
+
+    ## Build bipartite igraph (store node attrs)
     gt <- igraph::graph_from_data_frame(
       dplyr::select(df_long, dplyr::all_of(c("participant", "item"))),
       directed = FALSE,
       vertices = vertex_df
     )
 
-    ## Mark anchor nodes (needed for color)
-    is_anchor <- igraph::V(gt)$name %in% anchors$node_names
-    gt        <- igraph::set_vertex_attr(
-      gt, "node_type",
-      value = ifelse(is_anchor, "Response node", "Participant")
-    )
+    # Ensure node_type is a vertex attribute
+    igraph::V(gt)$node_type <- vertex_df$node_type[match(igraph::V(gt)$name, vertex_df$name)]
 
-    ## Fix anchor positions & run Fruchterman–Reingold
+    # Optional: set edge weights
+    igraph::E(gt)$weight <- 1
+
+    ## Bipartite clustering (reuse same user-selected algorithm)
+    bi_cluster <- NULL
+    bi_cluster_method_used <- NA_character_
+
+    if (isTRUE(detect_clusters)) {
+      # Default method: leading eigen
+      cm <- cluster_method
+      if (is.null(cm)) cm <- "cluster_leading_eigen"
+      bi_cluster_method_used <- cm
+
+      fun <- tryCatch(utils::getFromNamespace(cm, "igraph"), error = function(e) NULL)
+
+      if (!is.null(fun)) {
+        bi_cluster <- tryCatch(
+          do.call(fun, c(list(graph = gt), cluster_arglist)),
+          error = function(e) NULL
+        )
+      }
+    }
+
+    if (!is.null(bi_cluster)) {
+      igraph::V(gt)$cluster <- as.integer(igraph::membership(bi_cluster))
+    } else {
+      igraph::V(gt)$cluster <- NA_integer_
+    }
+
+    ## Layout: fix response nodes to their ResIN coordinates
     idx_fix <- match(anchors$node_names, igraph::V(gt)$name)
 
     n    <- igraph::vcount(gt)
     minx <- rep(-Inf, n);  maxx <- rep( Inf, n)
     miny <- rep(-Inf, n);  maxy <- rep( Inf, n)
+
+    # Fix anchors
     minx[idx_fix] <- maxx[idx_fix] <- anchors$x
     miny[idx_fix] <- maxy[idx_fix] <- anchors$y
 
@@ -1129,45 +1199,246 @@ ResIN <- ResIN <- function(
       niter = 3000
     )
 
-    ## Rotate
     bi_rot <- stats::princomp(lay)$scores
 
+    ## Store coordinates back into vertex_df and graph
+    vertex_df <- igraph::as_data_frame(gt, what = "vertices")
     vertex_df$x <- bi_rot[, 1]
     vertex_df$y <- bi_rot[, 2]
-    vertex_df$node_type <- igraph::vertex_attr(gt, "node_type")
 
-    ## Plot with ggraph
-    bipartite_graph <- ggraph::ggraph(
-      gt, layout = "manual",
-      x = vertex_df$x, y = vertex_df$y
-    ) +
-      ggraph::geom_edge_link(alpha = 0.25, colour = "grey60") +
+    igraph::V(gt)$x <- vertex_df$x
+    igraph::V(gt)$y <- vertex_df$y
+
+    ## Determine bipartite plot coloring based on plot_whichstat ----
+    plot_mode <- if (is.null(plot_whichstat)) "node_type" else plot_whichstat
+
+    # Helper: infer raw covariate name for participants from a node stat name like partisan_mean
+    infer_raw_covar <- function(stat_name, node_costats) {
+      if (is.null(node_costats) || length(node_costats) == 0) return(stat_name)
+      for (st in node_costats) {
+        suf <- paste0("_", st, "$")
+        if (grepl(suf, stat_name)) return(sub(suf, "", stat_name))
+      }
+      stat_name
+    }
+
+    # Initialize plot_val
+    igraph::V(gt)$plot_val <- NA
+    igraph::V(gt)$plot_grp <- NA
+
+    if (identical(plot_mode, "cluster")) {
+      ## color by bipartite clusters (if available); fallback to node_type
+      if (isTRUE(detect_clusters) && any(!is.na(igraph::V(gt)$cluster))) {
+        igraph::V(gt)$plot_grp <- as.factor(igraph::V(gt)$cluster)
+      } else {
+        igraph::V(gt)$plot_grp <- as.factor(igraph::V(gt)$node_type)
+      }
+    } else if (identical(plot_mode, "choices")) {
+      vtab <- igraph::as_data_frame(gt, what = "vertices")
+      igraph::V(gt)$plot_grp <- as.factor(vtab$choices)
+    } else {
+      # Try to treat plot_mode as a numeric covariate/statistic
+      vtab <- igraph::as_data_frame(gt, what = "vertices")
+
+      ## For response nodes: use node_frame column if it exists in vertex attrs
+      ## For participants: use raw df covariate if stat_name corresponds to node_costat
+      raw_name <- infer_raw_covar(plot_mode, node_costats)
+
+      resp_vals <- if (plot_mode %in% names(vtab)) vtab[[plot_mode]] else NA
+      part_vals <- if (raw_name %in% names(vtab)) vtab[[raw_name]] else NA
+
+      plot_val <- ifelse(vtab$node_type == "Response node", resp_vals, part_vals)
+      igraph::V(gt)$plot_val <- plot_val
+    }
+
+    pretty_algo <- function(cm) {
+      if (is.null(cm) || is.na(cm) || !nzchar(cm)) return(NULL)
+      out <- sub("^cluster_", "", cm)
+      out <- gsub("_", " ", out)
+      tools::toTitleCase(out)
+    }
+
+    algo_label <- pretty_algo(bi_cluster_method_used)
+
+    legend_title <- switch(
+      plot_mode,
+      "node_type" = "Node type",
+      "choices"   = "Response choice",
+      "cluster"   = if (!is.null(algo_label)) paste0("Cluster (", algo_label, ")") else "Cluster",
+      plot_mode   # fallback: use the plotted statistic name
+    )
+
+    ## Optionally add counts under legend title
+    if (identical(plot_mode, "cluster") && any(!is.na(igraph::V(gt)$cluster))) {
+
+      # Relying on vertex_df already in memory
+      vtab_counts <- igraph::as_data_frame(gt, what = "vertices")
+
+      tab <- table(vtab_counts$cluster, vtab_counts$node_type, useNA = "no")
+
+      p_cnt <- if ("Participant" %in% colnames(tab)) tab[, "Participant"] else rep(0L, nrow(tab))
+      r_cnt <- if ("Response node" %in% colnames(tab)) tab[, "Response node"] else rep(0L, nrow(tab))
+
+      cl <- rownames(tab)
+
+      counts_line <- paste0(
+        "P/R per cluster: ",
+        paste0(cl, "=", as.integer(p_cnt), "/", as.integer(r_cnt), collapse = "; ")
+      )
+
+      ## Putting counts on a second line in the legend title
+      legend_title <- paste0(legend_title, "\n", counts_line)
+    }
+
+    # Plot bipartite graph with ggraph
+    igraph::V(gt)$pt_size <- ifelse(igraph::V(gt)$node_type == "Response node", 3.2, 1.6)
+
+    ## choose node layer (ONLY the layer)
+    node_layer <- if (identical(plot_mode, "cluster") || identical(plot_mode, "choices")) {
+      ggraph::geom_node_point(
+        ggplot2::aes(
+          colour = .data[["plot_grp"]],
+          size   = .data[["pt_size"]],
+          shape  = .data[["node_type"]]
+        )
+      )
+    } else if (!is.null(plot_whichstat)) {
+      ggraph::geom_node_point(
+        ggplot2::aes(
+          colour = .data[["plot_val"]],
+          size   = .data[["pt_size"]],
+          shape  = .data[["node_type"]]
+        )
+      )
+    } else {
       ggraph::geom_node_point(
         ggplot2::aes(
           colour = .data[["node_type"]],
+          size   = .data[["pt_size"]],
           shape  = .data[["node_type"]]
-        ),
-        size = 2
-      ) +
-      ggplot2::scale_colour_manual(
-        name   = "Node type",
-        values = c("Participant"   = "steelblue",
-                   "Response node" = "tomato")
-      ) +
+        )
+      )
+    }
+
+    ## Optional base-layer: original ResIN edges appear underneath bipartite edges if plotted together
+    resin_edge_layer_scale <- NULL
+    resin_edge_layer <- NULL
+    bip_edge_layer   <- NULL
+
+    ## Helper function for coordinate lookup from the bipartite network layout
+    resin_edge_layer_scale <- NULL
+    coord_x <- setNames(vertex_df$x, vertex_df$name)
+    coord_y <- setNames(vertex_df$y, vertex_df$name)
+
+    ## ResIN edges drawn with bipartite coordinates
+    if (bipartite_edge_overlay %in% c("ResIN", "both")) {
+
+      ebase <- edgelist_frame
+
+      ## Ensuring endpoints named 'from' and 'to'
+      if (!all(c("from", "to") %in% names(ebase))) {
+        stop("Internal error: edgelist_frame must contain 'from' and 'to' for ResIN edge overlay.", call. = FALSE)
+      }
+
+      ## Map endpoints to bipartite x/y
+      from_chr <- as.character(ebase$from)
+      to_chr   <- as.character(ebase$to)
+
+      fx <- coord_x[from_chr]; fy <- coord_y[from_chr]
+      tx <- coord_x[to_chr];   ty <- coord_y[to_chr]
+
+      ## Keep only edges whose endpoints exist in the bipartite graph
+      ok <- is.finite(fx) & is.finite(fy) & is.finite(tx) & is.finite(ty)
+      eplot <- ebase[ok, , drop = FALSE]
+      eplot$from.x <- fx[ok]; eplot$from.y <- fy[ok]
+      eplot$to.x   <- tx[ok]; eplot$to.y   <- ty[ok]
+
+      if (nrow(eplot) == 0L) {
+        warning("bipartite_edge_overlay requested ResIN edges, but no ResIN endpoints were found in bipartite coordinates.", call. = FALSE)
+      } else {
+
+        ## Might want to add customizability here later
+        base_alpha <- 0.7
+        base_curv  <- 0.2
+        base_col   <- "black"
+
+        if (is.null(plot_edgestat) || !plot_edgestat %in% names(eplot)) {
+          resin_edge_layer <- ggplot2::geom_curve(
+            data = eplot,
+            ggplot2::aes(x = .data[["from.x"]], y = .data[["from.y"]],
+                         xend = .data[["to.x"]],   yend = .data[["to.y"]]),
+            curvature = base_curv,
+            colour    = base_col,
+            alpha     = base_alpha,
+            linewidth = 0.9,
+            inherit.aes = FALSE
+          )
+        } else {
+          ## ordering thin->thick so thick edges appear on top within the overlay
+          eplot <- eplot[order(eplot[[plot_edgestat]], decreasing = FALSE), , drop = FALSE]
+
+          resin_edge_layer <- ggplot2::geom_curve(
+            data = eplot,
+            ggplot2::aes(x = .data[["from.x"]], y = .data[["from.y"]],
+                         xend = .data[["to.x"]],   yend = .data[["to.y"]],
+                         linewidth = .data[[plot_edgestat]]),
+            curvature = base_curv,
+            colour    = base_col,
+            alpha     = base_alpha,
+            inherit.aes = FALSE
+          )
+          resin_edge_layer_scale <- ggplot2::scale_linewidth(range = c(0.2, 2.2), guide = "none")
+        }
+      }
+    }
+
+    ## Bipartite edges (participant-response)
+    if (bipartite_edge_overlay %in% c("bipartite", "both")) {
+      bip_edge_layer <- ggraph::geom_edge_link(alpha = 0.25, colour = "grey60")
+    }
+
+    ## Assembling the plot in the correct layer order
+    bipartite_graph <- ggraph::ggraph(
+      gt, layout = "manual",
+      x = igraph::V(gt)$x,
+      y = igraph::V(gt)$y
+    )
+
+    ## ResIN edges first (base layer)
+    if (!is.null(resin_edge_layer)) {
+      bipartite_graph <- bipartite_graph + resin_edge_layer
+    }
+    if (!is.null(resin_edge_layer_scale)) {
+      bipartite_graph <- bipartite_graph + resin_edge_layer_scale
+    }
+
+    ## Bipartite edges second (participant--response)
+    if (!is.null(bip_edge_layer)) {
+      bipartite_graph <- bipartite_graph + bip_edge_layer
+    }
+
+    ## Nodes on top + legend + theme
+    bipartite_graph <- bipartite_graph +
+      node_layer +
+      ggplot2::labs(colour = legend_title) +
+      ggplot2::scale_size_identity(guide = "none") +
       ggplot2::scale_shape_manual(
         name   = "Node type",
-        values = c("Participant"   = 16,
-                   "Response node" = 17)
+        values = c("Participant" = 16, "Response node" = 17)
       ) +
       ggplot2::theme_void(base_size = 11) +
       ggplot2::theme(legend.position = "bottom") +
       ggplot2::ggtitle("Bipartite ResIN graph")
 
     ## Return tidy output
+    ResIN_nodeframe_bipartite <- vertex_df
+
     bipartite_output <- list(
-      bipartite_igraph = gt,
-      coordinate_df    = vertex_df,
-      bipartite_ggraph = bipartite_graph
+      bipartite_igraph         = gt,
+      coordinate_df            = ResIN_nodeframe_bipartite[, c("name", "x", "y", "node_type"), drop = FALSE],
+      bipartite_ggraph         = bipartite_graph,
+      ResIN_edgelist_bipartite = ResIN_edgelist_bipartite,
+      ResIN_nodeframe_bipartite = ResIN_nodeframe_bipartite
     )
 
   } else {
@@ -1195,9 +1466,9 @@ ResIN <- ResIN <- function(
   # Exporting additional features:
   graph_stats <- list(structuration, centralization)
   meta <- list(call = match.call(), created = created, seed = seed, df_id = df_id, df_n = nrow(df), df_p = ncol(df), node_vars = node_vars, correlation = correlation_meta, ResIN_version = resin_version, R_version = r_version)
-  aux_objects <- list(res_in_cor, same_items, df_dummies, cluster_probs, max_cluster, ResIN_arglist, meta = meta)
+  aux_objects <- list(res_in_cor, res_in_cor_neg, same_items, df_dummies, cluster_probs, max_cluster, ResIN_arglist, meta = meta)
+  names(aux_objects) <- c("adj_matrix", "adj_matrix_neg", "same_items", "df_dummies", "cluster_probabilities", "max_clusterprob", "ResIN_arglist", "meta_information")
 
-  names(aux_objects) <- c("adj_matrix", "same_items", "df_dummies", "cluster_probabilities", "max_clusterprob", "ResIN_arglist", "meta_information")
   output <- list(edgelist_frame, node_frame, ResIN_ggplot, scores, graph_stats, aux_objects, bipartite_output)
   names(output) <- c("ResIN_edgelist", "ResIN_nodeframe", "ResIN_ggplot", "ResIN_scores", "graph_stats", "aux_objects", "bipartite_output")
 

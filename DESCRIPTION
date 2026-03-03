@@ -1,7 +1,7 @@
 Package: ResIN
 Type: Package
 Title: Conduct Response Item Network (ResIN) Analysis with Social Response Data
-Version: 2.3.0
+Version: 2.3.1
 Authors@R: c(person("Philip", "Warncke", email = "philip.warncke@ul.ie", role = c("cre","aut")), person("Dino", "Carpentras", role = "aut"), person("Adrian", "L\u00FCders", role = "aut"))
 Author: Philip Warncke [cre, aut], Dino Carpentras [aut], Adrian Lüders [aut]
 Maintainer: Philip Warncke <philip.warncke@ul.ie>
@@ -30,8 +30,7 @@ Imports:
     ggraph (>= 2.2.0),
     shadowtext (>= 0.1.4),
     tidygraph,
-    network,
-    readr
+    network
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
