@@ -37,6 +37,7 @@ ResIN(
   response_levels = NULL,
   plot_title = NULL,
   bipartite = FALSE,
+  bipartite_edge_overlay = c("bipartite", "none", "ResIN", "both"),
   save_input = TRUE,
   remove_negative = TRUE,
   EBICglasso = FALSE,
@@ -290,6 +291,15 @@ ResIN(
   plot-able `ggraph`-object called `bipartite_ggraph` are generated if
   set to TRUE.
 
+- bipartite_edge_overlay:
+
+  Character scalar controlling which edges are drawn in the bipartite
+  plot when `bipartite = TRUE`. One of `"none"` (no edges), `"ResIN"`
+  (only the original ResIN edges among response nodes, styled via
+  `plot_edgestat` when supplied), `"bipartite"` (only
+  participant–response edges), or `"both"` (ResIN edges as a base layer
+  plus bipartite edges on top).
+
 - save_input:
 
   Logical; should input data and function arguments be saved (this is
@@ -328,12 +338,13 @@ and centralization (`graph_centralization`). Further, a
 coordinates of respondents, and a plot-able `ggraph`-object called
 `bipartite_ggraph` is optionally generated. Lastly, the output includes
 a list of auxiliary objects, `aux_objects`, including the ResIN
-adjacency matrix (`adj_matrix`), a numeric vector detailing which item
-responses belong to which item (`same_items`), and the dummy-coded
-item-response data-frame (`df_dummies`). For reproducibility,
-(`aux_objects$meta` stores a numeric dataframe identifier (`df_id`, the
-random seed, call, and the (`ResIN` package version used to create the
-object.”
+adjacency matrix (`adj_matrix`), an alternate vrsion of the adjacency
+matrix with all negative edges retained, a numeric vector detailing
+which item responses belong to which item (`same_items`), and the
+dummy-coded item-response data-frame (`df_dummies`). For
+reproducibility, (`aux_objects$meta` stores a numeric dataframe
+identifier (`df_id`, the random seed, call, and the (`ResIN` package
+version used to create the object.”
 
 ## Examples
 

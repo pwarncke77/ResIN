@@ -1,6 +1,6 @@
 # Changelog
 
-## ResIN 2.3.0
+## ResIN 2.3.1
 
 ### Major changes
 
@@ -78,6 +78,37 @@
   are retained for compatibility and delegate to the new conversion
   methods where appropriate.
 
+### Improved Bipartite network estimation and plotting features
+
+- **Enhanced the optional bipartite output** (`bipartite = TRUE`) to
+  return tidy, analysis-ready tables in addition to graph objects:
+  - `ResIN_edgelist_bipartite`: participant–response edge list (one row
+    per observed response node selection).
+  - `ResIN_nodeframe_bipartite`: vertex table containing node
+    identifiers, node type (participant vs response node), layout
+    coordinates, and available metadata.
+- **Improved bipartite plotting**:
+  - Response nodes are now rendered larger than participant nodes for
+    improved visual separation.
+  - Bipartite plots now reuse key analytic settings from the main ResIN
+    workflow where applicable (e.g., covariate/cluster-based colouring
+    via `plot_whichstat`).
+  - When `plot_whichstat = "cluster"`, the legend title includes the
+    clustering algorithm and reports participant/response counts per
+    detected cluster.
+- **Added flexible edge overlay controls for bipartite plots** via
+  `bipartite_edge_overlay`:
+  - `"none"`: no edges drawn
+  - `"bipartite"`: draw participant–response edges only
+  - `"ResIN"`: draw the original ResIN (response–response) edges as an
+    overlay, with line width optionally mapped via `plot_edgestat`
+  - `"both"`: draw ResIN edges as a base layer and bipartite edges on
+    top ResIN edge overlays are mapped to the bipartite layout
+    coordinates to ensure visual alignment with the bipartite node
+    geometry.
+- **Added adjecency matrix retaining negative edges** as part of
+  `aux_objects`
+
 ### Documentation
 
 - Improved help page titles and vignette metadata (more informative
@@ -85,8 +116,8 @@
 - Added/updated documentation for new S3 classes/methods, conversions,
   and pruning options.
 
-## ResIN 2.2.1
+## ResIN 2.3.0
 
-CRAN release: 2025-07-30
+CRAN release: 2026-03-02
 
 - Prior release.

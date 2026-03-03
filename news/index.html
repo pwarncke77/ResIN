@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ResIN</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,9 +37,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.3.0" id="resin-230">ResIN 2.3.0<a class="anchor" aria-label="anchor" href="#resin-230"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.3.1" id="resin-231">ResIN 2.3.1<a class="anchor" aria-label="anchor" href="#resin-231"></a></h2>
 <div class="section level3">
-<h3 id="major-changes-2-3-0">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-2-3-0"></a></h3>
+<h3 id="major-changes-2-3-1">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-2-3-1"></a></h3>
 <ul><li>
 <strong>Correlation engine overhaul.</strong> ResIN now uses a unified, more efficient correlation backend that supports:
 <ul><li>
@@ -51,7 +51,7 @@
 <strong>New missingness control for correlations.</strong> Added <code>missing_cor = c("pairwise","listwise")</code> to explicitly control missing-data handling during correlation estimation (default: <code>"pairwise"</code>).</li>
 </ul></div>
 <div class="section level3">
-<h3 id="weighted-correlations-2-3-0">Weighted correlations<a class="anchor" aria-label="anchor" href="#weighted-correlations-2-3-0"></a></h3>
+<h3 id="weighted-correlations-2-3-1">Weighted correlations<a class="anchor" aria-label="anchor" href="#weighted-correlations-2-3-1"></a></h3>
 <ul><li>
 <strong>Improved weights interface.</strong> Survey <code>weights</code> can now be supplied either as:
 <ul><li>a numeric vector of length <code>nrow(df)</code>, or</li>
@@ -60,14 +60,14 @@ When <code>weights</code> is supplied as a column name and <code>node_vars = NUL
 </ul></li>
 </ul></div>
 <div class="section level3">
-<h3 id="edge-pruning-2-3-0">Edge pruning<a class="anchor" aria-label="anchor" href="#edge-pruning-2-3-0"></a></h3>
+<h3 id="edge-pruning-2-3-1">Edge pruning<a class="anchor" aria-label="anchor" href="#edge-pruning-2-3-1"></a></h3>
 <ul><li>
 <strong>New multiple-testing option for pruning.</strong> Added <code>remove_nonsignificant_method</code>, enabling Benjamini–Hochberg FDR control (<code>"fdr"</code>) as an alternative to raw p-value pruning (<code>"default"</code>). <code>sign_threshold</code> is interpreted as the raw p-value cutoff under <code>"default"</code> and as the target FDR level under <code>"fdr"</code>.</li>
 <li>
 <strong>EBICglasso retired.</strong> <code>EBICglasso</code> and <code>EBICglasso_arglist</code> are retained for backwards compatibility but are <strong>deprecated and ignored</strong> as of 2.3.0. This feature is not statistically appropriate for the rank-deficient one-hot encoded ResIN correlation matrix.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bootstrapping-workflow-s3-methods--robustness-2-3-0">Bootstrapping workflow (S3 methods &amp; robustness)<a class="anchor" aria-label="anchor" href="#bootstrapping-workflow-s3-methods--robustness-2-3-0"></a></h3>
+<h3 id="bootstrapping-workflow-s3-methods--robustness-2-3-1">Bootstrapping workflow (S3 methods &amp; robustness)<a class="anchor" aria-label="anchor" href="#bootstrapping-workflow-s3-methods--robustness-2-3-1"></a></h3>
 <ul><li>Added/expanded S3 methods and documentation for ResIN bootstrap workflow objects:
 <ul><li>
 <code>ResIN_boots_prepped</code> and <code>ResIN_boots_executed</code> now have clearer print/summary behavior.</li>
@@ -78,7 +78,7 @@ When <code>weights</code> is supplied as a column name and <code>node_vars = NUL
 <code><a href="../reference/ResIN_boots_extract.html">ResIN_boots_extract()</a></code> now supports multi-quantity extraction and improved summarizing behavior, including consistent data-frame output for summaries.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="conversion-of-resin-objects-for-interoperability-and-manipulation-in-other-software-environments-2-3-0">Conversion of ResIN objects for interoperability and manipulation in other software environments<a class="anchor" aria-label="anchor" href="#conversion-of-resin-objects-for-interoperability-and-manipulation-in-other-software-environments-2-3-0"></a></h3>
+<h3 id="conversion-of-resin-objects-for-interoperability-and-manipulation-in-other-software-environments-2-3-1">Conversion of ResIN objects for interoperability and manipulation in other software environments<a class="anchor" aria-label="anchor" href="#conversion-of-resin-objects-for-interoperability-and-manipulation-in-other-software-environments-2-3-1"></a></h3>
 <ul><li>Added conventional S3 conversions for ResIN objects:
 <ul><li>
 <code><a href="../reference/as.igraph.ResIN.html">as.igraph.ResIN()</a></code>, <code><a href="../reference/as.qgraph.ResIN.html">as.qgraph.ResIN()</a></code>, <code><a href="../reference/as.gephi.ResIN.html">as.gephi.ResIN()</a></code>
@@ -95,13 +95,44 @@ When <code>weights</code> is supplied as a column name and <code>node_vars = NUL
 <li>Legacy conversion functions (e.g., <code><a href="../reference/ResIN_to_igraph.html">ResIN_to_igraph()</a></code>, <code><a href="../reference/ResIN_to_qgraph.html">ResIN_to_qgraph()</a></code>, <code><a href="../reference/ResIN_to_gephi.html">ResIN_to_gephi()</a></code>) are retained for compatibility and delegate to the new conversion methods where appropriate.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="documentation-2-3-0">Documentation<a class="anchor" aria-label="anchor" href="#documentation-2-3-0"></a></h3>
+<h3 id="improved-bipartite-network-estimation-and-plotting-features-2-3-1">Improved Bipartite network estimation and plotting features<a class="anchor" aria-label="anchor" href="#improved-bipartite-network-estimation-and-plotting-features-2-3-1"></a></h3>
+<ul><li>
+<strong>Enhanced the optional bipartite output</strong> (<code>bipartite = TRUE</code>) to return tidy, analysis-ready tables in addition to graph objects:
+<ul><li>
+<code>ResIN_edgelist_bipartite</code>: participant–response edge list (one row per observed response node selection).</li>
+<li>
+<code>ResIN_nodeframe_bipartite</code>: vertex table containing node identifiers, node type (participant vs response node), layout coordinates, and available metadata.</li>
+</ul></li>
+<li>
+<strong>Improved bipartite plotting</strong>:
+<ul><li>Response nodes are now rendered larger than participant nodes for improved visual separation.</li>
+<li>Bipartite plots now reuse key analytic settings from the main ResIN workflow where applicable (e.g., covariate/cluster-based colouring via <code>plot_whichstat</code>).</li>
+<li>When <code>plot_whichstat = "cluster"</code>, the legend title includes the clustering algorithm and reports participant/response counts per detected cluster.</li>
+</ul></li>
+<li>
+<strong>Added flexible edge overlay controls for bipartite plots</strong> via <code>bipartite_edge_overlay</code>:
+<ul><li>
+<code>"none"</code>: no edges drawn</li>
+<li>
+<code>"bipartite"</code>: draw participant–response edges only</li>
+<li>
+<code>"ResIN"</code>: draw the original ResIN (response–response) edges as an overlay, with line width optionally mapped via <code>plot_edgestat</code>
+</li>
+<li>
+<code>"both"</code>: draw ResIN edges as a base layer and bipartite edges on top ResIN edge overlays are mapped to the bipartite layout coordinates to ensure visual alignment with the bipartite node geometry.</li>
+</ul></li>
+<li>
+<strong>Added adjecency matrix retaining negative edges</strong> as part of <code>aux_objects</code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-2-3-1">Documentation<a class="anchor" aria-label="anchor" href="#documentation-2-3-1"></a></h3>
 <ul><li>Improved help page titles and vignette metadata (more informative package-level index display).</li>
 <li>Added/updated documentation for new S3 classes/methods, conversions, and pruning options.</li>
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.2.1" id="resin-221">ResIN 2.2.1<a class="anchor" aria-label="anchor" href="#resin-221"></a></h2><p class="text-muted">CRAN release: 2025-07-30</p>
+<h2 class="pkg-version" data-toc-text="2.3.0" id="resin-230">ResIN 2.3.0<a class="anchor" aria-label="anchor" href="#resin-230"></a></h2><p class="text-muted">CRAN release: 2026-03-02</p>
 <ul><li>Prior release.</li>
 </ul></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
