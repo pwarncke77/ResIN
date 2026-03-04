@@ -128,12 +128,12 @@ head(Core_Items)
 #> # A tibble: 6 × 8
 #>   legal_abort equalize_incomes keep_immigrants welfare_spending gay_marriage
 #>   <chr>       <chr>            <chr>           <chr>            <chr>       
-#> 1 --          -                -               +/-              --          
-#> 2 ++          ++               +               ++               ++          
-#> 3 +           +                +/-             +                +/-         
-#> 4 +           +/-              ++              +/-              -           
-#> 5 -           +                +               +                -           
-#> 6 ++          +                ++              ++               ++          
+#> 1 ++          -                +               +/-              --          
+#> 2 --          ++               -               ++               ++          
+#> 3 -           +                +/-             +                +/-         
+#> 4 -           +/-              --              +/-              -           
+#> 5 +           +                -               +                -           
+#> 6 --          +                --              ++               ++          
 #> # ℹ 3 more variables: protect_environ <chr>, gun_control <chr>,
 #> #   aid_blacks <chr>
 ```
@@ -457,11 +457,11 @@ Here is a glimpse at the above results in tabular form:
 ``` r
 head(ResIN_out$ResIN_nodeframe[, 8:9], 10)
 #>                      dem_bias_mean           node_label
-#> legal_abort_-             6.500000        legal_abort_-
-#> legal_abort_--            2.489362       legal_abort_--
-#> legal_abort_+           -21.222222        legal_abort_+
+#> legal_abort_-           -21.222222        legal_abort_-
+#> legal_abort_--          -50.717300       legal_abort_--
+#> legal_abort_+             6.500000        legal_abort_+
 #> legal_abort_+/-          -5.100000      legal_abort_+/-
-#> legal_abort_++          -50.717300       legal_abort_++
+#> legal_abort_++            2.489362       legal_abort_++
 #> equalize_incomes_-       -5.159091   equalize_incomes_-
 #> equalize_incomes_--      41.571429  equalize_incomes_--
 #> equalize_incomes_+      -39.619048   equalize_incomes_+
@@ -505,7 +505,7 @@ library(psych)
 corr.test(ResIN_out$ResIN_nodeframe$x, ResIN_out$ResIN_nodeframe$partisan_mean)
 #> Call:corr.test(x = ResIN_out$ResIN_nodeframe$x, y = ResIN_out$ResIN_nodeframe$partisan_mean)
 #> Correlation matrix 
-#> [1] 0.87
+#> [1] -0.87
 #> Sample Size 
 #> [1] 40
 #> These are the unadjusted probability values.
@@ -518,7 +518,7 @@ corr.test(ResIN_out$ResIN_nodeframe$x, ResIN_out$ResIN_nodeframe$partisan_mean)
 corr.test(ResIN_out$ResIN_nodeframe$x, ResIN_out$ResIN_nodeframe$dem_bias_mean)
 #> Call:corr.test(x = ResIN_out$ResIN_nodeframe$x, y = ResIN_out$ResIN_nodeframe$dem_bias_mean)
 #> Correlation matrix 
-#> [1] 0.89
+#> [1] -0.89
 #> Sample Size 
 #> [1] 40
 #> These are the unadjusted probability values.
@@ -546,7 +546,7 @@ the minor axis component as `raw_y`.
 corr.test(Core_Items$partisan, ResIN_out$ResIN_scores$raw_x)
 #> Call:corr.test(x = Core_Items$partisan, y = ResIN_out$ResIN_scores$raw_x)
 #> Correlation matrix 
-#> [1] 0.58
+#> [1] -0.58
 #> Sample Size 
 #> [1] 402
 #> These are the unadjusted probability values.
@@ -559,7 +559,7 @@ corr.test(Core_Items$partisan, ResIN_out$ResIN_scores$raw_x)
 corr.test(Core_Items$dem_bias, ResIN_out$ResIN_scores$raw_x)
 #> Call:corr.test(x = Core_Items$dem_bias, y = ResIN_out$ResIN_scores$raw_x)
 #> Correlation matrix 
-#> [1] 0.7
+#> [1] -0.7
 #> Sample Size 
 #> [1] 402
 #> These are the unadjusted probability values.

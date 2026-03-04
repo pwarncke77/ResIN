@@ -180,12 +180,12 @@ telling labels to further improve visual interpretability.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 8</span></span></span>
 <span><span class="co">#&gt;   legal_abort equalize_incomes keep_immigrants welfare_spending gay_marriage</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> --          -                -               +/-              --          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> ++          ++               +               ++               ++          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> +           +                +/-             +                +/-         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> +           +/-              ++              +/-              -           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> -           +                +               +                -           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> ++          +                ++              ++               ++          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ++          -                +               +/-              --          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> --          ++               -               ++               ++          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> -           +                +/-             +                +/-         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> -           +/-              --              +/-              -           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> +           +                -               +                -           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> --          +                --              ++               ++          </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: protect_environ &lt;chr&gt;, gun_control &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   aid_blacks &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
@@ -465,11 +465,11 @@ Americans and environmental regulations in particular.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ResIN_out</span><span class="op">$</span><span class="va">ResIN_nodeframe</span><span class="op">[</span>, <span class="fl">8</span><span class="op">:</span><span class="fl">9</span><span class="op">]</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                      dem_bias_mean           node_label</span></span>
-<span><span class="co">#&gt; legal_abort_-             6.500000        legal_abort_-</span></span>
-<span><span class="co">#&gt; legal_abort_--            2.489362       legal_abort_--</span></span>
-<span><span class="co">#&gt; legal_abort_+           -21.222222        legal_abort_+</span></span>
+<span><span class="co">#&gt; legal_abort_-           -21.222222        legal_abort_-</span></span>
+<span><span class="co">#&gt; legal_abort_--          -50.717300       legal_abort_--</span></span>
+<span><span class="co">#&gt; legal_abort_+             6.500000        legal_abort_+</span></span>
 <span><span class="co">#&gt; legal_abort_+/-          -5.100000      legal_abort_+/-</span></span>
-<span><span class="co">#&gt; legal_abort_++          -50.717300       legal_abort_++</span></span>
+<span><span class="co">#&gt; legal_abort_++            2.489362       legal_abort_++</span></span>
 <span><span class="co">#&gt; equalize_incomes_-       -5.159091   equalize_incomes_-</span></span>
 <span><span class="co">#&gt; equalize_incomes_--      41.571429  equalize_incomes_--</span></span>
 <span><span class="co">#&gt; equalize_incomes_+      -39.619048   equalize_incomes_+</span></span>
@@ -512,7 +512,7 @@ node location on the main spatial axis simply via
 <span><span class="fu"><a href="https://rdrr.io/pkg/psych/man/corr.test.html" class="external-link">corr.test</a></span><span class="op">(</span><span class="va">ResIN_out</span><span class="op">$</span><span class="va">ResIN_nodeframe</span><span class="op">$</span><span class="va">x</span>, <span class="va">ResIN_out</span><span class="op">$</span><span class="va">ResIN_nodeframe</span><span class="op">$</span><span class="va">partisan_mean</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Call:corr.test(x = ResIN_out$ResIN_nodeframe$x, y = ResIN_out$ResIN_nodeframe$partisan_mean)</span></span>
 <span><span class="co">#&gt; Correlation matrix </span></span>
-<span><span class="co">#&gt; [1] 0.87</span></span>
+<span><span class="co">#&gt; [1] -0.87</span></span>
 <span><span class="co">#&gt; Sample Size </span></span>
 <span><span class="co">#&gt; [1] 40</span></span>
 <span><span class="co">#&gt; These are the unadjusted probability values.</span></span>
@@ -525,7 +525,7 @@ node location on the main spatial axis simply via
 <span><span class="fu"><a href="https://rdrr.io/pkg/psych/man/corr.test.html" class="external-link">corr.test</a></span><span class="op">(</span><span class="va">ResIN_out</span><span class="op">$</span><span class="va">ResIN_nodeframe</span><span class="op">$</span><span class="va">x</span>, <span class="va">ResIN_out</span><span class="op">$</span><span class="va">ResIN_nodeframe</span><span class="op">$</span><span class="va">dem_bias_mean</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Call:corr.test(x = ResIN_out$ResIN_nodeframe$x, y = ResIN_out$ResIN_nodeframe$dem_bias_mean)</span></span>
 <span><span class="co">#&gt; Correlation matrix </span></span>
-<span><span class="co">#&gt; [1] 0.89</span></span>
+<span><span class="co">#&gt; [1] -0.89</span></span>
 <span><span class="co">#&gt; Sample Size </span></span>
 <span><span class="co">#&gt; [1] 40</span></span>
 <span><span class="co">#&gt; These are the unadjusted probability values.</span></span>
@@ -550,7 +550,7 @@ as <code>raw_x</code> and the minor axis component as
 <span><span class="fu"><a href="https://rdrr.io/pkg/psych/man/corr.test.html" class="external-link">corr.test</a></span><span class="op">(</span><span class="va">Core_Items</span><span class="op">$</span><span class="va">partisan</span>, <span class="va">ResIN_out</span><span class="op">$</span><span class="va">ResIN_scores</span><span class="op">$</span><span class="va">raw_x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Call:corr.test(x = Core_Items$partisan, y = ResIN_out$ResIN_scores$raw_x)</span></span>
 <span><span class="co">#&gt; Correlation matrix </span></span>
-<span><span class="co">#&gt; [1] 0.58</span></span>
+<span><span class="co">#&gt; [1] -0.58</span></span>
 <span><span class="co">#&gt; Sample Size </span></span>
 <span><span class="co">#&gt; [1] 402</span></span>
 <span><span class="co">#&gt; These are the unadjusted probability values.</span></span>
@@ -563,7 +563,7 @@ as <code>raw_x</code> and the minor axis component as
 <span><span class="fu"><a href="https://rdrr.io/pkg/psych/man/corr.test.html" class="external-link">corr.test</a></span><span class="op">(</span><span class="va">Core_Items</span><span class="op">$</span><span class="va">dem_bias</span>, <span class="va">ResIN_out</span><span class="op">$</span><span class="va">ResIN_scores</span><span class="op">$</span><span class="va">raw_x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Call:corr.test(x = Core_Items$dem_bias, y = ResIN_out$ResIN_scores$raw_x)</span></span>
 <span><span class="co">#&gt; Correlation matrix </span></span>
-<span><span class="co">#&gt; [1] 0.7</span></span>
+<span><span class="co">#&gt; [1] -0.7</span></span>
 <span><span class="co">#&gt; Sample Size </span></span>
 <span><span class="co">#&gt; [1] 402</span></span>
 <span><span class="co">#&gt; These are the unadjusted probability values.</span></span>
