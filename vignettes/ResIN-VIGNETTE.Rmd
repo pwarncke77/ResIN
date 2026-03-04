@@ -51,10 +51,10 @@ Core_Items <- Core_Items %>%
     "Strongly Disagree" = "--",
   )))
 
-Core_Items$dem_bias  <- as.numeric(BrJSocPsychol_2024$Q15_1) - as.numeric(BrJSocPsychol_2024$Q15_2)
+Core_Items$dem_bias  <- as.numeric(BrJSocPsychol_2024$Q15_1) -
+  as.numeric(BrJSocPsychol_2024$Q15_2)
 
 ## Separately specifying attitude nodes and covariate here:
-
 ResIN_out <- ResIN(Core_Items,
                    node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants",
                                  "welfare_spending", "gay_marriage", "protect_environ",
