@@ -38,10 +38,8 @@
 - **EBICglasso retired.** `EBICglasso` and `EBICglasso_arglist` are
   retained for backwards compatibility but are **deprecated and
   ignored** as of 2.3.0. This feature is not statistically appropriate
-  for the rank-deficient one-hot encoded ResIN correlation matrix.
-
-### Bootstrapping workflow (S3 methods & robustness)
-
+  for the rank-deficient one-hot encoded ResIN correlation matrix. \#
+  \## Bootstrapping workflow (S3 methods & robustness)
 - Added/expanded S3 methods and documentation for ResIN bootstrap
   workflow objects:
   - `ResIN_boots_prepped` and `ResIN_boots_executed` now have clearer

@@ -64,11 +64,8 @@ When <code>weights</code> is supplied as a column name and <code>node_vars = NUL
 <ul><li>
 <strong>New multiple-testing option for pruning.</strong> Added <code>remove_nonsignificant_method</code>, enabling Benjamini–Hochberg FDR control (<code>"fdr"</code>) as an alternative to raw p-value pruning (<code>"default"</code>). <code>sign_threshold</code> is interpreted as the raw p-value cutoff under <code>"default"</code> and as the target FDR level under <code>"fdr"</code>.</li>
 <li>
-<strong>EBICglasso retired.</strong> <code>EBICglasso</code> and <code>EBICglasso_arglist</code> are retained for backwards compatibility but are <strong>deprecated and ignored</strong> as of 2.3.0. This feature is not statistically appropriate for the rank-deficient one-hot encoded ResIN correlation matrix.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="bootstrapping-workflow-s3-methods--robustness-2-3-1">Bootstrapping workflow (S3 methods &amp; robustness)<a class="anchor" aria-label="anchor" href="#bootstrapping-workflow-s3-methods--robustness-2-3-1"></a></h3>
-<ul><li>Added/expanded S3 methods and documentation for ResIN bootstrap workflow objects:
+<strong>EBICglasso retired.</strong> <code>EBICglasso</code> and <code>EBICglasso_arglist</code> are retained for backwards compatibility but are <strong>deprecated and ignored</strong> as of 2.3.0. This feature is not statistically appropriate for the rank-deficient one-hot encoded ResIN correlation matrix. # ## Bootstrapping workflow (S3 methods &amp; robustness)</li>
+<li>Added/expanded S3 methods and documentation for ResIN bootstrap workflow objects:
 <ul><li>
 <code>ResIN_boots_prepped</code> and <code>ResIN_boots_executed</code> now have clearer print/summary behavior.</li>
 <li>

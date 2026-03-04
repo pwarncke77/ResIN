@@ -189,7 +189,18 @@ ResIN(
 
   A character scalar specifying the
   \[igraph-based\](https://igraph.org/r/doc/communities.html) community
-  detection function.
+  detection function. Current ResIN (v. 2.3.1) implementation
+  `"cluster_leading_eigen"`, `"cluster_fast_greedy"`,
+  `"cluster_spinglass"`, `"cluster_edge_betweenness"`,
+  `"cluster_louvain"`, `"cluster_leiden"`, `"cluster_walktrap"`,
+  `"cluster_infomap"`, `"cluster_optimal"` and
+  `"cluster_fluid_communities"`. Note that `"cluster_fluid_communities"`
+  additionally requires a pre-supplied `"no.of.communities"` argument
+  which can be supplied via the `"cluster_arglist"` argument (see
+  below). Please consult the
+  \[igraph\](https://igraph.org/r/doc/cluster_leading_eigen.html)
+  community detection algorithm library for more information on each
+  algorithm and their requirements.
 
 - cluster_arglist:
 

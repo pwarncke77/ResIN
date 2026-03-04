@@ -146,7 +146,7 @@
 
 
 <dt id="arg-cluster-method">cluster_method<a class="anchor" aria-label="anchor" href="#arg-cluster-method"></a></dt>
-<dd><p>A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function.</p></dd>
+<dd><p>A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function. Current ResIN (v. 2.3.1) implementation <code>"cluster_leading_eigen"</code>, <code>"cluster_fast_greedy"</code>, <code>"cluster_spinglass"</code>, <code>"cluster_edge_betweenness"</code>, <code>"cluster_louvain"</code>, <code>"cluster_leiden"</code>, <code>"cluster_walktrap"</code>, <code>"cluster_infomap"</code>, <code>"cluster_optimal"</code> and <code>"cluster_fluid_communities"</code>. Note that <code>"cluster_fluid_communities"</code> additionally requires a pre-supplied <code>"no.of.communities"</code> argument which can be supplied via the <code>"cluster_arglist"</code> argument (see below). Please consult the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) community detection algorithm library for more information on each algorithm and their requirements.</p></dd>
 
 
 <dt id="arg-cluster-arglist">cluster_arglist<a class="anchor" aria-label="anchor" href="#arg-cluster-arglist"></a></dt>
