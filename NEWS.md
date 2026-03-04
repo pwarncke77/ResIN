@@ -16,7 +16,7 @@
 ## Edge pruning
 - **New multiple-testing option for pruning.** Added `remove_nonsignificant_method`, enabling Benjamini–Hochberg FDR control (`"fdr"`) as an alternative to raw p-value pruning (`"default"`). `sign_threshold` is interpreted as the raw p-value cutoff under `"default"` and as the target FDR level under `"fdr"`.
 - **EBICglasso retired.** `EBICglasso` and `EBICglasso_arglist` are retained for backwards compatibility but are **deprecated and ignored** as of 2.3.0. This feature is not statistically appropriate for the rank-deficient one-hot encoded ResIN correlation matrix.
-
+# 
 ## Bootstrapping workflow (S3 methods & robustness)
 - Added/expanded S3 methods and documentation for ResIN bootstrap workflow objects:
   - `ResIN_boots_prepped` and `ResIN_boots_executed` now have clearer print/summary behavior.

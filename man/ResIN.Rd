@@ -72,7 +72,7 @@ ResIN(
 
 \item{detect_clusters}{Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs a clustering method from the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) library and stores the results in the \code{ResIN_nodeframe} output.}
 
-\item{cluster_method}{A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function.}
+\item{cluster_method}{A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function. Current ResIN (v. 2.3.1) implementation \code{"cluster_leading_eigen"}, \code{"cluster_fast_greedy"}, \code{"cluster_spinglass"}, \code{"cluster_edge_betweenness"}, \code{"cluster_louvain"}, \code{"cluster_leiden"}, \code{"cluster_walktrap"}, \code{"cluster_infomap"}, \code{"cluster_optimal"} and \code{"cluster_fluid_communities"}. Note that \code{"cluster_fluid_communities"} additionally requires a pre-supplied \code{"no.of.communities"} argument which can be supplied via the \code{"cluster_arglist"} argument (see below). Please consult the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) community detection algorithm library for more information on each algorithm and their requirements.}
 
 \item{cluster_arglist}{An optional list specifying additional arguments to the selected [igraph](https://igraph.org/r/doc/communities.html) clustering method.}
 

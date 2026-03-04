@@ -17,7 +17,7 @@
 #' @param node_costats If any \code{node_covars} are selected, what summary statistics should be estimated from them? Argument should be a character vector and call a base-R function. (E.g. \code{"mean"}, \code{"median"}, \code{"sd"}). Each element specified in \code{node_costats} is applied to each element in \code{node_covars} and the out-put is stored as a node-level summary statistic in the \code{ResIN_nodeframe}. The extra columns in \code{ResIN_nodeframe} are labeled according to the following template: "covariate name"_"statistic". So for the respondents mean age, the corresponding column in \code{ResIN_nodeframe} would be labeled as "age_mean".
 #' @param network_stats Should common node- and graph level network statistics be extracted? Calls \code{qgraph::centrality_auto} and \code{DirectedClustering::ClustF} to the ResIN graph object to extract node-level betweenness, closeness, strength centrality, as well as the mean and standard deviation of these scores at the network level. Also estimates network expected influence, average path length, and global clustering coefficients. Defaults to TRUE. Set to FALSE if estimation takes a long time.
 #' @param detect_clusters Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs a clustering method from the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) library and stores the results in the \code{ResIN_nodeframe} output.
-#' @param cluster_method A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function.
+#' @param cluster_method A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function. Current ResIN (v. 2.3.1) implementation \code{"cluster_leading_eigen"}, \code{"cluster_fast_greedy"}, \code{"cluster_spinglass"}, \code{"cluster_edge_betweenness"}, \code{"cluster_louvain"}, \code{"cluster_leiden"}, \code{"cluster_walktrap"}, \code{"cluster_infomap"}, \code{"cluster_optimal"} and \code{"cluster_fluid_communities"}. Note that \code{"cluster_fluid_communities"} additionally requires a pre-supplied \code{"no.of.communities"} argument which can be supplied via the \code{"cluster_arglist"} argument (see below). Please consult the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) community detection algorithm library for more information on each algorithm and their requirements.
 #' @param cluster_arglist An optional list specifying additional arguments to the selected [igraph](https://igraph.org/r/doc/communities.html) clustering method.
 #' @param cluster_assignment Should individual (survey) respondents be assigned to different clusters? If set to TRUE, function will generate an n*c matrix of probabilities for each respondent to be assigned to one of c clusters. Furthermore, a vector of length n is generated displaying the most likely cluster respondents belong to. In case of a tie between one or more clusters, a very small amount of random noise determines assignment. Both matrix and vectors are added to the \code{aux_objects} list. Defaults to FALSE and will be ignored if \code{detect_clusters} is set to FALSE.
 #' @param generate_ggplot Logical; should a ggplot-based visualization of the ResIN network be generated? Defaults to TRUE.
@@ -55,7 +55,7 @@
 #' @importFrom fastDummies "dummy_cols"
 #' @importFrom utils "packageVersion" "getFromNamespace" "capture.output"
 #' @importFrom qgraph "qgraph" "centrality_auto" "qgraph.layout.fruchtermanreingold"
-#' @importFrom igraph "graph_from_adjacency_matrix" "graph_from_data_frame" "V" "vcount" "cluster_leading_eigen" "layout_nicely" "layout_with_fr" "membership"
+#' @importFrom igraph "graph_from_adjacency_matrix" "graph_from_data_frame" "V" "vcount" "layout_nicely" "cluster_leading_eigen" "cluster_fast_greedy" "cluster_spinglass" "cluster_edge_betweenness" "cluster_louvain" "cluster_leiden" "cluster_walktrap" "cluster_infomap" "cluster_optimal" "cluster_fluid_communities" "layout_with_fr" "membership"
 #' @importFrom DirectedClustering "ClustF"
 #' @importFrom psych "corr.test" "tetrachoric"
 #' @importFrom shadowtext "geom_shadowtext"
@@ -775,6 +775,8 @@ ResIN <- ResIN <- function(
     node_frame <- cbind(node_frame, node_net_stats$node.centrality)
   }
 
+
+
   ## Perform clustering analysis
   if(detect_clusters==TRUE) {
     if(is.null(cluster_method)) {
@@ -800,6 +802,15 @@ ResIN <- ResIN <- function(
       }
       if(cluster_method=="cluster_walktrap") {
         cluster <- do.call(igraph::cluster_walktrap, c(list(graph = ResIN_igraph), cluster_arglist))
+      }
+      if(cluster_method=="cluster_infomap") {
+        cluster <- do.call(igraph::cluster_infomap, c(list(graph = ResIN_igraph), cluster_arglist))
+      }
+      if(cluster_method=="cluster_optimal") {
+        cluster <- do.call(igraph::cluster_optimal, c(list(graph = ResIN_igraph), cluster_arglist))
+      }
+      if(cluster_method=="cluster_fluid_communities") {
+        cluster <- do.call(igraph::cluster_fluid_communities, c(list(graph = ResIN_igraph), cluster_arglist))
       }
     }
 
