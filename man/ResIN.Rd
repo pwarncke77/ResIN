@@ -32,12 +32,13 @@ ResIN(
   plot_responselabels = TRUE,
   response_levels = NULL,
   plot_title = NULL,
-  bipartite = FALSE,
-  bipartite_edge_overlay = c("bipartite", "none", "ResIN", "both"),
+  multimodal = FALSE,
+  multimodal_edge_overlay = c("multimodal", "none", "ResIN", "both"),
   save_input = TRUE,
   remove_negative = TRUE,
   EBICglasso = FALSE,
   EBICglasso_arglist = NULL,
+  bipartite = FALSE,
   seed = NULL
 )
 }
@@ -72,7 +73,7 @@ ResIN(
 
 \item{detect_clusters}{Optional, should community detection be performed on item response network? Defaults to FALSE. If set to TRUE, performs a clustering method from the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) library and stores the results in the \code{ResIN_nodeframe} output.}
 
-\item{cluster_method}{A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function. Current ResIN (v. 2.3.1) implementation \code{"cluster_leading_eigen"}, \code{"cluster_fast_greedy"}, \code{"cluster_spinglass"}, \code{"cluster_edge_betweenness"}, \code{"cluster_louvain"}, \code{"cluster_leiden"}, \code{"cluster_walktrap"}, \code{"cluster_infomap"}, \code{"cluster_optimal"} and \code{"cluster_fluid_communities"}. Note that \code{"cluster_fluid_communities"} additionally requires a pre-supplied \code{"no.of.communities"} argument which can be supplied via the \code{"cluster_arglist"} argument (see below). Please consult the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) community detection algorithm library for more information on each algorithm and their requirements.}
+\item{cluster_method}{A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function. Current ResIN (v. 2.3.1) implementation \code{"cluster_leading_eigen"}, \code{"cluster_fast_greedy"}, \code{"cluster_spinglass"}, \code{"cluster_edge_betweenness"}, \code{"cluster_louvain"}, \code{"cluster_walktrap"}, \code{"cluster_infomap"}, \code{"cluster_optimal"} and \code{"cluster_fluid_communities"}. Note that \code{"cluster_fluid_communities"} additionally requires a pre-supplied \code{"no.of.communities"} argument which can be supplied via the \code{"cluster_arglist"} argument (defaults to 2). Please consult the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) community detection algorithm library for more information on each algorithm and their requirements.}
 
 \item{cluster_arglist}{An optional list specifying additional arguments to the selected [igraph](https://igraph.org/r/doc/communities.html) clustering method.}
 
@@ -80,7 +81,7 @@ ResIN(
 
 \item{generate_ggplot}{Logical; should a ggplot-based visualization of the ResIN network be generated? Defaults to TRUE.}
 
-\item{plot_ggplot}{Logical; should a basic ggplot of the ResIN network be plotted? Defaults to TRUE. If set to FALSE, the ggplot object will not be directly returned to the console. (However, if generate_ggplot=TRUE, the plot will still be generated and stored alongside the other output objects.)}
+\item{plot_ggplot}{Logical; should the ggplot of the ResIN network be plotted? Defaults to TRUE. If set to FALSE, the ggplot object will not be directly returned to the console. (However, if generate_ggplot=TRUE, the plot will still be generated and stored alongside the other output objects.)}
 
 \item{plot_whichstat}{Should a particular node-level metric be color-visualized in the ggplot output? For node cluster, specify "cluster". For the same Likert response choices or options, specify "choices". For a particular node-level co-variate please specify the name of the particular element in \code{node_covars} followed by a "_" and the specific \code{node_costats} you would like to visualize. For instance if you want the visualize average age at the node-level, you should specify "age_mean". To colorize by node centrality statistics, possible choices are "Strength", "Betweenness", "Closeness", and "ExpectedInfluence". Defaults to NULL. Make sure to supply appropriate choices to \code{node_covars}, \code{node_costats}, \code{detect_clusters}, and/or \code{network_stats} prior to setting this argument.}
 
@@ -96,9 +97,9 @@ ResIN(
 
 \item{plot_title}{Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".}
 
-\item{bipartite}{Logical; should a bipartite graph be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) bipartite graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} are generated if set to TRUE.}
+\item{multimodal}{Logical; should a multimodal graph which jointly incorporates respondents/ data rows and response choices be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) multimodal graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{multimodal_ggraph} are generated if set to TRUE.}
 
-\item{bipartite_edge_overlay}{Character scalar controlling which edges are drawn in the bipartite plot when \code{bipartite = TRUE}. One of \code{"none"} (no edges), \code{"ResIN"} (only the original ResIN edges among response nodes, styled via \code{plot_edgestat} when supplied), \code{"bipartite"} (only participant--response edges), or \code{"both"} (ResIN edges as a base layer plus bipartite edges on top).}
+\item{multimodal_edge_overlay}{Character scalar controlling which edges are drawn in the multimodal plot when \code{multimodal = TRUE}. One of \code{"none"} (no edges), \code{"ResIN"} (only the original ResIN edges among response nodes, styled via \code{plot_edgestat} when supplied), \code{"multimodal"} (only participant--response edges), or \code{"both"} (ResIN edges as a base layer plus multimodal edges on top).}
 
 \item{save_input}{Logical; should input data and function arguments be saved (this is necessary for running ResIN_boots_prepare function). Defaults to TRUE.}
 
@@ -108,10 +109,12 @@ ResIN(
 
 \item{EBICglasso_arglist}{Retired as of ResIN 2.3.0 and ignored.}
 
+\item{bipartite}{Retired as of ResIN 2.3.1 and ignored. Please set \code{multimodal} argument instead.}
+
 \item{seed}{Random seed for force-directed algorithm. Defaults to NULL (no seed is set.) If scalar integer is supplied, that seed will be set prior to analysis.}
 }
 \value{
-An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}), and centralization (\code{graph_centralization}). Further, a \code{bipartite_output} list which includes an \code{igraph} class bipartite graph (\code{bipartite_igraph}), a data frame, \code{coordinate_df}, with spatial coordinates of respondents, and a plot-able \code{ggraph}-object called \code{bipartite_ggraph} is optionally generated. Lastly, the output includes a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), an alternate vrsion of the adjacency matrix with all negative edges retained, a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}). For reproducibility, (\code{aux_objects$meta} stores a numeric dataframe identifier (\code{df_id}, the random seed, call, and the (\code{ResIN} package version used to create the object.”
+An edge-list type data-frame, \code{ResIN_edgelist}, a node-level data-frame, \code{ResIN_nodeframe}, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, \code{ResIN_scores} a list of graph-level statistics \code{graph_stats} including (\code{graph_structuration}), and centralization (\code{graph_centralization}). Further, a \code{multimodal_output} list which includes an \code{igraph} class multimodal graph (\code{multimodal_igraph}), a data frame, \code{coordinate_df}, with spatial coordinates of respondents, and a plot-able \code{ggraph}-object called \code{multimodal_ggraph} is optionally generated. Lastly, the output includes a list of auxiliary objects, \code{aux_objects}, including the ResIN adjacency matrix (\code{adj_matrix}), an alternate vrsion of the adjacency matrix with all negative edges retained, a numeric vector detailing which item responses belong to which item (\code{same_items}), and the dummy-coded item-response data-frame (\code{df_dummies}). For reproducibility, (\code{aux_objects$meta} stores a numeric dataframe identifier (\code{df_id}, the random seed, call, and the (\code{ResIN} package version used to create the object.”
 }
 \description{
 Performs Response Item-Network (ResIN) analysis in one go. Users minimally need to supply a dataframe or matrix of discrete response data. If needed for step-wise analysis, all intermediate outputs can still be accessed as part of the aux_objects output list.

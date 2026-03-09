@@ -26,8 +26,8 @@ print.ResIN <- function(x, ...) {
               if (inherits(x$ResIN_ggplot, "ggplot")) "ggplot object" else as.character(x$ResIN_ggplot)[1]))
   cat(sprintf("  graph_stats    : list(%s)\n", paste0(length(x$graph_stats), " elements")))
   cat(sprintf("  aux_objects    : list(%s)\n", paste(names(x$aux_objects), collapse = ", ")))
-  cat(sprintf("  bipartite_output: %s\n",
-              if (is.list(x$bipartite_output)) "generated" else as.character(x$bipartite_output)[1]))
+  cat(sprintf("  multimodal_output: %s\n",
+              if (is.list(x$multimodal_output)) "generated" else as.character(x$multimodal_output)[1]))
 
   if (is.list(x$aux_objects$meta)) {
     cat(sprintf("  df_id         : %s\n", x$aux_objects$meta$df_id))
@@ -81,13 +81,13 @@ print.summary.ResIN <- function(x, ...) {
 #' Plot a ResIN object
 #'
 #' @param x A ResIN object.
-#' @param which Which plot to show: \code{"network"} (default) or \code{"bipartite"}.
+#' @param which Which plot to show: \code{"network"} (default) or \code{"multimodal"}.
 #' @param print_plot Logical; print the plot (TRUE) or just return it (FALSE).
 #' @param ... Ignored.
 #' @return The plot object (invisibly if \code{print_plot = TRUE}).
 #' @importFrom graphics plot
 #' @export
-plot.ResIN <- function(x, which = c("network", "bipartite"), print_plot = TRUE, ...) {
+plot.ResIN <- function(x, which = c("network", "multimodal"), print_plot = TRUE, ...) {
   which <- match.arg(which)
 
   p <- switch(which,
@@ -96,10 +96,10 @@ plot.ResIN <- function(x, which = c("network", "bipartite"), print_plot = TRUE, 
                   stop("No ggplot stored in $ResIN_ggplot. Set generate_ggplot = TRUE in ResIN().", call. = FALSE)
                 x$ResIN_ggplot
               },
-              bipartite = {
-                if (!is.list(x$bipartite_output) || !"bipartite_ggraph" %in% names(x$bipartite_output))
-                  stop("Bipartite output not generated. Call ResIN(..., bipartite = TRUE).", call. = FALSE)
-                x$bipartite_output$bipartite_ggraph
+              multimodal = {
+                if (!is.list(x$multimodal_output) || !"multimodal_ggraph" %in% names(x$multimodal_output))
+                  stop("Multimodal output not generated. Call ResIN(..., multimodal = TRUE).", call. = FALSE)
+                x$multimodal_output$multimodal_ggraph
               }
   )
 

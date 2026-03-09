@@ -88,10 +88,13 @@ ResIN_boots_execute <- function(ResIN_boots_prepped,
 
   boot_inputs <- if (save_input) vector("list", n) else NULL
 
+  arglist0 <- ResIN_boots_prepped$arglist
+  arglist0$df <- NULL
+
   if (isTRUE(parallel)) {
 
     if (isTRUE(detect_cores)) {
-      n_cores <- as.integer(parallelly::availableCores()[1] - core_offset)
+      n_cores <- as.integer(parallelly::availableCores() - core_offset)
     } else {
       n_cores <- as.integer(n_cores)
     }
@@ -100,6 +103,18 @@ ResIN_boots_execute <- function(ResIN_boots_prepped,
     cl <- parallel::makeCluster(n_cores)
     on.exit(parallel::stopCluster(cl), add = TRUE)
     doSNOW::registerDoSNOW(cl)
+
+    backend <- foreach::getDoParName()
+    workers <- foreach::getDoParWorkers()
+    registered <- foreach::getDoParRegistered()
+
+    if (!isTRUE(registered) || workers < 2L) {
+      parallel::stopCluster(cl)
+      stop(sprintf(
+        "Parallel backend not registered (backend=%s, workers=%d). Falling back would be sequential.",
+        backend, workers
+      ), call. = FALSE)
+    }
 
     pb <- utils::txtProgressBar(max = n, style = 3)
     on.exit(close(pb), add = TRUE)
@@ -111,11 +126,12 @@ ResIN_boots_execute <- function(ResIN_boots_prepped,
       i = seq_len(n),
       .inorder = inorder,
       .options.snow = opts,
-      .packages = "ResIN"
+      .packages = "ResIN",
+      .export = c("make_boot_df", "arglist0", "save_input")
     ) %dopar% {
-
       boot_df <- make_boot_df(i)
-      args_i <- ResIN_boots_prepped$arglist
+
+      args_i <- arglist0
       args_i$df <- boot_df
 
       fit <- tryCatch(
@@ -128,6 +144,7 @@ ResIN_boots_execute <- function(ResIN_boots_prepped,
       list(
         fit = fit,
         ok = ok,
+        pid = Sys.getpid(),
         boot_df = if (save_input && ok) boot_df else NULL
       )
     }

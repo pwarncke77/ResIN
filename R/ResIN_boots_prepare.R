@@ -40,7 +40,7 @@
 #'
 
 ResIN_boots_prepare <- function(ResIN_object,
-                                n = 10000,
+                                n = 1000,
                                 boots_type = "resample",
                                 resample_size = NULL,
                                 weights = NULL,

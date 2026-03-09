@@ -178,7 +178,6 @@ ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices",
                    plot_responselabels = FALSE, 
                    plot_title = "BrJSocPsychol 2024 ResIN Network",
                    left_anchor = "legal_abort_++", seed = 22)
-
 ```
 
 In the above function call, you'll notice a couple of additional arguments. The most important one, `plot_whichstat`, determines which piece of information we'd like to visually enhance. As in Lüders's figure 2a, we simply opted for the different response choices by setting `plot_whichstat="choices"`. Since R applies an alpha-numeric coding for qualitative response levels, you can supply the correct order (either from most to least or least to most agreement) with the `response_levels` argument. This should be a character vector of the same length of the response levels -- just remember to set the response items in the correct order.
@@ -195,7 +194,7 @@ The `ResIN()` function can natively call several [cluster detection algorithms](
 
 To avoid confusion with the above color scheme, we'll also specify a different `color_palette` below. The ResIN function supports all default [ggplot scale-brewer palettes](https://ggplot2.tidyverse.org/reference/scale_brewer.html).
 
-```{r, fig.width = 7.2, fig.height = 4}
+```{r, fig.width = 16, fig.height = 8}
 ## Using leading eigenvalue by default:
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster", 
                    plot_responselabels = FALSE, plot_title = "Leading eigenvalue community detection",
@@ -206,7 +205,6 @@ ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster
                    cluster_method = "cluster_fast_greedy", plot_responselabels = FALSE,
                    plot_title = "Fast and greedy community detection",
                    color_palette = "Set1", seed = 22, left_anchor = "legal_abort_++")
-
 ```
 
 The above networks nicely showcase how different community detection algorithms can yield different solutions. However, both the leading-eigenvalue and fast-greedy examples indicate that the moderate node communities (1, and 4 above and 1 below) appears spatially more proximate to the right-wing cluster which suggests a more similar answering behavior among these groups of respondents. You can find the node-level cluster assignments via `ResIN_out$ResIN_nodeframe$cluster`. The individual-level probabilistic, cluster assignments can be accessed via the auxiliary objects: `ResIN_out$aux_objects$cluster_probabilities`. The maximum probability assignments are contained in the `max_clusterprob` object stored in the same location.
@@ -223,7 +221,6 @@ The `ResIN()` function delivers off-the-shelve estimates for various node-level 
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "Betweenness", plot_responselabels = TRUE, 
                    plot_title = "ResIN node betweenness centrality", seed = 22, color_palette = "Greens",
                    left_anchor = "legal_abort_++")
-
 ```
 
 The above output suggests that for the node with the highest [betweenness-centrality](https://en.wikipedia.org/wiki/Betweenness_centrality) among the left-wing attitude cluster deals with gay marriage, implying that pro-LGTBQ attitudes possess the highest bridging capacity between the liberal and the moderate attitude clusters. Purportedly, this means that liberals should engage in conversations about this issue, rather than abortion or questions about race when aiming to reach or (even build trust with) other ideological communities.
@@ -406,9 +403,9 @@ ggplot(correlations, aes(x = correlations))+
 
 The bootstrapped distribution shows that the positions in latent space and partisan identities are indeed strongly and robustly correlated.
 
-## Bipartite graphs
+## Multimodal graphs
 
-As of package version 2.1.0, it is possible to model attitude systems as bipartite graphs in which binary response nodes are connected via respondents who co-endorse the same attitudes. To built such graphs, simply set the option `bipartite` to `TRUE`. By default, `ResIN` determines the approximate location of each respondent within the basic, response-node graph, using the same force directed method described above. Crucially, the positions of the response nodes are held constant while respondent nodes freely circulate until a force equilibrium is found. `ResIN` outputs an node-frame type data frame, called `coordinate_df` which contains the x and y axis coordinates found for individual participants and a plot-able `ggraph`-object called `bipartite_ggraph`. The code snippet below shows how to extract and plot the bipartite graph:
+As of package version 2.1.0, it is possible to model attitude systems as multimodal graphs in which binary response nodes are connected via respondents who co-endorse the same attitudes. To built such graphs, simply set the option `multimodal` to `TRUE`. By default, `ResIN` determines the approximate location of each respondent within the basic, response-node graph, using the same force directed method described above. Crucially, the positions of the response nodes are held constant while respondent nodes freely circulate until a force equilibrium is found. `ResIN` outputs an node-frame type data frame, called `coordinate_df` which contains the x and y axis coordinates found for individual participants and a plot-able `ggraph`-object called `multimodal_ggraph`. The code snippet below shows how to extract and plot the multimodal graph:
 
 ```{r, warning=FALSE, message = FALSE, fig.width = 7.2, fig.height = 4}
 ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", 
@@ -417,9 +414,9 @@ ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes",
                                              "gun_control", "aid_blacks"), 
                    seed = 36,
                    plot_ggplot = FALSE,
-                   bipartite = TRUE)
+                   multimodal = TRUE)
 
-ResIN_out$bipartite_output$bipartite_ggraph
+ResIN_out$multimodal_output$multimodal_ggraph
 ```
 
 ## Export ResIN graphs to qgraph, igraph, and gephi

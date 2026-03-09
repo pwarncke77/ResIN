@@ -4,12 +4,12 @@
 \alias{plot.ResIN}
 \title{Plot a ResIN object}
 \usage{
-\method{plot}{ResIN}(x, which = c("network", "bipartite"), print_plot = TRUE, ...)
+\method{plot}{ResIN}(x, which = c("network", "multimodal"), print_plot = TRUE, ...)
 }
 \arguments{
 \item{x}{A ResIN object.}
 
-\item{which}{Which plot to show: \code{"network"} (default) or \code{"bipartite"}.}
+\item{which}{Which plot to show: \code{"network"} (default) or \code{"multimodal"}.}
 
 \item{print_plot}{Logical; print the plot (TRUE) or just return it (FALSE).}
 

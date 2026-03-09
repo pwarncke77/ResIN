@@ -16,7 +16,7 @@
 ## Edge pruning
 - **New multiple-testing option for pruning.** Added `remove_nonsignificant_method`, enabling Benjamini–Hochberg FDR control (`"fdr"`) as an alternative to raw p-value pruning (`"default"`). `sign_threshold` is interpreted as the raw p-value cutoff under `"default"` and as the target FDR level under `"fdr"`.
 - **EBICglasso retired.** `EBICglasso` and `EBICglasso_arglist` are retained for backwards compatibility but are **deprecated and ignored** as of 2.3.0. This feature is not statistically appropriate for the rank-deficient one-hot encoded ResIN correlation matrix.
-# 
+
 ## Bootstrapping workflow (S3 methods & robustness)
 - Added/expanded S3 methods and documentation for ResIN bootstrap workflow objects:
   - `ResIN_boots_prepped` and `ResIN_boots_executed` now have clearer print/summary behavior.
@@ -32,24 +32,26 @@
   - `as.graphsjl.ResIN()` exports Graphs.jl compatible  edge & node CSV tables for Julia workflows (with integer vertex IDs suitable for `Graphs.jl`), while preserving node/edge metadata as table columns.
 - Legacy conversion functions (e.g., `ResIN_to_igraph()`, `ResIN_to_qgraph()`, `ResIN_to_gephi()`) are retained for compatibility and delegate to the new conversion methods where appropriate.
 
-## Improved Bipartite network estimation and plotting features
-- **Enhanced the optional bipartite output** (`bipartite = TRUE`) to return tidy, analysis-ready tables in addition to graph objects:
-  - `ResIN_edgelist_bipartite`: participant–response edge list (one row per observed response node selection).
-  - `ResIN_nodeframe_bipartite`: vertex table containing node identifiers, node type (participant vs response node), layout coordinates, and available metadata.
+## Improved Multimodal network estimation and plotting features
+- **Enhanced the optional multimodal output** (`multimodal = TRUE`) to return tidy, analysis-ready tables in addition to graph objects:
+  - `ResIN_edgelist_multimodal`: participant–response edge list (one row per observed response node selection).
+  - `ResIN_nodeframe_multimodal`: vertex table containing node identifiers, node type (participant vs response node), layout coordinates, and available metadata.
 
-- **Improved bipartite plotting**:
+- **Improved multimodal plotting**:
   - Response nodes are now rendered larger than participant nodes for improved visual separation.
-  - Bipartite plots now reuse key analytic settings from the main ResIN workflow where applicable (e.g., covariate/cluster-based colouring via `plot_whichstat`).
+  - multimodal plots now reuse key analytic settings from the main ResIN workflow where applicable (e.g., covariate/cluster-based colouring via `plot_whichstat`).
   - When `plot_whichstat = "cluster"`, the legend title includes the clustering algorithm and reports participant/response counts per detected cluster.
 
-- **Added flexible edge overlay controls for bipartite plots** via `bipartite_edge_overlay`:
+- **Added flexible edge overlay controls for multimodal plots** via `multimodal_edge_overlay`:
   - `"none"`: no edges drawn
-  - `"bipartite"`: draw participant–response edges only
+  - `"multimodal"`: draw participant–response edges only
   - `"ResIN"`: draw the original ResIN (response–response) edges as an overlay, with line width optionally mapped via `plot_edgestat`
-  - `"both"`: draw ResIN edges as a base layer and bipartite edges on top
-  ResIN edge overlays are mapped to the bipartite layout coordinates to ensure visual alignment with the bipartite node geometry.
+  - `"both"`: draw ResIN edges as a base layer and multimodal edges on top
+  ResIN edge overlays are mapped to the multimodal layout coordinates to ensure visual alignment with the multimodal node geometry.
   
 - **Added adjecency matrix retaining negative edges** as part of `aux_objects`
+
+## Bug fix for cluster Leiden function call
 
 ## Documentation
 - Improved help page titles and vignette metadata (more informative package-level index display).
