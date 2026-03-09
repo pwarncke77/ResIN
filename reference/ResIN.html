@@ -71,12 +71,13 @@
 <span>  plot_responselabels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  response_levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  plot_title <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  bipartite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  bipartite_edge_overlay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bipartite"</span>, <span class="st">"none"</span>, <span class="st">"ResIN"</span>, <span class="st">"both"</span><span class="op">)</span>,</span>
+<span>  multimodal <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  multimodal_edge_overlay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"multimodal"</span>, <span class="st">"none"</span>, <span class="st">"ResIN"</span>, <span class="st">"both"</span><span class="op">)</span>,</span>
 <span>  save_input <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  remove_negative <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  EBICglasso <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  EBICglasso_arglist <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bipartite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -146,7 +147,7 @@
 
 
 <dt id="arg-cluster-method">cluster_method<a class="anchor" aria-label="anchor" href="#arg-cluster-method"></a></dt>
-<dd><p>A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function. Current ResIN (v. 2.3.1) implementation <code>"cluster_leading_eigen"</code>, <code>"cluster_fast_greedy"</code>, <code>"cluster_spinglass"</code>, <code>"cluster_edge_betweenness"</code>, <code>"cluster_louvain"</code>, <code>"cluster_leiden"</code>, <code>"cluster_walktrap"</code>, <code>"cluster_infomap"</code>, <code>"cluster_optimal"</code> and <code>"cluster_fluid_communities"</code>. Note that <code>"cluster_fluid_communities"</code> additionally requires a pre-supplied <code>"no.of.communities"</code> argument which can be supplied via the <code>"cluster_arglist"</code> argument (see below). Please consult the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) community detection algorithm library for more information on each algorithm and their requirements.</p></dd>
+<dd><p>A character scalar specifying the [igraph-based](https://igraph.org/r/doc/communities.html) community detection function. Current ResIN (v. 2.3.1) implementation <code>"cluster_leading_eigen"</code>, <code>"cluster_fast_greedy"</code>, <code>"cluster_spinglass"</code>, <code>"cluster_edge_betweenness"</code>, <code>"cluster_louvain"</code>, <code>"cluster_walktrap"</code>, <code>"cluster_infomap"</code>, <code>"cluster_optimal"</code> and <code>"cluster_fluid_communities"</code>. Note that <code>"cluster_fluid_communities"</code> additionally requires a pre-supplied <code>"no.of.communities"</code> argument which can be supplied via the <code>"cluster_arglist"</code> argument (defaults to 2). Please consult the [igraph](https://igraph.org/r/doc/cluster_leading_eigen.html) community detection algorithm library for more information on each algorithm and their requirements.</p></dd>
 
 
 <dt id="arg-cluster-arglist">cluster_arglist<a class="anchor" aria-label="anchor" href="#arg-cluster-arglist"></a></dt>
@@ -162,7 +163,7 @@
 
 
 <dt id="arg-plot-ggplot">plot_ggplot<a class="anchor" aria-label="anchor" href="#arg-plot-ggplot"></a></dt>
-<dd><p>Logical; should a basic ggplot of the ResIN network be plotted? Defaults to TRUE. If set to FALSE, the ggplot object will not be directly returned to the console. (However, if generate_ggplot=TRUE, the plot will still be generated and stored alongside the other output objects.)</p></dd>
+<dd><p>Logical; should the ggplot of the ResIN network be plotted? Defaults to TRUE. If set to FALSE, the ggplot object will not be directly returned to the console. (However, if generate_ggplot=TRUE, the plot will still be generated and stored alongside the other output objects.)</p></dd>
 
 
 <dt id="arg-plot-whichstat">plot_whichstat<a class="anchor" aria-label="anchor" href="#arg-plot-whichstat"></a></dt>
@@ -193,12 +194,12 @@
 <dd><p>Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".</p></dd>
 
 
-<dt id="arg-bipartite">bipartite<a class="anchor" aria-label="anchor" href="#arg-bipartite"></a></dt>
-<dd><p>Logical; should a bipartite graph be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) bipartite graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called <code>coordinate_df</code> with spatial coordinates of respondents and a plot-able <code>ggraph</code>-object called <code>bipartite_ggraph</code> are generated if set to TRUE.</p></dd>
+<dt id="arg-multimodal">multimodal<a class="anchor" aria-label="anchor" href="#arg-multimodal"></a></dt>
+<dd><p>Logical; should a multimodal graph which jointly incorporates respondents/ data rows and response choices be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) multimodal graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called <code>coordinate_df</code> with spatial coordinates of respondents and a plot-able <code>ggraph</code>-object called <code>multimodal_ggraph</code> are generated if set to TRUE.</p></dd>
 
 
-<dt id="arg-bipartite-edge-overlay">bipartite_edge_overlay<a class="anchor" aria-label="anchor" href="#arg-bipartite-edge-overlay"></a></dt>
-<dd><p>Character scalar controlling which edges are drawn in the bipartite plot when <code>bipartite = TRUE</code>. One of <code>"none"</code> (no edges), <code>"ResIN"</code> (only the original ResIN edges among response nodes, styled via <code>plot_edgestat</code> when supplied), <code>"bipartite"</code> (only participant–response edges), or <code>"both"</code> (ResIN edges as a base layer plus bipartite edges on top).</p></dd>
+<dt id="arg-multimodal-edge-overlay">multimodal_edge_overlay<a class="anchor" aria-label="anchor" href="#arg-multimodal-edge-overlay"></a></dt>
+<dd><p>Character scalar controlling which edges are drawn in the multimodal plot when <code>multimodal = TRUE</code>. One of <code>"none"</code> (no edges), <code>"ResIN"</code> (only the original ResIN edges among response nodes, styled via <code>plot_edgestat</code> when supplied), <code>"multimodal"</code> (only participant–response edges), or <code>"both"</code> (ResIN edges as a base layer plus multimodal edges on top).</p></dd>
 
 
 <dt id="arg-save-input">save_input<a class="anchor" aria-label="anchor" href="#arg-save-input"></a></dt>
@@ -217,13 +218,17 @@
 <dd><p>Retired as of ResIN 2.3.0 and ignored.</p></dd>
 
 
+<dt id="arg-bipartite">bipartite<a class="anchor" aria-label="anchor" href="#arg-bipartite"></a></dt>
+<dd><p>Retired as of ResIN 2.3.1 and ignored. Please set <code>multimodal</code> argument instead.</p></dd>
+
+
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Random seed for force-directed algorithm. Defaults to NULL (no seed is set.) If scalar integer is supplied, that seed will be set prior to analysis.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An edge-list type data-frame, <code>ResIN_edgelist</code>, a node-level data-frame, <code>ResIN_nodeframe</code>, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, <code>ResIN_scores</code> a list of graph-level statistics <code>graph_stats</code> including (<code>graph_structuration</code>), and centralization (<code>graph_centralization</code>). Further, a <code>bipartite_output</code> list which includes an <code>igraph</code> class bipartite graph (<code>bipartite_igraph</code>), a data frame, <code>coordinate_df</code>, with spatial coordinates of respondents, and a plot-able <code>ggraph</code>-object called <code>bipartite_ggraph</code> is optionally generated. Lastly, the output includes a list of auxiliary objects, <code>aux_objects</code>, including the ResIN adjacency matrix (<code>adj_matrix</code>), an alternate vrsion of the adjacency matrix with all negative edges retained, a numeric vector detailing which item responses belong to which item (<code>same_items</code>), and the dummy-coded item-response data-frame (<code>df_dummies</code>). For reproducibility, (<code>aux_objects$meta</code> stores a numeric dataframe identifier (<code>df_id</code>, the random seed, call, and the (<code>ResIN</code> package version used to create the object.”</p>
+    <p>An edge-list type data-frame, <code>ResIN_edgelist</code>, a node-level data-frame, <code>ResIN_nodeframe</code>, an n*2 data-frame of individual-level spatial scores along the major (x) and minor(y) axis, <code>ResIN_scores</code> a list of graph-level statistics <code>graph_stats</code> including (<code>graph_structuration</code>), and centralization (<code>graph_centralization</code>). Further, a <code>multimodal_output</code> list which includes an <code>igraph</code> class multimodal graph (<code>multimodal_igraph</code>), a data frame, <code>coordinate_df</code>, with spatial coordinates of respondents, and a plot-able <code>ggraph</code>-object called <code>multimodal_ggraph</code> is optionally generated. Lastly, the output includes a list of auxiliary objects, <code>aux_objects</code>, including the ResIN adjacency matrix (<code>adj_matrix</code>), an alternate vrsion of the adjacency matrix with all negative edges retained, a numeric vector detailing which item responses belong to which item (<code>same_items</code>), and the dummy-coded item-response data-frame (<code>df_dummies</code>). For reproducibility, (<code>aux_objects$meta</code> stores a numeric dataframe identifier (<code>df_id</code>, the random seed, call, and the (<code>ResIN</code> package version used to create the object.”</p>
     </div>
 
     <div class="section level2">

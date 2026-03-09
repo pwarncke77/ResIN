@@ -36,12 +36,13 @@ ResIN(
   plot_responselabels = TRUE,
   response_levels = NULL,
   plot_title = NULL,
-  bipartite = FALSE,
-  bipartite_edge_overlay = c("bipartite", "none", "ResIN", "both"),
+  multimodal = FALSE,
+  multimodal_edge_overlay = c("multimodal", "none", "ResIN", "both"),
   save_input = TRUE,
   remove_negative = TRUE,
   EBICglasso = FALSE,
   EBICglasso_arglist = NULL,
+  bipartite = FALSE,
   seed = NULL
 )
 ```
@@ -192,12 +193,11 @@ ResIN(
   detection function. Current ResIN (v. 2.3.1) implementation
   `"cluster_leading_eigen"`, `"cluster_fast_greedy"`,
   `"cluster_spinglass"`, `"cluster_edge_betweenness"`,
-  `"cluster_louvain"`, `"cluster_leiden"`, `"cluster_walktrap"`,
-  `"cluster_infomap"`, `"cluster_optimal"` and
-  `"cluster_fluid_communities"`. Note that `"cluster_fluid_communities"`
-  additionally requires a pre-supplied `"no.of.communities"` argument
-  which can be supplied via the `"cluster_arglist"` argument (see
-  below). Please consult the
+  `"cluster_louvain"`, `"cluster_walktrap"`, `"cluster_infomap"`,
+  `"cluster_optimal"` and `"cluster_fluid_communities"`. Note that
+  `"cluster_fluid_communities"` additionally requires a pre-supplied
+  `"no.of.communities"` argument which can be supplied via the
+  `"cluster_arglist"` argument (defaults to 2). Please consult the
   \[igraph\](https://igraph.org/r/doc/cluster_leading_eigen.html)
   community detection algorithm library for more information on each
   algorithm and their requirements.
@@ -227,10 +227,10 @@ ResIN(
 
 - plot_ggplot:
 
-  Logical; should a basic ggplot of the ResIN network be plotted?
-  Defaults to TRUE. If set to FALSE, the ggplot object will not be
-  directly returned to the console. (However, if generate_ggplot=TRUE,
-  the plot will still be generated and stored alongside the other output
+  Logical; should the ggplot of the ResIN network be plotted? Defaults
+  to TRUE. If set to FALSE, the ggplot object will not be directly
+  returned to the console. (However, if generate_ggplot=TRUE, the plot
+  will still be generated and stored alongside the other output
   objects.)
 
 - plot_whichstat:
@@ -291,25 +291,26 @@ ResIN(
   Optionally, a character scalar specifying the title of the ggplot
   output. Defaults to "ResIN plot".
 
-- bipartite:
+- multimodal:
 
-  Logical; should a bipartite graph be produced in addition to classic
-  ResIN graph? Defaults to FALSE. If set to TRUE, an
-  \[igraph\](https://igraph.org/r/doc/) bipartite graph with response
+  Logical; should a multimodal graph which jointly incorporates
+  respondents/ data rows and response choices be produced in addition to
+  classic ResIN graph? Defaults to FALSE. If set to TRUE, an
+  \[igraph\](https://igraph.org/r/doc/) multimodal graph with response
   options as node type 1 and participants as node type 2 will be
   generated and included in the output list. Further, an object called
   `coordinate_df` with spatial coordinates of respondents and a
-  plot-able `ggraph`-object called `bipartite_ggraph` are generated if
+  plot-able `ggraph`-object called `multimodal_ggraph` are generated if
   set to TRUE.
 
-- bipartite_edge_overlay:
+- multimodal_edge_overlay:
 
-  Character scalar controlling which edges are drawn in the bipartite
-  plot when `bipartite = TRUE`. One of `"none"` (no edges), `"ResIN"`
+  Character scalar controlling which edges are drawn in the multimodal
+  plot when `multimodal = TRUE`. One of `"none"` (no edges), `"ResIN"`
   (only the original ResIN edges among response nodes, styled via
-  `plot_edgestat` when supplied), `"bipartite"` (only
+  `plot_edgestat` when supplied), `"multimodal"` (only
   participant–response edges), or `"both"` (ResIN edges as a base layer
-  plus bipartite edges on top).
+  plus multimodal edges on top).
 
 - save_input:
 
@@ -331,6 +332,11 @@ ResIN(
 
   Retired as of ResIN 2.3.0 and ignored.
 
+- bipartite:
+
+  Retired as of ResIN 2.3.1 and ignored. Please set `multimodal`
+  argument instead.
+
 - seed:
 
   Random seed for force-directed algorithm. Defaults to NULL (no seed is
@@ -344,10 +350,10 @@ An edge-list type data-frame, `ResIN_edgelist`, a node-level data-frame,
 along the major (x) and minor(y) axis, `ResIN_scores` a list of
 graph-level statistics `graph_stats` including (`graph_structuration`),
 and centralization (`graph_centralization`). Further, a
-`bipartite_output` list which includes an `igraph` class bipartite graph
-(`bipartite_igraph`), a data frame, `coordinate_df`, with spatial
+`multimodal_output` list which includes an `igraph` class multimodal
+graph (`multimodal_igraph`), a data frame, `coordinate_df`, with spatial
 coordinates of respondents, and a plot-able `ggraph`-object called
-`bipartite_ggraph` is optionally generated. Lastly, the output includes
+`multimodal_ggraph` is optionally generated. Lastly, the output includes
 a list of auxiliary objects, `aux_objects`, including the ResIN
 adjacency matrix (`adj_matrix`), an alternate vrsion of the adjacency
 matrix with all negative edges retained, a numeric vector detailing

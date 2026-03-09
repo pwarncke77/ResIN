@@ -215,8 +215,6 @@ ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices",
                    plot_responselabels = FALSE, 
                    plot_title = "BrJSocPsychol 2024 ResIN Network",
                    left_anchor = "legal_abort_++", seed = 22)
-#> Ignoring unknown labels:
-#> • colour : "Response choices"
 ```
 
 ![](ResIN-VIGNETTE_files/figure-html/figure%202a-1.png)
@@ -272,8 +270,6 @@ palettes](https://ggplot2.tidyverse.org/reference/scale_brewer.html).
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster", 
                    plot_responselabels = FALSE, plot_title = "Leading eigenvalue community detection",
                    color_palette = "Set2", seed = 22, left_anchor = "legal_abort_++")
-#> Ignoring unknown labels:
-#> • colour : "Cluster membership"
 ```
 
 ![](ResIN-VIGNETTE_files/figure-html/unnamed-chunk-3-1.png)
@@ -285,8 +281,6 @@ ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster
                    cluster_method = "cluster_fast_greedy", plot_responselabels = FALSE,
                    plot_title = "Fast and greedy community detection",
                    color_palette = "Set1", seed = 22, left_anchor = "legal_abort_++")
-#> Ignoring unknown labels:
-#> • colour : "Cluster membership"
 ```
 
 ![](ResIN-VIGNETTE_files/figure-html/unnamed-chunk-3-2.png)
@@ -335,8 +329,6 @@ stored in `ResIN_out$graph_stats`.
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "Betweenness", plot_responselabels = TRUE, 
                    plot_title = "ResIN node betweenness centrality", seed = 22, color_palette = "Greens",
                    left_anchor = "legal_abort_++")
-#> Ignoring unknown labels:
-#> • fill : "Betweenness"
 ```
 
 ![](ResIN-VIGNETTE_files/figure-html/unnamed-chunk-5-1.png)
@@ -367,8 +359,6 @@ ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster
                    plot_responselabels = FALSE, 
                    plot_title = "Edge weight based on edge-betweenness centrality",
                    seed = 22, color_palette = "Set1", left_anchor = "legal_abort_++")
-#> Ignoring unknown labels:
-#> • colour : "Cluster membership"
 ```
 
 ![](ResIN-VIGNETTE_files/figure-html/unnamed-chunk-6-1.png)
@@ -420,8 +410,6 @@ ResIN_out <- ResIN(Core_Items,
                    plot_responselabels = FALSE, left_anchor = "legal_abort_++",
                    plot_title = "Affective preference of Democrats over Republicans", 
                    color_palette = "RdBu", direction = -1, seed = 22)
-#> Ignoring unknown labels:
-#> • colour : "dem_bias_mean"
 ```
 
 ![](ResIN-VIGNETTE_files/figure-html/unnamed-chunk-7-1.png)
@@ -446,8 +434,6 @@ ResIN_out <- ResIN(Core_Items,
                    plot_responselabels = TRUE, left_anchor = "legal_abort_++",
                    plot_title = "Affective preference of Democrats over Republicans", 
                    color_palette = "RdBu", direction = -1, seed = 22)
-#> Ignoring unknown labels:
-#> • fill : "dem_bias_mean"
 ```
 
 ![](ResIN-VIGNETTE_files/figure-html/unnamed-chunk-8-1.png)
@@ -690,12 +676,12 @@ ggplot(correlations, aes(x = correlations))+
 The bootstrapped distribution shows that the positions in latent space
 and partisan identities are indeed strongly and robustly correlated.
 
-## Bipartite graphs
+## Multimodal graphs
 
 As of package version 2.1.0, it is possible to model attitude systems as
-bipartite graphs in which binary response nodes are connected via
+multimodal graphs in which binary response nodes are connected via
 respondents who co-endorse the same attitudes. To built such graphs,
-simply set the option `bipartite` to `TRUE`. By default, `ResIN`
+simply set the option `multimodal` to `TRUE`. By default, `ResIN`
 determines the approximate location of each respondent within the basic,
 response-node graph, using the same force directed method described
 above. Crucially, the positions of the response nodes are held constant
@@ -703,8 +689,8 @@ while respondent nodes freely circulate until a force equilibrium is
 found. `ResIN` outputs an node-frame type data frame, called
 `coordinate_df` which contains the x and y axis coordinates found for
 individual participants and a plot-able `ggraph`-object called
-`bipartite_ggraph`. The code snippet below shows how to extract and plot
-the bipartite graph:
+`multimodal_ggraph`. The code snippet below shows how to extract and
+plot the multimodal graph:
 
 ``` r
 ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", 
@@ -713,9 +699,9 @@ ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes",
                                              "gun_control", "aid_blacks"), 
                    seed = 36,
                    plot_ggplot = FALSE,
-                   bipartite = TRUE)
+                   multimodal = TRUE)
 
-ResIN_out$bipartite_output$bipartite_ggraph
+ResIN_out$multimodal_output$multimodal_ggraph
 ```
 
 ![](ResIN-VIGNETTE_files/figure-html/unnamed-chunk-13-1.png)

@@ -6,7 +6,7 @@ Plot a ResIN object
 
 ``` r
 # S3 method for class 'ResIN'
-plot(x, which = c("network", "bipartite"), print_plot = TRUE, ...)
+plot(x, which = c("network", "multimodal"), print_plot = TRUE, ...)
 ```
 
 ## Arguments
@@ -17,7 +17,7 @@ plot(x, which = c("network", "bipartite"), print_plot = TRUE, ...)
 
 - which:
 
-  Which plot to show: `"network"` (default) or `"bipartite"`.
+  Which plot to show: `"network"` (default) or `"multimodal"`.
 
 - print_plot:
 
