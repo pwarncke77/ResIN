@@ -6,11 +6,12 @@
 #' Can optionally leverage CPU parallelism.
 #'
 #' @param ResIN_boots_prepped A \code{"ResIN_boots_prepped"} bootstrap plan (output of \code{\link{ResIN_boots_prepare}}).
-#' @param parallel Should execution use parallelism via \code{foreach} + a PSOCK cluster? Defaults to FALSE.
-#' @param detect_cores Should available CPU cores be detected automatically? Defaults to TRUE (ignored when \code{parallel = FALSE}).
+#' @param parallel Logical; should execution use parallelism via \code{foreach} + a PSOCK cluster? Defaults to FALSE.
+#' @param detect_cores Logical; should available CPU cores be detected automatically? Defaults to TRUE (ignored when \code{parallel = FALSE}).
 #' @param core_offset Integer offset subtracted from the number of detected cores. Defaults to 0L.
 #' @param n_cores Manually specify number of cores (ignored if \code{detect_cores = TRUE} or \code{parallel = FALSE}).
-#' @param inorder Should parallel execution preserve sequential ordering? Defaults to FALSE.
+#' @param inorder Logical; should parallel execution preserve sequential ordering? Defaults to FALSE.
+#' @param verbose Logical; should the type of computational execution (parallel or sequential), the parallel engine (if any) and the number of cores be returned to the dashboard while the function is running?
 #'
 #' @return
 #' An object of class \code{"ResIN_boots_executed"} containing \code{n} bootstrapped

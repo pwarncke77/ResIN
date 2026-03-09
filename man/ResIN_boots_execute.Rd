@@ -17,15 +17,17 @@ ResIN_boots_execute(
 \arguments{
 \item{ResIN_boots_prepped}{A \code{"ResIN_boots_prepped"} bootstrap plan (output of \code{\link{ResIN_boots_prepare}}).}
 
-\item{parallel}{Should execution use parallelism via \code{foreach} + a PSOCK cluster? Defaults to FALSE.}
+\item{parallel}{Logical; should execution use parallelism via \code{foreach} + a PSOCK cluster? Defaults to FALSE.}
 
-\item{detect_cores}{Should available CPU cores be detected automatically? Defaults to TRUE (ignored when \code{parallel = FALSE}).}
+\item{detect_cores}{Logical; should available CPU cores be detected automatically? Defaults to TRUE (ignored when \code{parallel = FALSE}).}
 
 \item{core_offset}{Integer offset subtracted from the number of detected cores. Defaults to 0L.}
 
 \item{n_cores}{Manually specify number of cores (ignored if \code{detect_cores = TRUE} or \code{parallel = FALSE}).}
 
-\item{inorder}{Should parallel execution preserve sequential ordering? Defaults to FALSE.}
+\item{inorder}{Logical; should parallel execution preserve sequential ordering? Defaults to FALSE.}
+
+\item{verbose}{Logical; should the type of computational execution (parallel or sequential), the parallel engine (if any) and the number of cores be returned to the dashboard while the function is running?}
 }
 \value{
 An object of class \code{"ResIN_boots_executed"} containing \code{n} bootstrapped
