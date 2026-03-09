@@ -8,9 +8,10 @@ ResIN_boots_execute(
   ResIN_boots_prepped,
   parallel = FALSE,
   detect_cores = TRUE,
-  core_offset = 0L,
+  core_offset = 1L,
   n_cores = 2L,
-  inorder = FALSE
+  inorder = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{

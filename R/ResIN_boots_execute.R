@@ -46,9 +46,10 @@
 ResIN_boots_execute <- function(ResIN_boots_prepped,
                                 parallel = FALSE,
                                 detect_cores = TRUE,
-                                core_offset = 0L,
+                                core_offset = 1L,
                                 n_cores = 2L,
-                                inorder = FALSE) {
+                                inorder = FALSE,
+                                verbose = TRUE) {
 
   if (!inherits(ResIN_boots_prepped, "ResIN_boots_prepped")) {
     stop("Please supply a 'ResIN_boots_prepped' bootstrap plan.", call. = FALSE)
@@ -65,7 +66,9 @@ ResIN_boots_execute <- function(ResIN_boots_prepped,
   seeds      <- ResIN_boots_prepped$iter_seeds
   save_input <- isTRUE(ResIN_boots_prepped$save_input)
 
-  if (length(seeds) != n) stop("Bootstrap plan contains inconsistent iter_seeds length.", call. = FALSE)
+  if (length(seeds) != n) {
+    stop("Bootstrap plan contains inconsistent iter_seeds length.", call. = FALSE)
+  }
 
   make_boot_df <- function(i) {
     set.seed(seeds[i])
@@ -87,100 +90,169 @@ ResIN_boots_execute <- function(ResIN_boots_prepped,
   }
 
   boot_inputs <- if (save_input) vector("list", n) else NULL
+  errors <- vector("list", n)
 
   arglist0 <- ResIN_boots_prepped$arglist
   arglist0$df <- NULL
 
+  used_parallel <- FALSE
+  workers_used <- 1L
+  backend_used <- "sequential"
+
   if (isTRUE(parallel)) {
 
     if (isTRUE(detect_cores)) {
-      n_cores <- as.integer(parallelly::availableCores() - core_offset)
+      detected <- tryCatch(
+        as.integer(parallelly::availableCores()),
+        error = function(e) NA_integer_
+      )
+
+      if (is.na(detected)) detected <- 1L
+      n_cores <- detected - as.integer(core_offset)
     } else {
       n_cores <- as.integer(n_cores)
     }
+
     if (is.na(n_cores) || n_cores < 1L) n_cores <- 1L
 
-    cl <- parallel::makeCluster(n_cores)
-    on.exit(parallel::stopCluster(cl), add = TRUE)
-    doSNOW::registerDoSNOW(cl)
+    if (n_cores >= 2L) {
+      cl <- parallel::makeCluster(n_cores)
+      on.exit(parallel::stopCluster(cl), add = TRUE)
 
-    backend <- foreach::getDoParName()
-    workers <- foreach::getDoParWorkers()
-    registered <- foreach::getDoParRegistered()
+      doSNOW::registerDoSNOW(cl)
 
-    if (!isTRUE(registered) || workers < 2L) {
-      parallel::stopCluster(cl)
-      stop(sprintf(
-        "Parallel backend not registered (backend=%s, workers=%d). Falling back would be sequential.",
-        backend, workers
-      ), call. = FALSE)
+      backend_used <- foreach::getDoParName()
+      workers_used <- foreach::getDoParWorkers()
+      used_parallel <- isTRUE(foreach::getDoParRegistered()) && workers_used >= 2L
+
+      if (!used_parallel) {
+        if (verbose) {
+          warning(
+            sprintf(
+              "Parallel backend registration did not yield multiple workers (backend=%s, workers=%d). Falling back to sequential execution.",
+              backend_used, workers_used
+            ),
+            call. = FALSE
+          )
+        }
+      } else {
+        if (verbose) {
+          message(sprintf("Running bootstrap in parallel with %d workers (%s).", workers_used, backend_used))
+        }
+
+        pb <- utils::txtProgressBar(min = 0, max = n, style = 3)
+        on.exit(close(pb), add = TRUE)
+
+        progress <- function(k) utils::setTxtProgressBar(pb, k)
+        opts <- list(progress = progress)
+
+        res_raw <- foreach::foreach(
+          i = seq_len(n),
+          .inorder = inorder,
+          .options.snow = opts,
+          .packages = "ResIN",
+          .export = c("make_boot_df", "arglist0", "save_input")
+        ) %dopar% {
+          boot_df <- make_boot_df(i)
+
+          args_i <- arglist0
+          args_i$df <- boot_df
+
+          res <- tryCatch(
+            {
+              fit <- do.call(ResIN::ResIN, args_i)
+              list(fit = fit, error = NULL)
+            },
+            error = function(e) {
+              list(fit = NULL, error = conditionMessage(e))
+            }
+          )
+
+          ok <- !is.null(res$fit) && inherits(res$fit, "ResIN")
+
+          list(
+            fit = res$fit,
+            ok = ok,
+            error = res$error,
+            pid = Sys.getpid(),
+            boot_df = if (save_input && ok) boot_df else NULL
+          )
+        }
+
+        ok <- vapply(res_raw, `[[`, logical(1), "ok")
+        res_list <- lapply(res_raw, `[[`, "fit")
+        errors <- lapply(res_raw, `[[`, "error")
+
+        if (save_input) {
+          boot_inputs <- lapply(res_raw, `[[`, "boot_df")
+        }
+
+        class(res_list) <- c("ResIN_boots_executed", "list")
+        attr(res_list, "plan") <- ResIN_boots_prepped
+        attr(res_list, "created") <- Sys.time()
+        attr(res_list, "ok") <- ok
+        attr(res_list, "n_failed") <- sum(!ok)
+        attr(res_list, "errors") <- errors
+        attr(res_list, "parallel") <- TRUE
+        attr(res_list, "workers") <- workers_used
+        attr(res_list, "backend") <- backend_used
+
+        if (save_input) attr(res_list, "boot_inputs") <- boot_inputs
+
+        if (all(!ok)) {
+          warning("All bootstrap iterations failed. Inspect attr(result, 'errors').", call. = FALSE)
+        }
+
+        return(res_list)
+      }
+    } else {
+      if (verbose) {
+        warning(
+          sprintf(
+            "parallel = TRUE was requested, but only %d worker was available after core_offset. Falling back to sequential execution.",
+            n_cores
+          ),
+          call. = FALSE
+        )
+      }
     }
+  }
 
-    pb <- utils::txtProgressBar(max = n, style = 3)
-    on.exit(close(pb), add = TRUE)
+  # Sequential fallback or explicit sequential mode
+  if (verbose) {
+    message("Running bootstrap sequentially.")
+  }
 
-    progress <- function(k) utils::setTxtProgressBar(pb, k)
-    opts <- list(progress = progress)
+  pb <- utils::txtProgressBar(min = 0, max = n, style = 3)
+  on.exit(close(pb), add = TRUE)
 
-    res_raw <- foreach::foreach(
-      i = seq_len(n),
-      .inorder = inorder,
-      .options.snow = opts,
-      .packages = "ResIN",
-      .export = c("make_boot_df", "arglist0", "save_input")
-    ) %dopar% {
-      boot_df <- make_boot_df(i)
+  res_list <- vector("list", n)
+  ok <- logical(n)
 
-      args_i <- arglist0
-      args_i$df <- boot_df
+  for (i in seq_len(n)) {
+    boot_df <- make_boot_df(i)
+    args_i <- ResIN_boots_prepped$arglist
+    args_i$df <- boot_df
 
-      fit <- tryCatch(
-        do.call(ResIN::ResIN, args_i),
-        error = function(e) NULL
-      )
+    res <- tryCatch(
+      {
+        fit <- do.call(ResIN, args_i)
+        list(fit = fit, error = NULL)
+      },
+      error = function(e) {
+        list(fit = NULL, error = conditionMessage(e))
+      }
+    )
 
-      ok <- !is.null(fit) && inherits(fit, "ResIN")
-
-      list(
-        fit = fit,
-        ok = ok,
-        pid = Sys.getpid(),
-        boot_df = if (save_input && ok) boot_df else NULL
-      )
-    }
-
-    utils::setTxtProgressBar(pb, n)
-    close(pb)
-    cat("\n")
-
-    ok <- vapply(res_raw, `[[`, logical(1), "ok")
-    res_list <- lapply(res_raw, `[[`, "fit")
+    ok[i] <- !is.null(res$fit) && inherits(res$fit, "ResIN")
+    res_list[[i]] <- res$fit
+    errors[[i]] <- res$error
 
     if (save_input) {
-      boot_inputs <- lapply(res_raw, `[[`, "boot_df")
+      boot_inputs[[i]] <- if (ok[i]) boot_df else NULL
     }
 
-  } else {
-
-    res_list <- vector("list", n)
-    ok <- logical(n)
-
-    for (i in seq_len(n)) {
-      boot_df <- make_boot_df(i)
-      args_i <- ResIN_boots_prepped$arglist
-      args_i$df <- boot_df
-
-      fit <- tryCatch(
-        do.call(ResIN, args_i),
-        error = function(e) NULL
-      )
-
-      ok[i] <- !is.null(fit) && inherits(fit, "ResIN")
-      res_list[[i]] <- fit
-
-      if (save_input && ok[i]) boot_inputs[[i]] <- boot_df
-      if (save_input && !ok[i]) boot_inputs[[i]] <- NULL
-    }
+    utils::setTxtProgressBar(pb, i)
   }
 
   class(res_list) <- c("ResIN_boots_executed", "list")
@@ -188,8 +260,16 @@ ResIN_boots_execute <- function(ResIN_boots_prepped,
   attr(res_list, "created") <- Sys.time()
   attr(res_list, "ok") <- ok
   attr(res_list, "n_failed") <- sum(!ok)
+  attr(res_list, "errors") <- errors
+  attr(res_list, "parallel") <- FALSE
+  attr(res_list, "workers") <- 1L
+  attr(res_list, "backend") <- "sequential"
 
   if (save_input) attr(res_list, "boot_inputs") <- boot_inputs
+
+  if (all(!ok)) {
+    warning("All bootstrap iterations failed. Inspect attr(result, 'errors').", call. = FALSE)
+  }
 
   res_list
 }
