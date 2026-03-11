@@ -8,7 +8,7 @@
 #' @param ResIN_boots_prepped A \code{"ResIN_boots_prepped"} bootstrap plan (output of \code{\link{ResIN_boots_prepare}}).
 #' @param parallel Logical; should execution use parallelism via \code{foreach} + a PSOCK cluster? Defaults to FALSE.
 #' @param detect_cores Logical; should available CPU cores be detected automatically? Defaults to TRUE (ignored when \code{parallel = FALSE}).
-#' @param core_offset Integer offset subtracted from the number of detected cores. Defaults to 0L.
+#' @param core_offset Integer offset subtracted from the number of detected cores. Defaults to 1L. Change to 0L on low-overhead systems or if sure that system won't stall.
 #' @param n_cores Manually specify number of cores (ignored if \code{detect_cores = TRUE} or \code{parallel = FALSE}).
 #' @param inorder Logical; should parallel execution preserve sequential ordering? Defaults to FALSE.
 #' @param verbose Logical; should the type of computational execution (parallel or sequential), the parallel engine (if any) and the number of cores be returned to the dashboard while the function is running?
@@ -28,10 +28,11 @@
 #'
 #'\donttest{
 #' # Prepare for bootstrapping
-#' prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=100, boots_type="resample")
+#' prepped_boots <- ResIN_boots_prepare(ResIN_obj, n=50, boots_type="resample")
 #'
 #' # Execute the prepared bootstrap list
-#' executed_boots <-  ResIN_boots_execute(prepped_boots, parallel = TRUE, detect_cores = TRUE)
+#' executed_boots <-  ResIN_boots_execute(prepped_boots, parallel = TRUE,
+#'                       detect_cores = TRUE, verbose = FALSE)
 #'
 #' # Extract results - here for example, the network (global)-clustering coefficient
 #' ResIN_boots_extract(executed_boots, what = "global_clustering", summarize_results = TRUE)
@@ -147,38 +148,46 @@ ResIN_boots_execute <- function(ResIN_boots_prepped,
         progress <- function(k) utils::setTxtProgressBar(pb, k)
         opts <- list(progress = progress)
 
-        res_raw <- foreach::foreach(
-          i = seq_len(n),
-          .inorder = inorder,
-          .options.snow = opts,
-          .packages = "ResIN",
-          .export = c("make_boot_df", "arglist0", "save_input")
-        ) %dopar% {
-          boot_df <- make_boot_df(i)
+        res_raw <- withCallingHandlers(
+          foreach::foreach(
+            i = seq_len(n),
+            .inorder = inorder,
+            .options.snow = opts,
+            .packages = "ResIN",
+            .export = c("make_boot_df", "arglist0", "save_input")
+          ) %dopar% {
+            boot_df <- make_boot_df(i)
 
-          args_i <- arglist0
-          args_i$df <- boot_df
+            args_i <- arglist0
+            args_i$df <- boot_df
 
-          res <- tryCatch(
-            {
-              fit <- do.call(ResIN::ResIN, args_i)
-              list(fit = fit, error = NULL)
-            },
-            error = function(e) {
-              list(fit = NULL, error = conditionMessage(e))
+            res <- tryCatch(
+              {
+                fit <- do.call(ResIN::ResIN, args_i)
+                list(fit = fit, error = NULL)
+              },
+              error = function(e) {
+                list(fit = NULL, error = conditionMessage(e))
+              }
+            )
+
+            ok <- !is.null(res$fit) && inherits(res$fit, "ResIN")
+
+            list(
+              fit = res$fit,
+              ok = ok,
+              error = res$error,
+              pid = Sys.getpid(),
+              boot_df = if (save_input && ok) boot_df else NULL
+            )
+          },
+          warning = function(w) {
+            msg <- conditionMessage(w)
+            if (grepl("^already exporting variable\\(s\\):", msg)) {
+              invokeRestart("muffleWarning")
             }
-          )
-
-          ok <- !is.null(res$fit) && inherits(res$fit, "ResIN")
-
-          list(
-            fit = res$fit,
-            ok = ok,
-            error = res$error,
-            pid = Sys.getpid(),
-            boot_df = if (save_input && ok) boot_df else NULL
-          )
-        }
+          }
+        )
 
         ok <- vapply(res_raw, `[[`, logical(1), "ok")
         res_list <- lapply(res_raw, `[[`, "fit")
@@ -274,5 +283,4 @@ ResIN_boots_execute <- function(ResIN_boots_prepped,
 
   res_list
 }
-
 

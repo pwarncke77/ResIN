@@ -24,17 +24,7 @@ BrJSocPsychol_2024 <- ResIN::BrJSocPsychol_2024
 
 ## Sub-setting and re-coding items in a liberal-conservative direction
 Core_Items <- BrJSocPsychol_2024 %>% dplyr::select(Q9_1, Q9_2, Q9_3, Q9_4, 
-                                                   Q9_5, Q9_6, Q9_7, Q9_8) %>% 
-   dplyr::mutate(Q9_1 = recode(Q9_1, "Strongly Disagree" = "Strongly Agree",
-                                     "Somewhat Disagree" = "Somewhat Agree",
-                                     "Neutral" = "Neutral",
-                                     "Somewhat Agree" = "Somewhat Disagree",
-                                     "Strongly Agree" = "Strongly Disagree"),
-                Q9_3 = recode(Q9_3,  "Strongly Disagree" = "Strongly Agree",
-                                     "Somewhat Disagree" = "Somewhat Agree",
-                                     "Neutral" = "Neutral",
-                                     "Somewhat Agree" = "Somewhat Disagree",
-                                     "Strongly Agree" = "Strongly Disagree"))
+                                                   Q9_5, Q9_6, Q9_7, Q9_8)
 
 ## Relabeling the attitudes
 colnames(Core_Items) <- c("legal_abort", "equalize_incomes", "keep_immigrants", 
@@ -84,9 +74,7 @@ To see this in action, let's replicate and extend the analysis in [Lüders et.al
 
 As with any data analysis, a little bit of housekeeping goes a long way, and ResIN is no exception! Let's use the Lüders et.al. (2024) data -- which comes for free with the [R-package](https://CRAN.R-project.org/package=ResIN) -- to illustrate this process.
 
-First, we select the core set of eight issue items from the Lüders et.al. data and, as in the paper, re-code a few of these such that agreement always denotes the liberal position. (This step is not necessary but makes interpretation of the the results easier). These attitudes deal with the legality of abortion, reducing income inequality, deporting illegal immigrants, increasing welfare spending, increase welfare spending, gay marriage, protecting the environment, gun control, and government aid to African Americans.
-
-We'll also give each item and their respective response options more telling labels to further improve visual interpretability.
+First, we select the core set of eight issue items from the Lüders et.al. data and, as in the paper. These attitude-items deal with the legality of abortion, reducing income inequality, deporting illegal immigrants, increasing welfare spending, increase welfare spending, gay marriage, protecting the environment, gun control, and government aid to African Americans. We'll also give each item and their respective response options more telling labels to further improve visual interpretability.
 
 ```{r recoding items, warning=FALSE, message = FALSE}
 ## Loading and installing the required packages
@@ -100,17 +88,7 @@ BrJSocPsychol_2024 <- ResIN::BrJSocPsychol_2024
 
 ## Sub-setting and re-coding items in a liberal-conservative direction
 Core_Items <- BrJSocPsychol_2024 %>% dplyr::select(Q9_1, Q9_2, Q9_3, Q9_4, 
-                                                   Q9_5, Q9_6, Q9_7, Q9_8) %>% 
-   dplyr::mutate(Q9_1 = dplyr::recode(Q9_1, "Strongly Disagree" = "Strongly Agree",
-                                     "Somewhat Disagree" = "Somewhat Agree",
-                                     "Neutral" = "Neutral",
-                                     "Somewhat Agree" = "Somewhat Disagree",
-                                     "Strongly Agree" = "Strongly Disagree"),
-                Q9_3 = dplyr::recode(Q9_3,  "Strongly Disagree" = "Strongly Agree",
-                                     "Somewhat Disagree" = "Somewhat Agree",
-                                     "Neutral" = "Neutral",
-                                     "Somewhat Agree" = "Somewhat Disagree",
-                                     "Strongly Agree" = "Strongly Disagree"))
+                                                   Q9_5, Q9_6, Q9_7, Q9_8)
 
 ## Relabeling the attitudes
 colnames(Core_Items) <- c("legal_abort", "equalize_incomes", "keep_immigrants", 
