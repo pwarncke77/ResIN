@@ -390,6 +390,7 @@ ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes",
                                              "keep_immigrants", "welfare_spending",
                                              "gay_marriage", "protect_environ",
                                              "gun_control", "aid_blacks"), 
+                   left_anchor = "legal_abort_++",
                    seed = 36,
                    plot_ggplot = FALSE,
                    multimodal = TRUE)
