@@ -355,7 +355,7 @@ graph (`multimodal_igraph`), a data frame, `coordinate_df`, with spatial
 coordinates of respondents, and a plot-able `ggraph`-object called
 `multimodal_ggraph` is optionally generated. Lastly, the output includes
 a list of auxiliary objects, `aux_objects`, including the ResIN
-adjacency matrix (`adj_matrix`), an alternate vrsion of the adjacency
+adjacency matrix (`adj_matrix`), an alternate version of the adjacency
 matrix with all negative edges retained, a numeric vector detailing
 which item responses belong to which item (`same_items`), and the
 dummy-coded item-response data-frame (`df_dummies`). For

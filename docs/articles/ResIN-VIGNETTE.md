@@ -15,12 +15,12 @@ website](https://www.resinmethod.net/).
 This tutorial primarily introduces the [ResIN-R
 package](https://CRAN.R-project.org/package=ResIN) and provides an
 overview of the main functions and their capabilities. A bit of
-background knowledge in R and the Tidyverse is required to follow but
-you certainly do not need to have advanced skills either in R or network
-statistics. For an in-depth conceptual introduction to ResIN as a
-method, please refer to the [ResIN
-website](https://www.resinmethod.net/) or the above-referenced
-publication. The website also features
+background knowledge in R and the [Tidyverse](https://tidyverse.org/) is
+recommended to understand all code and examples but you certainly do not
+need to have advanced skills either in R or network statistics. For an
+in-depth conceptual introduction to ResIN as a method, please refer to
+the [ResIN website](https://www.resinmethod.net/) or the
+above-referenced publication. The website also features
 [dates](https://www.resinmethod.net/conference-presentations/) for
 upcoming introductory talks by the [ResIN
 team](https://www.resinmethod.net/contact/) if you are instead

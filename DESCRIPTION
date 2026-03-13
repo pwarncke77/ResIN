@@ -5,7 +5,7 @@ Version: 2.3.1
 Authors@R: c(person("Philip", "Warncke", email = "philip.warncke@ul.ie", role = c("cre","aut")), person("Dino", "Carpentras", role = "aut"), person("Adrian", "L\u00FCders", role = "aut"))
 Author: Philip Warncke [cre, aut], Dino Carpentras [aut], Adrian Lüders [aut]
 Maintainer: Philip Warncke <philip.warncke@ul.ie>
-Description: Contains various tools to perform and visualize Response Item Networks ('ResIN's'). 'ResIN' dummy-codes ordered and qualitative response choices from (survey) data, calculates pairwise associations and maps the location of each item response as a node in a force-directed network. Please refer to <https://www.resinmethod.net/> for more details.
+Description: Contains various tools to estimate, analyze, and visualize Response Item Networks. 'ResIN' dummy-codes ordered and qualitative response choices from (survey) data, calculates pairwise associations and maps the location of each item response as a node in a force-directed network. Please refer to <https://www.resinmethod.net/> for more details.
 License: GPL-3
 URL: https://pwarncke77.github.io/ResIN/
 BugReports: https://github.com/pwarncke77/ResIN/issues
