@@ -35,6 +35,8 @@ ResIN(
   direction = 1,
   plot_responselabels = TRUE,
   responselabel_repel = FALSE,
+  responselabel_size = 4,
+  responselabel_tolerance = 0,
   response_levels = NULL,
   plot_title = NULL,
   multimodal = FALSE,
@@ -287,6 +289,28 @@ ResIN(
   of crowded networks while preserving the estimated layout, and is a
   useful alternative to setting `plot_responselabels` to FALSE. Ignored
   whenever `plot_responselabels` is set to FALSE.
+
+- responselabel_size:
+
+  A numeric scalar controlling the font size of the plotted response
+  labels. Defaults to 4. Reducing this value is often the least
+  disruptive remedy for crowded layouts, since it shrinks the labels
+  without altering the estimated node positions. Ignored whenever
+  `plot_responselabels` is set to FALSE.
+
+- responselabel_tolerance:
+
+  A numeric scalar between 0 and 1 governing how much label overlap is
+  tolerated when `responselabel_repel` is set to TRUE. At 0, the
+  repulsive force between labels is applied at full strength and labels
+  are free to travel anywhere within the plotting area in order to
+  separate. Increasing the value progressively weakens this repulsion
+  while strengthening the attraction of each label back toward its own
+  node, so that labels remain closer to their coordinates at the price
+  of some residual overlap. At 1, no repulsion is applied at all and the
+  output is identical to that obtained with
+  `responselabel_repel = FALSE`. Defaults to 0. Ignored unless
+  `responselabel_repel` is set to TRUE.
 
 - response_levels:
 

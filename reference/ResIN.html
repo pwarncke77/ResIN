@@ -70,6 +70,8 @@
 <span>  direction <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  plot_responselabels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  responselabel_repel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  responselabel_size <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  responselabel_tolerance <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  response_levels <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  plot_title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  multimodal <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -189,6 +191,14 @@
 
 <dt id="arg-responselabel-repel">responselabel_repel<a class="anchor" aria-label="anchor" href="#arg-responselabel-repel"></a></dt>
 <dd><p>Should response labels be de-overlapped via <code>ggrepel</code>? Defaults to FALSE, in which case labels are drawn directly at their node coordinates and may visually collide in dense regions of the layout. If set to TRUE, labels are iteratively displaced until they no longer overlap, and short guide lines connect displaced labels back to their original node positions. This can substantially improve the legibility of crowded networks while preserving the estimated layout, and is a useful alternative to setting <code>plot_responselabels</code> to FALSE. Ignored whenever <code>plot_responselabels</code> is set to FALSE.</p></dd>
+
+
+<dt id="arg-responselabel-size">responselabel_size<a class="anchor" aria-label="anchor" href="#arg-responselabel-size"></a></dt>
+<dd><p>A numeric scalar controlling the font size of the plotted response labels. Defaults to 4. Reducing this value is often the least disruptive remedy for crowded layouts, since it shrinks the labels without altering the estimated node positions. Ignored whenever <code>plot_responselabels</code> is set to FALSE.</p></dd>
+
+
+<dt id="arg-responselabel-tolerance">responselabel_tolerance<a class="anchor" aria-label="anchor" href="#arg-responselabel-tolerance"></a></dt>
+<dd><p>A numeric scalar between 0 and 1 governing how much label overlap is tolerated when <code>responselabel_repel</code> is set to TRUE. At 0, the repulsive force between labels is applied at full strength and labels are free to travel anywhere within the plotting area in order to separate. Increasing the value progressively weakens this repulsion while strengthening the attraction of each label back toward its own node, so that labels remain closer to their coordinates at the price of some residual overlap. At 1, no repulsion is applied at all and the output is identical to that obtained with <code>responselabel_repel = FALSE</code>. Defaults to 0. Ignored unless <code>responselabel_repel</code> is set to TRUE.</p></dd>
 
 
 <dt id="arg-response-levels">response_levels<a class="anchor" aria-label="anchor" href="#arg-response-levels"></a></dt>
