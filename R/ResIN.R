@@ -1063,7 +1063,7 @@ ResIN <- function(
           box.padding = (1 - tol) * 0.25,
           min.segment.length = 0,
           max.iter = if (tol >= 1) 0L else 10000L,
-          segment.size = 0.3, segment.alpha = 0.5, segment.colour = "grey30",
+          segment.size = 0.25, segment.alpha = 0.5, segment.colour = "black",
           seed = if (is.null(seed)) NA else seed
         )
       } else if (isTRUE(shadow)) {
