@@ -27,6 +27,7 @@
 #' @param color_palette Optionally, you may specify the ggplot2 color palette to be applied to the plot. All options contained in [\code{RColorBrewer}](https://cran.r-project.org/web/packages/RColorBrewer/RColorBrewer.pdf) (for discrete colors such as cluster assignments) and [\code{ggplot2::scale_colour_distiller}](https://ggplot2.tidyverse.org/reference/scale_brewer.html) are supported. Defaults to "RdBu".
 #' @param direction Which direction should the color palette be applied in? Defaults to 1. Set to -1 if the palette should appear in reverse order.
 #' @param plot_responselabels Should response labels be plotted via \code{geom_text}? Defaults to TRUE. It is recommended to set to FALSE if the network possesses a lot of nodes and/or long response choice names.
+#' @param responselabel_repel Should response labels be de-overlapped via \code{ggrepel}? Defaults to FALSE, in which case labels are drawn directly at their node coordinates and may visually collide in dense regions of the layout. If set to TRUE, labels are iteratively displaced until they no longer overlap, and short guide lines connect displaced labels back to their original node positions. This can substantially improve the legibility of crowded networks while preserving the estimated layout, and is a useful alternative to setting \code{plot_responselabels} to FALSE. Ignored whenever \code{plot_responselabels} is set to FALSE.
 #' @param response_levels An optional character vector specifying the correct order of global response levels. Only useful if all node-items follow the same convention (e.g. ranging from "strong disagreement" to "strong agreement"). The supplied vector should have the same length as the total number of response options and supply these (matching exactly) in the correct order. E.g. c("Strongly Agree", "Somewhat Agree", "Neutral", "Somewhat Disagree", "Strongly Disagree"). Defaults to NULL.
 #' @param plot_title Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".
 #' @param multimodal Logical; should a multimodal graph which jointly incorporates respondents/ data rows and response choices be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) multimodal graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{multimodal_ggraph} are generated if set to TRUE.
@@ -60,6 +61,7 @@
 #' @importFrom DirectedClustering "ClustF"
 #' @importFrom psych "corr.test" "tetrachoric"
 #' @importFrom shadowtext "geom_shadowtext"
+#' @importFrom ggrepel "geom_text_repel"
 #' @importFrom ggraph "ggraph" "geom_edge_link" "geom_node_point"
 #'
 
@@ -89,6 +91,7 @@ ResIN <- function(
     color_palette = "RdBu",
     direction = 1,
     plot_responselabels = TRUE,
+    responselabel_repel = FALSE,
     response_levels = NULL,
     plot_title = NULL,
     multimodal = FALSE,
@@ -133,6 +136,7 @@ ResIN <- function(
       color_palette = color_palette,
       direction = direction,
       plot_responselabels = plot_responselabels,
+      responselabel_repel = responselabel_repel,
       response_levels = response_levels,
       plot_title = plot_title,
       multimodal = multimodal,
@@ -1026,10 +1030,27 @@ ResIN <- function(
         ggplot2::labs(linewidth = paste(plot_edgestat))
     }
 
+    ## Helper: response-label layer, optionally de-overlapped via ggrepel
+    label_layer <- function(mapping, shadow = FALSE) {
+      if (isTRUE(responselabel_repel)) {
+        ggrepel::geom_text_repel(
+          mapping, size = 3.8,
+          bg.color = if (shadow) "black" else NA, bg.r = 0.1,
+          max.overlaps = Inf,
+          segment.size = 0.25, segment.alpha = 0.5, segment.colour = "grey40",
+          seed = if (is.null(seed)) NA else seed
+        )
+      } else if (isTRUE(shadow)) {
+        shadowtext::geom_shadowtext(mapping, size = 3.8, bg.r = 0.1)
+      } else {
+        ggplot2::geom_text(mapping, size = 3.8)
+      }
+    }
+
     if(plot_responselabels==FALSE){
       ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_point(ggplot2::aes(x = node_frame$x, y = node_frame$y))
     } else {
-      ResIN_ggplot <- ResIN_ggplot + ggplot2::geom_text(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names), size = 3.8)
+      ResIN_ggplot <- ResIN_ggplot + label_layer(ggplot2::aes(x = node_frame$x, y = node_frame$y, label = node_frame$node_names))
     }
 
     ResIN_ggplot <- ResIN_ggplot+
@@ -1134,11 +1155,11 @@ ResIN <- function(
         } else {
           # Color
           ResIN_ggplot <- ResIN_ggplot +
-            shadowtext::geom_shadowtext(
+            label_layer(
               ggplot2::aes(
                 x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
                 colour = as.factor(node_frame$cluster)
-              ), size = 3.8, bg.r = 0.1)
+              ), shadow = TRUE)
 
           ResIN_ggplot <- add_discrete_scales(
             ResIN_ggplot, aesthetic = "colour",
@@ -1168,10 +1189,10 @@ ResIN <- function(
         } else {
           # Color
           ResIN_ggplot <- ResIN_ggplot +
-            shadowtext::geom_shadowtext(
+            label_layer(
               ggplot2::aes(
                 x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
-                colour = node_frame$choices), size = 3.8, bg.r = 0.1)
+                colour = node_frame$choices), shadow = TRUE)
           ResIN_ggplot <- add_discrete_scales(
             ResIN_ggplot, aesthetic = "colour",
             palette = color_palette, direction = direction,
@@ -1207,10 +1228,10 @@ ResIN <- function(
         } else {
           # Color
           ResIN_ggplot <- ResIN_ggplot +
-            ggplot2::geom_text(
+            label_layer(
               ggplot2::aes(
                 x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
-                colour = node_frame[, plot_whichstat]),size = 3.8)
+                colour = node_frame[, plot_whichstat]))
 
           ResIN_ggplot <- add_continuous_scales(
             ResIN_ggplot, aesthetic = "colour",
@@ -1243,11 +1264,11 @@ ResIN <- function(
         } else {
           # Color
           ResIN_ggplot <- ResIN_ggplot +
-            ggplot2::geom_text(
+            label_layer(
               ggplot2::aes(
                 x = node_frame$x, y = node_frame$y, label = node_frame$node_names,
                 colour = node_frame[, plot_whichstat]
-              ), size = 3.8)
+              ))
           ResIN_ggplot <- add_continuous_scales(
             ResIN_ggplot, aesthetic = "colour",
             palette = color_palette, direction = direction,

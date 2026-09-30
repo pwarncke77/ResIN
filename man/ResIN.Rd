@@ -30,6 +30,7 @@ ResIN(
   color_palette = "RdBu",
   direction = 1,
   plot_responselabels = TRUE,
+  responselabel_repel = FALSE,
   response_levels = NULL,
   plot_title = NULL,
   multimodal = FALSE,
@@ -92,6 +93,8 @@ ResIN(
 \item{direction}{Which direction should the color palette be applied in? Defaults to 1. Set to -1 if the palette should appear in reverse order.}
 
 \item{plot_responselabels}{Should response labels be plotted via \code{geom_text}? Defaults to TRUE. It is recommended to set to FALSE if the network possesses a lot of nodes and/or long response choice names.}
+
+\item{responselabel_repel}{Should response labels be de-overlapped via \code{ggrepel}? Defaults to FALSE, in which case labels are drawn directly at their node coordinates and may visually collide in dense regions of the layout. If set to TRUE, labels are iteratively displaced until they no longer overlap, and short guide lines connect displaced labels back to their original node positions. This can substantially improve the legibility of crowded networks while preserving the estimated layout, and is a useful alternative to setting \code{plot_responselabels} to FALSE. Ignored whenever \code{plot_responselabels} is set to FALSE.}
 
 \item{response_levels}{An optional character vector specifying the correct order of global response levels. Only useful if all node-items follow the same convention (e.g. ranging from "strong disagreement" to "strong agreement"). The supplied vector should have the same length as the total number of response options and supply these (matching exactly) in the correct order. E.g. c("Strongly Agree", "Somewhat Agree", "Neutral", "Somewhat Disagree", "Strongly Disagree"). Defaults to NULL.}
 

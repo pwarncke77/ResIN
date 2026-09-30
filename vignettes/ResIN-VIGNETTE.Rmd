@@ -372,7 +372,7 @@ ggplot(correlations, aes(x = correlations))+
   labs(y = "Probability density", x = "Correlation between ResIN attitude node 
        position and average partisan identity")+
   geom_vline(xintercept = prob_lines[1], color = "darkred",linetype = 2)+
-  geom_vline(xintercept = prob_lines[2], color = "black",linetype = 2, size = 1)+
+  geom_vline(xintercept = prob_lines[2], color = "black",linetype = 2, linewidth = 1)+
   geom_vline(xintercept = prob_lines[3], color = "darkred",linetype = 2)+
   xlim(c(0.75, 0.92))+
   theme_classic() 
