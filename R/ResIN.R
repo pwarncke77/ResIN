@@ -28,6 +28,8 @@
 #' @param direction Which direction should the color palette be applied in? Defaults to 1. Set to -1 if the palette should appear in reverse order.
 #' @param plot_responselabels Should response labels be plotted via \code{geom_text}? Defaults to TRUE. It is recommended to set to FALSE if the network possesses a lot of nodes and/or long response choice names.
 #' @param responselabel_repel Should response labels be de-overlapped via \code{ggrepel}? Defaults to FALSE, in which case labels are drawn directly at their node coordinates and may visually collide in dense regions of the layout. If set to TRUE, labels are iteratively displaced until they no longer overlap, and short guide lines connect displaced labels back to their original node positions. This can substantially improve the legibility of crowded networks while preserving the estimated layout, and is a useful alternative to setting \code{plot_responselabels} to FALSE. Ignored whenever \code{plot_responselabels} is set to FALSE.
+#' @param responselabel_size A numeric scalar controlling the font size of the plotted response labels. Defaults to 4. Reducing this value is often the least disruptive remedy for crowded layouts, since it shrinks the labels without altering the estimated node positions. Ignored whenever \code{plot_responselabels} is set to FALSE.
+#' @param responselabel_tolerance A numeric scalar between 0 and 1 governing how much label overlap is tolerated when \code{responselabel_repel} is set to TRUE. At 0, the repulsive force between labels is applied at full strength and labels are free to travel anywhere within the plotting area in order to separate. Increasing the value progressively weakens this repulsion while strengthening the attraction of each label back toward its own node, so that labels remain closer to their coordinates at the price of some residual overlap. At 1, no repulsion is applied at all and the output is identical to that obtained with \code{responselabel_repel = FALSE}. Defaults to 0. Ignored unless \code{responselabel_repel} is set to TRUE.
 #' @param response_levels An optional character vector specifying the correct order of global response levels. Only useful if all node-items follow the same convention (e.g. ranging from "strong disagreement" to "strong agreement"). The supplied vector should have the same length as the total number of response options and supply these (matching exactly) in the correct order. E.g. c("Strongly Agree", "Somewhat Agree", "Neutral", "Somewhat Disagree", "Strongly Disagree"). Defaults to NULL.
 #' @param plot_title Optionally, a character scalar specifying the title of the ggplot output. Defaults to "ResIN plot".
 #' @param multimodal Logical; should a multimodal graph which jointly incorporates respondents/ data rows and response choices be produced in addition to classic ResIN graph? Defaults to FALSE. If set to TRUE, an  [igraph](https://igraph.org/r/doc/) multimodal graph with response options as node type 1 and participants as node type 2 will be generated and included in the output list. Further, an object called \code{coordinate_df} with spatial coordinates of respondents and a plot-able \code{ggraph}-object called \code{multimodal_ggraph} are generated if set to TRUE.
@@ -92,6 +94,8 @@ ResIN <- function(
     direction = 1,
     plot_responselabels = TRUE,
     responselabel_repel = FALSE,
+    responselabel_size = 4,
+    responselabel_tolerance = 0,
     response_levels = NULL,
     plot_title = NULL,
     multimodal = FALSE,
@@ -137,6 +141,8 @@ ResIN <- function(
       direction = direction,
       plot_responselabels = plot_responselabels,
       responselabel_repel = responselabel_repel,
+      responselabel_size = responselabel_size,
+      responselabel_tolerance = responselabel_tolerance,
       response_levels = response_levels,
       plot_title = plot_title,
       multimodal = multimodal,
@@ -1030,20 +1036,39 @@ ResIN <- function(
         ggplot2::labs(linewidth = paste(plot_edgestat))
     }
 
+    ## Validating response-label arguments
+    if (!is.numeric(responselabel_size) || length(responselabel_size) != 1 ||
+        is.na(responselabel_size) || responselabel_size <= 0) {
+      stop("responselabel_size must be a single positive number.")
+    }
+    if (!is.numeric(responselabel_tolerance) || length(responselabel_tolerance) != 1 ||
+        is.na(responselabel_tolerance) ||
+        responselabel_tolerance < 0 || responselabel_tolerance > 1) {
+      stop("responselabel_tolerance must be a single number between 0 and 1.")
+    }
+
     ## Helper: response-label layer, optionally de-overlapped via ggrepel
     label_layer <- function(mapping, shadow = FALSE) {
       if (isTRUE(responselabel_repel)) {
+        ## Overlap tolerance is mapped onto the repulsion between labels and the
+        ## counter-acting attraction of each label to its own node. At tol = 1 the
+        ## repulsion vanishes and the simulation is skipped, reproducing geom_text().
+        tol <- responselabel_tolerance
         ggrepel::geom_text_repel(
-          mapping, size = 3.8,
+          mapping, size = responselabel_size,
           bg.color = if (shadow) "black" else NA, bg.r = 0.1,
           max.overlaps = Inf,
+          force = 1 - tol,
+          force_pull = tol,
+          box.padding = (1 - tol) * 0.25,
+          max.iter = if (tol >= 1) 0L else 10000L,
           segment.size = 0.25, segment.alpha = 0.5, segment.colour = "grey40",
           seed = if (is.null(seed)) NA else seed
         )
       } else if (isTRUE(shadow)) {
-        shadowtext::geom_shadowtext(mapping, size = 3.8, bg.r = 0.1)
+        shadowtext::geom_shadowtext(mapping, size = responselabel_size, bg.r = 0.1)
       } else {
-        ggplot2::geom_text(mapping, size = 3.8)
+        ggplot2::geom_text(mapping, size = responselabel_size)
       }
     }
 

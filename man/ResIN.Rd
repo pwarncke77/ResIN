@@ -31,6 +31,8 @@ ResIN(
   direction = 1,
   plot_responselabels = TRUE,
   responselabel_repel = FALSE,
+  responselabel_size = 4,
+  responselabel_tolerance = 0,
   response_levels = NULL,
   plot_title = NULL,
   multimodal = FALSE,
@@ -95,6 +97,10 @@ ResIN(
 \item{plot_responselabels}{Should response labels be plotted via \code{geom_text}? Defaults to TRUE. It is recommended to set to FALSE if the network possesses a lot of nodes and/or long response choice names.}
 
 \item{responselabel_repel}{Should response labels be de-overlapped via \code{ggrepel}? Defaults to FALSE, in which case labels are drawn directly at their node coordinates and may visually collide in dense regions of the layout. If set to TRUE, labels are iteratively displaced until they no longer overlap, and short guide lines connect displaced labels back to their original node positions. This can substantially improve the legibility of crowded networks while preserving the estimated layout, and is a useful alternative to setting \code{plot_responselabels} to FALSE. Ignored whenever \code{plot_responselabels} is set to FALSE.}
+
+\item{responselabel_size}{A numeric scalar controlling the font size of the plotted response labels. Defaults to 4. Reducing this value is often the least disruptive remedy for crowded layouts, since it shrinks the labels without altering the estimated node positions. Ignored whenever \code{plot_responselabels} is set to FALSE.}
+
+\item{responselabel_tolerance}{A numeric scalar between 0 and 1 governing how much label overlap is tolerated when \code{responselabel_repel} is set to TRUE. At 0, the repulsive force between labels is applied at full strength and labels are free to travel anywhere within the plotting area in order to separate. Increasing the value progressively weakens this repulsion while strengthening the attraction of each label back toward its own node, so that labels remain closer to their coordinates at the price of some residual overlap. At 1, no repulsion is applied at all and the output is identical to that obtained with \code{responselabel_repel = FALSE}. Defaults to 0. Ignored unless \code{responselabel_repel} is set to TRUE.}
 
 \item{response_levels}{An optional character vector specifying the correct order of global response levels. Only useful if all node-items follow the same convention (e.g. ranging from "strong disagreement" to "strong agreement"). The supplied vector should have the same length as the total number of response options and supply these (matching exactly) in the correct order. E.g. c("Strongly Agree", "Somewhat Agree", "Neutral", "Somewhat Disagree", "Strongly Disagree"). Defaults to NULL.}
 
