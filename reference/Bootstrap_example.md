@@ -20,6 +20,7 @@ This dataset was made available by Lüders et.al. 2024.
 ## Examples
 
 ``` r
+
 data(Bootstrap_example)
 names(Bootstrap_example[[1]])
 #> [1] "ResIN_edgelist"   "ResIN_nodeframe"  "ResIN_ggplot"     "ResIN_scores"    

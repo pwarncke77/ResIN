@@ -24,6 +24,7 @@ This dataset was made available by Lüders et.al. 2024.
 ## Examples
 
 ``` r
+
 data(BrJSocPsychol_2024)
 head(BrJSocPsychol_2024)
 #> # A tibble: 6 × 234

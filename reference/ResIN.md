@@ -34,6 +34,7 @@ ResIN(
   color_palette = "RdBu",
   direction = 1,
   plot_responselabels = TRUE,
+  responselabel_repel = FALSE,
   response_levels = NULL,
   plot_title = NULL,
   multimodal = FALSE,
@@ -275,6 +276,18 @@ ResIN(
   It is recommended to set to FALSE if the network possesses a lot of
   nodes and/or long response choice names.
 
+- responselabel_repel:
+
+  Should response labels be de-overlapped via `ggrepel`? Defaults to
+  FALSE, in which case labels are drawn directly at their node
+  coordinates and may visually collide in dense regions of the layout.
+  If set to TRUE, labels are iteratively displaced until they no longer
+  overlap, and short guide lines connect displaced labels back to their
+  original node positions. This can substantially improve the legibility
+  of crowded networks while preserving the estimated layout, and is a
+  useful alternative to setting `plot_responselabels` to FALSE. Ignored
+  whenever `plot_responselabels` is set to FALSE.
+
 - response_levels:
 
   An optional character vector specifying the correct order of global
@@ -366,6 +379,7 @@ version used to create the object.”
 ## Examples
 
 ``` r
+
 ## Load the 12-item simulated Likert-type toy dataset
 data(lik_data)
 

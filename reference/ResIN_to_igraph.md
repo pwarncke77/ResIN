@@ -43,6 +43,7 @@ as the recommended interface.
 ## Examples
 
 ``` r
+
 ## Load the 12-item simulated Likert-type ResIN toy dataset
 data(lik_data)
 

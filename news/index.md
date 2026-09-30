@@ -2,6 +2,8 @@
 
 ## ResIN 2.3.1
 
+CRAN release: 2026-03-13
+
 ### Major changes
 
 - **Correlation engine overhaul.** ResIN now uses a unified, more

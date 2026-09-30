@@ -76,6 +76,7 @@ response options more telling labels to further improve visual
 interpretability.
 
 ``` r
+
 ## Loading and installing the required packages
 if(!require("ResIN")) install.packages('ResIN')
 library(ResIN)
@@ -111,6 +112,7 @@ set.seed(22)
 The cleaned data set now looks like this:
 
 ``` r
+
 head(Core_Items)
 #> # A tibble: 6 × 8
 #>   legal_abort equalize_incomes keep_immigrants welfare_spending gay_marriage
@@ -131,6 +133,7 @@ Let’s get to the meat of it. For a first, bare-bones ResIN model, we can
 simply supply our set of `Core_Items` to the `ResIN` function.
 
 ``` r
+
 ResIN_out <- ResIN(Core_Items)
 ```
 
@@ -163,6 +166,7 @@ the graph). We’ll also set the random `seed` to avoid (minor)
 fluctuations in-between runs.
 
 ``` r
+
 ResIN_out <- ResIN(Core_Items, plot_ggplot=FALSE,
                   left_anchor = "legal_abort_++", seed = 22)
 
@@ -176,6 +180,7 @@ the node labels with a simpler `geom_point`-aesthetic by specifying
 `plot_responselabels=FALSE`.
 
 ``` r
+
 ResIN_out <- ResIN(Core_Items, left_anchor = "legal_abort_++",
                    plot_responselabels=FALSE, seed = 22)
 ```
@@ -197,6 +202,7 @@ p. 45)](https://bpspsychub.onlinelibrary.wiley.com/doi/pdfdirect/10.1111/bjso.1
 to get some more clarity on them.
 
 ``` r
+
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "choices", 
                    response_levels = c("--", "-", "+/-" , "+", "++"), 
                    plot_responselabels = FALSE, 
@@ -253,6 +259,7 @@ different `color_palette` below. The ResIN function supports all default
 palettes](https://ggplot2.tidyverse.org/reference/scale_brewer.html).
 
 ``` r
+
 ## Using leading eigenvalue by default:
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster", 
                    plot_responselabels = FALSE, plot_title = "Leading eigenvalue community detection",
@@ -262,6 +269,7 @@ ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster
 ![](ResIN-VIGNETTE_files/figure-html/unnamed-chunk-3-1.png)
 
 ``` r
+
 
 ## Switching to edge-betweenness cluster detection:
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster",
@@ -286,6 +294,7 @@ assignments are contained in the `max_clusterprob` object stored in the
 same location.
 
 ``` r
+
 head(ResIN_out$aux_objects$cluster_probabilities)
 #>   cluster_1 cluster_2 cluster_3 cluster_4
 #> 1      0.25     0.625     0.125     0.000
@@ -313,6 +322,7 @@ be found in `ResIN_out$ResIN_nodeframe`. Graph-level statistics are
 stored in `ResIN_out$graph_stats`.
 
 ``` r
+
 ResIN_out <- ResIN(Core_Items, plot_whichstat = "Betweenness", plot_responselabels = TRUE, 
                    plot_title = "ResIN node betweenness centrality", seed = 22, color_palette = "Greens",
                    left_anchor = "legal_abort_++")
@@ -340,6 +350,7 @@ showcases the latter while also visualizing the clusters detected with
 the edge betweenness algorithm.
 
 ``` r
+
 ResIN_out <- ResIN(Core_Items, detect_clusters = TRUE, plot_whichstat = "cluster",
                    cluster_method = "cluster_edge_betweenness", 
                    plot_edgestat = "edgebetweenness",
@@ -382,6 +393,7 @@ below shows how to replicate the affective polarization measure in
 Lüders et.al. (2024) following this strategy.
 
 ``` r
+
 ## Calculating the relative preference of Democrats over Republicans 
   ##(Democrat feelings thermometer minus republican feelings thermometer)
 Core_Items$dem_bias  <- as.numeric(BrJSocPsychol_2024$Q15_2) - 
@@ -413,6 +425,7 @@ that these respondents strongly reject government aid to African
 Americans and environmental regulations in particular.
 
 ``` r
+
 ResIN_out <- ResIN(Core_Items,
                    node_vars = c("legal_abort", "equalize_incomes", "keep_immigrants",
                                  "welfare_spending", "gay_marriage", "protect_environ",
@@ -428,6 +441,7 @@ ResIN_out <- ResIN(Core_Items,
 Here is a glimpse at the above results in tabular form:
 
 ``` r
+
 head(ResIN_out$ResIN_nodeframe[, 8:9], 10)
 #>                      dem_bias_mean           node_label
 #> legal_abort_-             6.500000        legal_abort_-
@@ -457,6 +471,7 @@ node location on the main spatial axis simply via
 `ResIN_out$ResIN_nodeframe$x`.
 
 ``` r
+
 ## Further attaching partisan identification
 Core_Items <- Core_Items %>% dplyr::mutate(partisan = as.numeric(recode(BrJSocPsychol_2024$Q13, 
                                        "Democrat" = 0,
@@ -515,6 +530,7 @@ endorsed. The spatial scores are stored in a `n*2` data-frame called
 the minor axis component as `raw_y`.
 
 ``` r
+
 ## Partisanship at the individual level
 corr.test(Core_Items$partisan, ResIN_out$ResIN_scores$raw_x)
 #> Call:corr.test(x = Core_Items$partisan, y = ResIN_out$ResIN_scores$raw_x)
@@ -604,6 +620,7 @@ the attitude node location and the node-level mean partisan
 identification.
 
 ``` r
+
 ## Let's generate a new, more lean ResIN analysis by omitting network statistics calculations, 
 ## plot generation, and individual-level scoring. This will optimize the execution time.
 ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", 
@@ -652,7 +669,7 @@ ggplot(correlations, aes(x = correlations))+
   labs(y = "Probability density", x = "Correlation between ResIN attitude node 
        position and average partisan identity")+
   geom_vline(xintercept = prob_lines[1], color = "darkred",linetype = 2)+
-  geom_vline(xintercept = prob_lines[2], color = "black",linetype = 2, size = 1)+
+  geom_vline(xintercept = prob_lines[2], color = "black",linetype = 2, linewidth = 1)+
   geom_vline(xintercept = prob_lines[3], color = "darkred",linetype = 2)+
   xlim(c(0.75, 0.92))+
   theme_classic() 
@@ -680,6 +697,7 @@ individual participants and a plot-able `ggraph`-object called
 plot the multimodal graph:
 
 ``` r
+
 ResIN_out <- ResIN(Core_Items, node_vars = c("legal_abort", "equalize_incomes", 
                                              "keep_immigrants", "welfare_spending",
                                              "gay_marriage", "protect_environ",
@@ -706,6 +724,7 @@ and
 handle conversions to `igraph`, `qgraph`, and Gephi, respectively.
 
 ``` r
+
 ## Easily convert a ResIN object to igraph:
 ResIN_igraph <- as.igraph(ResIN_out)
 class(ResIN_igraph)
